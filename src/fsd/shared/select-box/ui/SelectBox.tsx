@@ -1,11 +1,8 @@
 'use client';
 
+import mergeClassNames from '@FsdShared/utils/style/merge-class-names';
 import { useEffect, useId, useMemo, useRef, useState } from 'react';
 import type { SelectBoxProps } from '../model/types';
-
-function cn(...args: Array<string | undefined | null | false>) {
-  return args.filter(Boolean).join(' ');
-}
 
 function sizeClasses(size: NonNullable<SelectBoxProps['size']>) {
   switch (size) {
@@ -18,9 +15,10 @@ function sizeClasses(size: NonNullable<SelectBoxProps['size']>) {
       return 'h-10 text-sm px-3.5';
   }
 }
-function paddings(size: NonNullable<SelectBoxProps['size']>, hasLeft: boolean, hasRight: boolean) {
+
+function paddings(size: NonNullable<SelectBoxProps['size']>, hasLeft: boolean) {
   const base = sizeClasses(size);
-  return base + (hasLeft ? ' pl-10' : '') + (hasRight ? ' pr-10' : '');
+  return base + (hasLeft ? ' pl-10' : '') + ' pr-10';
 }
 
 export default function SelectBox<T extends string | number = string>({
@@ -120,11 +118,11 @@ export default function SelectBox<T extends string | number = string>({
   const selected = options.find((o) => o.value === selectedValue);
 
   return (
-    <div className={cn(fullWidth ? 'w-full' : 'inline-block', 'space-y-1.5')}>
+    <div className={mergeClassNames(fullWidth ? 'w-full' : 'inline-block', 'space-y-1.5')}>
       {label && (
         <label
           htmlFor={btnId}
-          className={cn(
+          className={mergeClassNames(
             'block text-sm font-medium text-foreground',
             required && 'after:ml-0.5 after:text-red-600 after:content-["*"]'
           )}
@@ -175,26 +173,30 @@ export default function SelectBox<T extends string | number = string>({
               default:
             }
           }}
-          className={cn(
-            'flex w-full items-center justify-between rounded-xl border bg-background text-left outline-none transition',
+          className={mergeClassNames(
+            'relative flex w-full items-center rounded-xl border bg-background text-left outline-none transition',
             'focus:border-primary focus:ring-4 focus:ring-primary/20',
             'disabled:cursor-not-allowed disabled:opacity-60',
             'cursor-pointer',
             isError ? 'border-red-500 focus:border-red-600 focus:ring-red-500/20' : 'border-border',
-            paddings(size, !!leftIcon, true),
+            paddings(size, !!leftIcon),
             className
           )}
         >
-          <span className={cn('truncate', selected ? 'text-foreground' : 'text-muted-foreground')}>
+          <span className={mergeClassNames('truncate', selected ? 'text-foreground' : 'text-muted-foreground')}>
             {selected ? selected.label : placeholder}
           </span>
-          <span className="pointer-events-none flex items-center">
+          <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 text-muted-foreground">
             {rightIcon ?? (
               <svg
-                className={cn('h-4 w-4 transition-transform', open && 'rotate-180')}
+                className={mergeClassNames('h-4 w-4 transition-transform', open && 'rotate-180')}
                 viewBox="0 0 20 20"
                 aria-hidden="true"
-                fill="currentColor"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
               >
                 <path d="M5 7l5 6 5-6" />
               </svg>
@@ -228,7 +230,7 @@ export default function SelectBox<T extends string | number = string>({
                   aria-selected={selected}
                   onMouseEnter={() => !opt.disabled && setActiveIndex(i)}
                   onClick={() => !opt.disabled && commit(opt.value as T)}
-                  className={cn(
+                  className={mergeClassNames(
                     'px-4 py-2 text-sm cursor-pointer text-foreground',
                     selected && 'bg-muted',
                     active && 'bg-muted/70',

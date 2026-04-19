@@ -17,5 +17,5 @@ fi
 
 echo "✅ 브랜치명이 유효합니다!"
 
-# 기존 lint-staged 실행
+# 변경된 파일만 검사
 npx lint-staged
