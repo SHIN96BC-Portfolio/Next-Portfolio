@@ -4,6 +4,7 @@ import { ProjectGridConfig } from '@FsdEntities/content/model/types';
 import ScrollReveal from '@FsdFeatures/scroll-reveal/ui/ScrollReveal';
 import { AccordionItem } from '@FsdShared/accordion/ui';
 import { SectionHeader } from '@FsdShared/section-header/ui';
+import formatEmploymentPeriod from '@FsdShared/utils/date/format-employment-period';
 import { useState } from 'react';
 import HighlightListItem from './HighlightListItem';
 
@@ -47,7 +48,7 @@ export default function PortfolioProjects({ title, config }: Props) {
                   trigger={
                     <div>
                       <h3 className="text-lg sm:text-xl font-bold text-card-foreground">{company.name}</h3>
-                      <p className="mt-1 text-sm text-primary font-medium">{company.period}</p>
+                      <p className="mt-1 text-sm text-primary font-medium">{formatEmploymentPeriod(company.period)}</p>
                       {company.role && <p className="mt-1 text-sm text-muted-foreground">{company.role}</p>}
                     </div>
                   }
@@ -112,7 +113,30 @@ export default function PortfolioProjects({ title, config }: Props) {
                           </div>
                         </div>
 
-                        {project.links && project.links.length > 0 && (
+                        {(project.linkGroups?.length ?? 0) > 0 && (
+                          <div className="space-y-4">
+                            {project.linkGroups?.map((group) => (
+                              <div key={group.title}>
+                                <h5 className="text-sm font-semibold text-foreground mb-2">{group.title}</h5>
+                                <div className="flex flex-wrap gap-3">
+                                  {group.links.map((link) => (
+                                    <a
+                                      key={link.url}
+                                      href={link.url}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="text-sm text-primary hover:underline"
+                                    >
+                                      {link.label} →
+                                    </a>
+                                  ))}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+
+                        {!project.linkGroups?.length && project.links && project.links.length > 0 && (
                           <div className="flex flex-wrap gap-3">
                             {project.links.map((link) => (
                               <a

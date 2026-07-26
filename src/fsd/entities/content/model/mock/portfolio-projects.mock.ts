@@ -62,7 +62,24 @@ export const portfolioProjectsMock: ProjectCompany[] = [
           'Azure',
           'Git',
         ],
-        links: [{ label: 'modetour.com', url: 'https://www.modetour.com/' }],
+        linkGroups: [
+          {
+            title: 'B2C',
+            links: [{ label: 'modetour.com', url: 'https://www.modetour.com' }],
+          },
+          {
+            title: 'BP 예시',
+            links: [{ label: 'elpis.modetour.co.kr', url: 'https://elpis.modetour.co.kr/' }],
+          },
+          {
+            title: 'ONBP 예시',
+            links: [
+              { label: 'go.modetour.co.kr', url: 'https://go.modetour.co.kr/' },
+              { label: 'gentlemonster.modetour.com', url: 'https://gentlemonster.modetour.com/' },
+              { label: 'homeplus1.modetour.co.kr', url: 'https://homeplus1.modetour.co.kr/' },
+            ],
+          },
+        ],
       },
       {
         id: 'koreavisa',
@@ -125,12 +142,6 @@ export const portfolioProjectsMock: ProjectCompany[] = [
           'Git',
           'Jira',
         ],
-        links: [
-          {
-            label: 'Notion 상세',
-            url: 'https://www.notion.so/shin96bc/Lahat-Mall-Admin-5b98630804024e4593c9def8d765fe58',
-          },
-        ],
       },
       {
         id: 'lahat-food-admin',
@@ -160,12 +171,6 @@ export const portfolioProjectsMock: ProjectCompany[] = [
           'Git',
           'Jira',
         ],
-        links: [
-          {
-            label: 'Notion 상세',
-            url: 'https://www.notion.so/shin96bc/Lahat-Food-Admin-4955bf7e15f1450cb486f881d93dd558',
-          },
-        ],
       },
       {
         id: 'lahat-store-admin',
@@ -190,12 +195,6 @@ export const portfolioProjectsMock: ProjectCompany[] = [
           'Firebase',
           'Git',
           'Jira',
-        ],
-        links: [
-          {
-            label: 'Notion 상세',
-            url: 'https://www.notion.so/shin96bc/Lahat-Store-Admin-a579560f417f41549476322453510d05',
-          },
         ],
       },
       {
@@ -225,12 +224,6 @@ export const portfolioProjectsMock: ProjectCompany[] = [
           'jwt-decode',
           'Git',
           'Jira',
-        ],
-        links: [
-          {
-            label: 'Notion 상세',
-            url: 'https://www.notion.so/shin96bc/Zootopia-Admin-6414ad7e7d5b4836a8f3f98277ea539c',
-          },
         ],
       },
       {
@@ -266,12 +259,6 @@ export const portfolioProjectsMock: ProjectCompany[] = [
           'Git',
           'Jira',
         ],
-        links: [
-          {
-            label: 'Notion 상세',
-            url: 'https://www.notion.so/shin96bc/Zootopia-Plus-d25f76f8c955408fb5591b26bc94dbdd',
-          },
-        ],
       },
       {
         id: 'zootopia',
@@ -288,12 +275,6 @@ export const portfolioProjectsMock: ProjectCompany[] = [
         ],
         issues: ['Swiper viewport 리사이즈 시 이미지 노출 버그 → 라이브러리 제거 후 fade in/out 직접 구현'],
         techStack: ['Next.js', 'TypeScript', 'Jotai', 'Vercel', 'MUI', 'Swiper', 'Google Map'],
-        links: [
-          {
-            label: 'Notion 상세',
-            url: 'https://www.notion.so/shin96bc/Zootopia-dac4187508fd4b1c964a87d275aed387',
-          },
-        ],
       },
     ],
   },
@@ -321,12 +302,6 @@ export const portfolioProjectsMock: ProjectCompany[] = [
           '이어하기 기능 추가 요구 → 프로젝트 구조 수정, 스톱워치 → (현재시간 - 시작시간 + 누적시간) 방식으로 변경',
         ],
         techStack: ['Swift', 'SwiftUI', 'Realm DB'],
-        links: [
-          {
-            label: 'Notion 상세',
-            url: 'https://www.notion.so/shin96bc/b036876306b641a4bb0faf8af2e5ed64',
-          },
-        ],
       },
       {
         id: 'uteas',
@@ -363,12 +338,6 @@ export const portfolioProjectsMock: ProjectCompany[] = [
           'Nginx',
           'PM2',
         ],
-        links: [
-          {
-            label: 'Notion 상세',
-            url: 'https://www.notion.so/shin96bc/UTEAS-bdc608fff5de4f1e99ac1abe3834762d',
-          },
-        ],
       },
       {
         id: 'eugene-ready-mix',
@@ -386,12 +355,6 @@ export const portfolioProjectsMock: ProjectCompany[] = [
         ],
         issues: ['React re-rendering 성능 저하 → useCallback + React.memo로 렌더링 최적화'],
         techStack: ['React Native', 'TypeScript', 'Redux', 'React Query', 'React Native StyleSheet', 'Git'],
-        links: [
-          {
-            label: 'Notion 상세',
-            url: 'https://www.notion.so/shin96bc/dfdcf937a14044f288fc94025084148b',
-          },
-        ],
       },
       {
         id: 'jeonju-eco-driving',
@@ -421,12 +384,6 @@ export const portfolioProjectsMock: ProjectCompany[] = [
           'Git',
           'Apache',
         ],
-        links: [
-          {
-            label: 'Notion 상세',
-            url: 'https://www.notion.so/shin96bc/350c47a3d9fd4c608345e0516c571227',
-          },
-        ],
       },
       {
         id: 'dada-pick',
@@ -446,12 +403,6 @@ export const portfolioProjectsMock: ProjectCompany[] = [
           'Atomic Design 패턴 도입으로 컴포넌트 생산성 향상',
         ],
         techStack: ['React (CRA)', 'JavaScript', 'Redux', 'React Router', 'React Query', 'Git', 'Nginx'],
-        links: [
-          {
-            label: 'Notion 상세',
-            url: 'https://www.notion.so/shin96bc/Dada-Pick-93d399a4aae24e38a2842334f154c8bc',
-          },
-        ],
       },
       {
         id: 'dada-place',
@@ -468,12 +419,6 @@ export const portfolioProjectsMock: ProjectCompany[] = [
         ],
         issues: ['Atomic Design 패턴 도입', 'Git Flow 도입으로 협업 프로세스 개선'],
         techStack: ['React (CRA)', 'JavaScript', 'Redux', 'React Router', 'React Query', 'Git', 'Git Flow', 'Nginx'],
-        links: [
-          {
-            label: 'Notion 상세',
-            url: 'https://www.notion.so/shin96bc/Dada-Place-153f4a3823eb4e3a86ba1fc78aa69a63',
-          },
-        ],
       },
       {
         id: 'incheon-port-security',
@@ -488,12 +433,6 @@ export const portfolioProjectsMock: ProjectCompany[] = [
           'JSP·Spring 기반 레거시 페이지 구조 파악 및 개선',
         ],
         techStack: ['JSP', 'jQuery', 'Java', 'Spring (Maven)', 'eGovFrame', 'Git'],
-        links: [
-          {
-            label: 'Notion 상세',
-            url: 'https://www.notion.so/shin96bc/327ad0a161f149729ad4cb01f6544445',
-          },
-        ],
       },
       {
         id: 'solugate',

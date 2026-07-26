@@ -3,6 +3,7 @@
 import { TimelineConfig } from '@FsdEntities/content/model/types';
 import ScrollReveal from '@FsdFeatures/scroll-reveal/ui/ScrollReveal';
 import { SectionHeader } from '@FsdShared/section-header/ui';
+import formatEmploymentPeriod from '@FsdShared/utils/date/format-employment-period';
 
 interface Props {
   title: string;
@@ -31,7 +32,7 @@ export default function PortfolioCareer({ title, config }: Props) {
                   <div className="rounded-xl border border-border bg-card p-5 sm:p-6">
                     <div className="flex flex-wrap items-baseline justify-between gap-2">
                       <h3 className="text-lg font-bold text-card-foreground">{item.company}</h3>
-                      <span className="text-sm font-medium text-primary">{item.period}</span>
+                      <span className="text-sm font-medium text-primary">{formatEmploymentPeriod(item.period)}</span>
                     </div>
                     <p className="mt-1 text-sm text-muted-foreground">
                       {item.department} · {item.position} · {item.location}

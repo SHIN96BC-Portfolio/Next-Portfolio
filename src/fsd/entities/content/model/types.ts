@@ -70,6 +70,16 @@ export interface ProjectCompany {
   projects: ProjectItem[];
 }
 
+export interface ProjectLink {
+  label: string;
+  url: string;
+}
+
+export interface ProjectLinkGroup {
+  title: string;
+  links: ProjectLink[];
+}
+
 export interface ProjectItem {
   id: string;
   name: string;
@@ -79,7 +89,8 @@ export interface ProjectItem {
   highlights: string[];
   issues?: string[];
   techStack: string[];
-  links?: { label: string; url: string }[];
+  links?: ProjectLink[];
+  linkGroups?: ProjectLinkGroup[];
 }
 
 export interface TimelineConfig {
