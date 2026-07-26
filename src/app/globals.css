@@ -117,3 +117,41 @@ dialog::backdrop {
   animation-iteration-count: 1, infinite;
   animation-fill-mode: forwards, none;
 }
+
+/* Portfolio scroll-reveal animations */
+.scroll-reveal {
+  opacity: 0;
+  transition:
+    opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
+}
+
+.scroll-reveal--fade-up {
+  transform: translateY(40px);
+}
+
+.scroll-reveal--fade-in {
+  transform: none;
+}
+
+.scroll-reveal--slide-left {
+  transform: translateX(-48px);
+}
+
+.scroll-reveal--slide-right {
+  transform: translateX(48px);
+}
+
+.scroll-reveal--visible {
+  opacity: 1;
+  transform: translate(0, 0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scroll-reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}

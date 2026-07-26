@@ -1,3 +1,3 @@
-import InterceptionModalLoginPage from '@FsdPages/interception-modal/login';
+import InterceptionModalLoginPage from '@FsdPages/interception-modal/login/InterceptionModalLoginPage';
 
 export default InterceptionModalLoginPage;
