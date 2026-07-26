@@ -5,6 +5,7 @@ export const SERVICE_BASE_NAME = {
 
 export const SERVICE_NAME = {
   SITE: Symbol.for('Site'),
+  CONTENT: Symbol.for('Content'),
 };
 
 export type BindingScopeType = 'Transient' | 'Singleton' | 'Request';

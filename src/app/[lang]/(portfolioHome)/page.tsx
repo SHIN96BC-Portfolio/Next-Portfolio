@@ -1,3 +1,3 @@
-import PortfolioHomePage from '@FsdPages/portfolio-home';
+import PortfolioHomePage from '@FsdPages/portfolio-home/PortfolioHomePage';
 
 export default PortfolioHomePage;

@@ -1,3 +1,4 @@
+import { ContentServiceImpl } from '@FsdEntities/content/api';
 import { SiteServiceImpl } from '@FsdEntities/site/api';
 import {
   BatchBaseBinding,
@@ -20,6 +21,12 @@ const serviceBatchList: BatchBinding[] = [
   {
     name: SERVICE_NAME.SITE,
     target: SiteServiceImpl,
+    baseName: SERVICE_BASE_NAME.COMMON_BASE,
+    scope: BINDING_SCOPE.SINGLETON,
+  },
+  {
+    name: SERVICE_NAME.CONTENT,
+    target: ContentServiceImpl,
     baseName: SERVICE_BASE_NAME.COMMON_BASE,
     scope: BINDING_SCOPE.SINGLETON,
   },

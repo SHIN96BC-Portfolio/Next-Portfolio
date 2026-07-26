@@ -1,3 +1,4 @@
+import contentMockHandler from './content/content-mock-handler';
 import fileMockHandler from './file/file-mock-handler';
 import siteMockHandler from './site/site-mock-handler';
 
@@ -6,4 +7,4 @@ export const addDelay = async (response: any, delay = 1000) => {
   return response;
 };
 
-export default [...fileMockHandler, ...siteMockHandler];
+export default [...fileMockHandler, ...siteMockHandler, ...contentMockHandler];

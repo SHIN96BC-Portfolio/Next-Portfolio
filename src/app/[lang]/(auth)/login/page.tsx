@@ -1,3 +1,3 @@
-import LoginPage from '@FsdPages/login';
+import LoginPage from '@FsdPages/login/LoginPage';
 
 export default LoginPage;

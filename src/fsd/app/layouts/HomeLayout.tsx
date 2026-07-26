@@ -1,18 +1,15 @@
-import { SiteGnb } from '@FsdEntities/site/model/client/gnb';
 import { ThemeType } from '@FsdShared/config/theme/model/type';
-import { HomeHeader } from '@FsdWidgets/header/ui';
+import PortfolioHeader from '@FsdWidgets/header/ui/PortfolioHeader';
 
 interface Props {
-  isLogin: boolean;
-  gnbList: SiteGnb[];
   themeType: ThemeType;
   children: React.ReactNode;
 }
 
-export default function HomeLayout({ isLogin, gnbList, themeType, children }: Props) {
+export default function HomeLayout({ themeType, children }: Props) {
   return (
     <main>
-      <HomeHeader isLogin={isLogin} gnbList={gnbList} themeType={themeType} />
+      <PortfolioHeader themeType={themeType} />
       {children}
     </main>
   );
