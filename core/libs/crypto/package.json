@@ -1,0 +1,22 @@
+{
+  "name": "@core/crypto",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./index.ts",
+  "types": "./index.ts",
+  "exports": {
+    ".": "./index.ts",
+    "./index.node": "./index.node.ts"
+  },
+  "scripts": {
+    "build": "tsc --noEmit -p ../tsconfig.json",
+    "typecheck": "tsc --noEmit -p ../tsconfig.json"
+  },
+  "dependencies": {
+    "crypto-js": "^4.2.0"
+  },
+  "devDependencies": {
+    "@types/crypto-js": "^4.1.1",
+    "@types/node": "^20"
+  }
+}
