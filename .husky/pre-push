@@ -3,7 +3,7 @@
 
 echo "🔍 TypeScript 타입 검사 중..."
 
-npm run typecheck
+pnpm run typecheck
 
 status=$?
 if [ $status -ne 0 ]; then
@@ -19,7 +19,7 @@ echo "✅ 타입 검사를 통과했습니다! 계속 진행합니다."
 echo "🔍 전체 프로젝트에 대해 Biome 코드 검사 중..."
 
 # 전체 코드 검사 실행
-npm run biome
+pnpm run biome
 
 status=$?
 if [ $status -ne 0 ]; then

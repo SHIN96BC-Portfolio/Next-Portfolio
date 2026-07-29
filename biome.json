@@ -1,15 +1,30 @@
 {
-  "$schema": "https://biomejs.dev/schemas/2.3.2/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.5.6/schema.json",
   "root": true,
   "css": {
     "parser": {
       "tailwindDirectives": true
     }
   },
-  "vcs": { "enabled": false, "clientKind": "git", "useIgnoreFile": false },
+  "vcs": {
+    "enabled": true,
+    "clientKind": "git",
+    "useIgnoreFile": true
+  },
   "files": {
     "ignoreUnknown": false,
-    "includes": ["**", "!**/public", "!**/node_modules", "!**/.next", "!**/dist", "!**/build", "!**/auto-gen/**"],
+    "includes": [
+      "**",
+      "!**/public",
+      "!**/node_modules",
+      "!**/.next",
+      "!**/.turbo",
+      "!**/dist",
+      "!**/build",
+      "!**/coverage",
+      "!**/auto-gen/**",
+      "!**/pnpm-lock.yaml"
+    ],
     "maxSize": 41943040
   },
   "formatter": {
@@ -28,7 +43,7 @@
   "linter": {
     "enabled": true,
     "rules": {
-      "recommended": false,
+      "preset": "none",
       "a11y": {
         "noLabelWithoutControl": "off",
         "noNoninteractiveElementInteractions": "off",
@@ -79,17 +94,7 @@
         "noPrototypeBuiltins": "off",
         "useIterableCallbackReturn": "off"
       }
-    },
-    "includes": [
-      "**",
-      "**/dist",
-      "**/node_modules",
-      "**/scripts",
-      "**/*.test.ts",
-      "**/*.test.tsx",
-      "**/*.spec.ts",
-      "**/*.spec.tsx"
-    ]
+    }
   },
   "javascript": {
     "formatter": {
@@ -111,7 +116,7 @@
   },
   "overrides": [
     {
-      "includes": ["src/fsd/shared/**", "!src/fsd/shared/config/**", "!@Src/fsd/shared/config/**"],
+      "includes": ["apps/**/src/fsd/shared/**", "!apps/**/src/fsd/shared/config/**"],
       "linter": {
         "rules": {
           "style": {
@@ -121,16 +126,16 @@
                 "patterns": [
                   {
                     "group": [
-                      "@Src/fsd/app/**",
-                      "@Src/fsd/pages/**",
-                      "@Src/fsd/widgets/**",
-                      "@Src/fsd/features/**",
-                      "@Src/fsd/entities/**",
-                      "../fsd/app/**",
-                      "../fsd/pages/**",
-                      "../fsd/widgets/**",
-                      "../fsd/features/**",
-                      "../fsd/entities/**"
+                      "@FsdApp/**",
+                      "@FsdPages/**",
+                      "@FsdWidgets/**",
+                      "@FsdFeatures/**",
+                      "@FsdEntities/**",
+                      "../app/**",
+                      "../pages/**",
+                      "../widgets/**",
+                      "../features/**",
+                      "../entities/**"
                     ],
                     "message": "🚫 shared 레이어에서는 app/pages/widgets/features/entities 를 import 할 수 없습니다."
                   }
@@ -142,7 +147,7 @@
       }
     },
     {
-      "includes": ["src/entities/**"],
+      "includes": ["apps/**/src/fsd/entities/**"],
       "linter": {
         "rules": {
           "style": {
@@ -152,14 +157,14 @@
                 "patterns": [
                   {
                     "group": [
-                      "@Src/fsd/app/**",
-                      "@Src/fsd/pages/**",
-                      "@Src/fsd/widgets/**",
-                      "@Src/fsd/features/**",
-                      "../fsd/app/**",
-                      "../fsd/pages/**",
-                      "../fsd/widgets/**",
-                      "../fsd/features/**"
+                      "@FsdApp/**",
+                      "@FsdPages/**",
+                      "@FsdWidgets/**",
+                      "@FsdFeatures/**",
+                      "../app/**",
+                      "../pages/**",
+                      "../widgets/**",
+                      "../features/**"
                     ],
                     "message": "🚫 entities 레이어에서는 app/pages/widgets/features 를 import 할 수 없습니다."
                   }
@@ -171,7 +176,7 @@
       }
     },
     {
-      "includes": ["src/features/**"],
+      "includes": ["apps/**/src/fsd/features/**"],
       "linter": {
         "rules": {
           "style": {
@@ -181,12 +186,12 @@
                 "patterns": [
                   {
                     "group": [
-                      "@Src/fsd/app/**",
-                      "@Src/fsd/pages/**",
-                      "@Src/fsd/widgets/**",
-                      "../fsd/app/**",
-                      "../fsd/pages/**",
-                      "../fsd/widgets/**"
+                      "@FsdApp/**",
+                      "@FsdPages/**",
+                      "@FsdWidgets/**",
+                      "../app/**",
+                      "../pages/**",
+                      "../widgets/**"
                     ],
                     "message": "🚫 features 레이어에서는 app/pages/widgets 를 import 할 수 없습니다."
                   }
@@ -198,7 +203,7 @@
       }
     },
     {
-      "includes": ["src/widgets/**"],
+      "includes": ["apps/**/src/fsd/widgets/**"],
       "linter": {
         "rules": {
           "style": {
@@ -207,7 +212,7 @@
               "options": {
                 "patterns": [
                   {
-                    "group": ["@Src/fsd/app/**", "@Src/fsd/pages/**", "../fsd/app/**", "../fsd/pages/**"],
+                    "group": ["@FsdApp/**", "@FsdPages/**", "../app/**", "../pages/**"],
                     "message": "🚫 widgets 레이어에서는 app/pages 를 import 할 수 없습니다."
                   }
                 ]
@@ -218,7 +223,7 @@
       }
     },
     {
-      "includes": ["src/pages/**"],
+      "includes": ["apps/**/src/fsd/pages/**"],
       "linter": {
         "rules": {
           "style": {
@@ -227,7 +232,7 @@
               "options": {
                 "patterns": [
                   {
-                    "group": ["@Src/fsd/app/**", "../fsd/app/**"],
+                    "group": ["@FsdApp/**", "../app/**"],
                     "message": "🚫 pages 레이어에서는 app 를 import 할 수 없습니다."
                   }
                 ]
@@ -238,7 +243,7 @@
       }
     },
     {
-      "includes": ["libs/**/*.{ts,tsx,js,jsx}"],
+      "includes": ["core/libs/**/*.{ts,tsx,js,jsx}"],
       "linter": {
         "rules": {
           "style": {
@@ -251,8 +256,18 @@
                     "message": "🚫 libs에서는 상대경로 import 금지. alias(@Libs/*)만 사용하세요."
                   },
                   {
-                    "group": ["@Src/**", "@NextApp/**", "@NextPages/**", "@Public/**"],
-                    "message": "🚫 libs에서는 다른 레이어 import 금지"
+                    "group": [
+                      "@Src/**",
+                      "@FsdApp/**",
+                      "@FsdPages/**",
+                      "@FsdWidgets/**",
+                      "@FsdFeatures/**",
+                      "@FsdEntities/**",
+                      "@FsdShared/**",
+                      "@NextApp/**",
+                      "@Public/**"
+                    ],
+                    "message": "🚫 libs에서는 app 레이어 import 금지"
                   }
                 ]
               }
@@ -262,7 +277,7 @@
       }
     },
     {
-      "includes": ["{app,apps,packages,src,features,widgets,entities,shared}/**/*.{ts,tsx,js,jsx,mts,cts}"],
+      "includes": ["apps/**/src/**/*.{ts,tsx,js,jsx,mts,cts}"],
       "linter": {
         "rules": {
           "style": {
