@@ -1,7 +1,7 @@
 import I18nContext from '@FsdApp/i18n/contexts/I18nContext';
-import { getI18nDictionary, Namespace } from '@FsdShared/config/i18n';
+import { Namespace } from '@FsdShared/config/i18n';
 import { DictionaryNamespaceMap } from '@FsdShared/config/i18n/i18n.type';
-import { useContext, useEffect, useState } from 'react';
+import { useContext } from 'react';
 
 const useI18nContext = () => {
   const context = useContext(I18nContext);
@@ -12,28 +12,21 @@ const useI18nContext = () => {
 };
 
 /**
- * 제네릭 N을 사용해서 namespace 에 따라 정확한 dictionary 타입으로 반환하는 훅
- * 이렇게 하면 사용하는 곳에서 useI18n('main') 으로 사용하면
- * 타입은 자동으로 DictionaryNamespaceMap['main']으로 타입 추론
- * @param namespace
+ * 서버에서 미리 로드한 dictionary를 I18nContext에서 읽는 훅.
+ * 클라이언트에서 JSON을 직접 import하지 않도록 dictionaries.ts는 server-only입니다.
+ * 사용 전 I18nProvider에 dictionaries를 넘겨주세요.
  */
 const useI18n = <N extends Namespace>(namespace: N): { dict: DictionaryNamespaceMap[N] } => {
-  // 현재 설정된 locale
-  const { locale } = useI18nContext();
+  const { dictionaries } = useI18nContext();
+  const dict = dictionaries?.[namespace];
 
-  // namespace 에 맞는 dictionary 타입을 세팅
-  const [dict, setDict] = useState<DictionaryNamespaceMap[N] | null>(null);
+  if (!dict) {
+    throw new Error(
+      `Dictionary for namespace '${namespace}' is not preloaded. Load it on the server with getI18nTranslator and pass it to I18nProvider.`
+    );
+  }
 
-  useEffect(() => {
-    if (!locale) {
-      return;
-    }
-    getI18nDictionary(locale, namespace).then((dictionary) => {
-      setDict(dictionary as DictionaryNamespaceMap[N]);
-    });
-  }, [locale, namespace]);
-
-  return { dict: dict ? dict : ({} as DictionaryNamespaceMap[N]) };
+  return { dict: dict as DictionaryNamespaceMap[N] };
 };
 
 export default useI18n;

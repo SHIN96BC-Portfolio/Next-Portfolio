@@ -100,7 +100,7 @@ export default function PortfolioHero({ config }: Props) {
         type="button"
         onClick={() => scrollTo('introduction')}
         className={mergeClassNames(
-          'absolute bottom-10 left-1/2 z-10 -translate-x-1/2',
+          'absolute bottom-5 left-1/2 z-10 -translate-x-1/2',
           'flex flex-col items-center gap-1 text-muted-foreground',
           'animate-bounce cursor-pointer hover:text-primary transition-colors'
         )}

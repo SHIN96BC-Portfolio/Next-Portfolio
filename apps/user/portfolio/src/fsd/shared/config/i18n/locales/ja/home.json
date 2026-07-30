@@ -3,7 +3,16 @@
   "header": {
     "homeBtn": "ホーム",
     "loginBtn": "ログイン",
-    "logoutBtn": "ログアウト"
+    "logoutBtn": "ログアウト",
+    "brand": "申秉澈"
+  },
+  "nav": {
+    "introduction": "Intro",
+    "about": "About",
+    "projects": "Projects",
+    "career": "Career",
+    "skills": "Skills",
+    "contact": "Contact"
   },
   "btn": {
     "title": "ボタン"

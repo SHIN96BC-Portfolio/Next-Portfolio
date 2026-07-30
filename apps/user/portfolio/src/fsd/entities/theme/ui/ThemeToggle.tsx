@@ -64,7 +64,7 @@ export default function ThemeToggle({ themeType = 'light' as 'light' | 'dark', p
       )}
 
       <span className={`transition-opacity ${isLoading ? 'opacity-0' : 'opacity-100'}`}>
-        {themeType === 'dark' ? '🌙 Dark' : '☀️ Light'}
+        {themeType === 'dark' ? '☀️ Light' : '🌙 Dark'}
       </span>
     </button>
   );

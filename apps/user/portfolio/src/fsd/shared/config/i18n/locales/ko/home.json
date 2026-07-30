@@ -3,7 +3,16 @@
   "header": {
     "homeBtn": "홈",
     "loginBtn": "로그인",
-    "logoutBtn": "로그아웃"
+    "logoutBtn": "로그아웃",
+    "brand": "신병철"
+  },
+  "nav": {
+    "introduction": "Intro",
+    "about": "About",
+    "projects": "Projects",
+    "career": "Career",
+    "skills": "Skills",
+    "contact": "Contact"
   },
   "btn": {
     "title": "버튼"

@@ -35,17 +35,14 @@ export default function ScrollReveal({ children, variant = 'fade-up', delay = 0,
   }, []);
 
   return (
-    <div
-      ref={ref}
-      className={mergeClassNames(
-        'scroll-reveal',
-        `scroll-reveal--${variant}`,
-        isVisible && 'scroll-reveal--visible',
-        className
-      )}
-      style={{ transitionDelay: `${delay}ms` }}
-    >
-      {children}
+    <div className={mergeClassNames('scroll-reveal-clip', className)}>
+      <div
+        ref={ref}
+        className={mergeClassNames('scroll-reveal', `scroll-reveal--${variant}`, isVisible && 'scroll-reveal--visible')}
+        style={{ transitionDelay: `${delay}ms` }}
+      >
+        {children}
+      </div>
     </div>
   );
 }

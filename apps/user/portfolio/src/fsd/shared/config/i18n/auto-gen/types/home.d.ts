@@ -6,6 +6,15 @@ export interface DictionaryHome {
     homeBtn: string;
     loginBtn: string;
     logoutBtn: string;
+    brand: string;
+  };
+  nav: {
+    introduction: string;
+    about: string;
+    projects: string;
+    career: string;
+    skills: string;
+    contact: string;
   };
   btn: {
     title: string;

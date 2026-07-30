@@ -1,5 +1,6 @@
 import {
   ContactConfig,
+  ContentLang,
   EducationConfig,
   HeroConfig,
   HomeSectionRes,
@@ -20,8 +21,12 @@ import PortfolioProjects from '@FsdWidgets/portfolio/projects/ui/PortfolioProjec
 import PortfolioSkills from '@FsdWidgets/portfolio/skills/ui/PortfolioSkills';
 import fetchHomeSectionsSSR from '@NextApp/_actions/fetchHomeSectionsSSR';
 
-export default async function PortfolioHomePage() {
-  const sections = await fetchHomeSectionsSSR();
+type PortfolioHomePageProps = {
+  lang: ContentLang;
+};
+
+export default async function PortfolioHomePage({ lang }: PortfolioHomePageProps) {
+  const sections = await fetchHomeSectionsSSR(lang);
 
   return (
     <div className="font-[family-name:var(--font-geist-sans)]">

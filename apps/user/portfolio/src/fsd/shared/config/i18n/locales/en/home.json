@@ -3,7 +3,16 @@
   "header": {
     "homeBtn": "Home",
     "loginBtn": "Login",
-    "logoutBtn": "Logout"
+    "logoutBtn": "Logout",
+    "brand": "Byeongcheol Shin"
+  },
+  "nav": {
+    "introduction": "Intro",
+    "about": "About",
+    "projects": "Projects",
+    "career": "Career",
+    "skills": "Skills",
+    "contact": "Contact"
   },
   "btn": {
     "title": "Button"
