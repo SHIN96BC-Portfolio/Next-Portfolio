@@ -1,18 +1,19 @@
 import ContentService from '@FsdEntities/content/api/ContentService';
-import { ContentMode, HomeSectionRes, PAGE_KEY } from '@FsdEntities/content/model/types';
+import { ContentLang, ContentMode, HomeSectionRes, PAGE_KEY } from '@FsdEntities/content/model/types';
 import { serviceContainer } from '@FsdShared/config/service/service.setup';
 import { CommonRes, SERVICE_NAME } from '@Libs/service-container';
 
 const queryKeys = {
-  homeSections: (pageKey: string, mode: ContentMode) => ['homeSections', pageKey, mode] as const,
+  homeSections: (pageKey: string, lang: ContentLang, mode: ContentMode) =>
+    ['homeSections', pageKey, lang, mode] as const,
 };
 
 const queryOptions = {
-  homeSections: (pageKey = PAGE_KEY.HOME, mode: ContentMode = 'published') => ({
-    queryKey: queryKeys.homeSections(pageKey, mode),
+  homeSections: (pageKey = PAGE_KEY.HOME, lang: ContentLang, mode: ContentMode = 'published') => ({
+    queryKey: queryKeys.homeSections(pageKey, lang, mode),
     queryFn: async (): Promise<CommonRes<HomeSectionRes[]>> => {
       const service = serviceContainer.get<ContentService>(SERVICE_NAME.CONTENT);
-      return service.getHomeSections(pageKey, mode);
+      return service.getHomeSections(pageKey, lang, mode);
     },
   }),
 };

@@ -38,7 +38,7 @@ yarn-error.log*
 package-lock.json
 
 # env files
-.env*
+apps/user/portfolio/.env
 
 # vercel
 .vercel

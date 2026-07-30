@@ -2,26 +2,30 @@
 
 import LangToggle from '@FsdEntities/lang/ui/LangToggle';
 import ThemeToggle from '@FsdEntities/theme/ui/ThemeToggle';
+import { DictionaryHome } from '@FsdShared/config/i18n/auto-gen/types/home';
 import { ThemeType } from '@FsdShared/config/theme/model/type';
 import mergeClassNames from '@FsdShared/utils/style/merge-class-names';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
-const SECTION_LINKS = [
-  { id: 'introduction', label: 'Intro' },
-  { id: 'about', label: 'About' },
-  { id: 'projects', label: 'Projects' },
-  { id: 'career', label: 'Career' },
-  { id: 'skills', label: 'Skills' },
-  { id: 'contact', label: 'Contact' },
-] as const;
+const SECTION_IDS = ['introduction', 'about', 'projects', 'career', 'skills', 'contact'] as const;
 
 interface Props {
   themeType: ThemeType;
+  homeDict: DictionaryHome;
 }
 
-export default function PortfolioHeader({ themeType }: Props) {
+export default function PortfolioHeader({ themeType, homeDict }: Props) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState('');
+
+  const sectionLinks = useMemo(
+    () =>
+      SECTION_IDS.map((id) => ({
+        id,
+        label: homeDict.nav[id],
+      })),
+    [homeDict.nav]
+  );
 
   useEffect(() => {
     const onScroll = () => setIsScrolled(window.scrollY > 24);
@@ -35,7 +39,7 @@ export default function PortfolioHeader({ themeType }: Props) {
     const ACTIVATION_LINE = HEADER_OFFSET + 80;
 
     const updateActiveSection = () => {
-      const sectionElements = SECTION_LINKS.flatMap((link) => {
+      const sectionElements = sectionLinks.flatMap((link) => {
         const el = document.getElementById(link.id);
         return el ? [{ id: link.id, el }] : [];
       });
@@ -75,7 +79,7 @@ export default function PortfolioHeader({ themeType }: Props) {
       window.removeEventListener('scroll', updateActiveSection);
       window.removeEventListener('resize', updateActiveSection);
     };
-  }, []);
+  }, [sectionLinks]);
 
   const scrollTo = (id: string) => {
     const element = document.getElementById(id);
@@ -100,11 +104,11 @@ export default function PortfolioHeader({ themeType }: Props) {
           onClick={() => scrollTo('hero')}
           className="text-lg font-bold tracking-tight text-foreground hover:text-primary transition-colors"
         >
-          신병철
+          {homeDict.header.brand}
         </button>
 
-        <nav className="hidden md:flex items-center gap-1" aria-label="섹션 네비게이션">
-          {SECTION_LINKS.map((link) => (
+        <nav className="hidden md:flex items-center gap-1" aria-label="section navigation">
+          {sectionLinks.map((link) => (
             <button
               key={link.id}
               type="button"

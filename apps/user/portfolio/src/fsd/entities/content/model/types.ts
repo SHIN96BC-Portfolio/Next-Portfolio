@@ -19,6 +19,26 @@ export type SectionType = (typeof SECTION_TYPE)[keyof typeof SECTION_TYPE];
 
 export type ContentMode = 'published' | 'draft';
 
+export const CONTENT_LANG = {
+  KO: 'ko',
+  EN: 'en',
+  JA: 'ja',
+} as const;
+
+export type ContentLang = (typeof CONTENT_LANG)[keyof typeof CONTENT_LANG];
+
+export const DEFAULT_CONTENT_LANG: ContentLang = CONTENT_LANG.KO;
+
+export const SUPPORTED_CONTENT_LANGS: ContentLang[] = [CONTENT_LANG.KO, CONTENT_LANG.EN, CONTENT_LANG.JA];
+
+export function resolveContentLang(lang?: string | null): ContentLang {
+  if (lang === CONTENT_LANG.EN || lang === CONTENT_LANG.JA || lang === CONTENT_LANG.KO) {
+    return lang;
+  }
+
+  return DEFAULT_CONTENT_LANG;
+}
+
 export interface HomeSectionRes {
   id: string;
   pageKey: PageKey;

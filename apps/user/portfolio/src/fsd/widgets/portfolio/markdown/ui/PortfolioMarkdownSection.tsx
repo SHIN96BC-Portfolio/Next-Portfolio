@@ -22,7 +22,7 @@ export default function PortfolioMarkdownSection({ id, title, config, variant = 
         </ScrollReveal>
 
         <ScrollReveal variant="fade-up" delay={150}>
-          <div className="mt-10 prose prose-neutral dark:prose-invert max-w-none text-foreground leading-relaxed space-y-4 [&_p]:text-base [&_p]:sm:text-lg [&_p]:text-muted-foreground [&_strong]:text-foreground [&_strong]:font-semibold">
+          <div className="mt-10 prose prose-neutral dark:prose-invert max-w-none text-foreground leading-relaxed space-y-4 break-words [overflow-wrap:anywhere] [&_p]:text-base [&_p]:sm:text-lg [&_p]:text-muted-foreground [&_strong]:text-foreground [&_strong]:font-semibold">
             <RenderMarkdownText text={config.body} />
           </div>
         </ScrollReveal>

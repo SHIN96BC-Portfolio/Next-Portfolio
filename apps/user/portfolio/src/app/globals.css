@@ -66,6 +66,8 @@
 /* 사용자 에이전트에도 힌트 */
 html {
   color-scheme: light dark;
+  overflow-x: clip;
+  max-width: 100%;
 }
 
 body {
@@ -74,8 +76,13 @@ body {
   font-family: Arial, Helvetica, sans-serif;
   margin: 0;
   padding: 0;
+  overflow-x: clip;
+  max-width: 100%;
   /** 스크롤할 때 상단 여백 보이는 이슈 해결 */
   overscroll-behavior-y: none;
+  /** 모바일 가로 스와이프·탄성 스크롤으로 페이지가 흔들리는 현상 방지 */
+  overscroll-behavior-x: none;
+  touch-action: pan-y pinch-zoom;
 }
 
 /* dialog modal backdrop */
@@ -119,6 +126,10 @@ dialog::backdrop {
 }
 
 /* Portfolio scroll-reveal animations */
+.scroll-reveal-clip {
+  overflow-x: clip;
+}
+
 .scroll-reveal {
   opacity: 0;
   transition:
@@ -128,19 +139,20 @@ dialog::backdrop {
 }
 
 .scroll-reveal--fade-up {
-  transform: translateY(40px);
+  transform: translate3d(0, 40px, 0);
 }
 
 .scroll-reveal--fade-in {
   transform: none;
 }
 
+/* translateX는 스크롤 overflow를 만들 수 있어 이동량을 줄이고 clip 래퍼와 함께 사용 */
 .scroll-reveal--slide-left {
-  transform: translateX(-48px);
+  transform: translate3d(-24px, 0, 0);
 }
 
 .scroll-reveal--slide-right {
-  transform: translateX(48px);
+  transform: translate3d(24px, 0, 0);
 }
 
 .scroll-reveal--visible {

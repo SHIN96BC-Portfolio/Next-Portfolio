@@ -1,3 +1,4 @@
+import 'server-only';
 import { Locale, Namespace } from '@FsdShared/config/i18n';
 import dictionaries from '@FsdShared/config/i18n/dictionaries';
 
