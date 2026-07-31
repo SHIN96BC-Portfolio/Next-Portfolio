@@ -1,4 +1,4 @@
-import { ProxyContainerImpl } from '@Libs/proxy-container';
+import { ProxyContainerImpl } from '@core/proxy-container';
 import { authProxyHandler, localeProxyHandler, loggerProxyHandler, themeProxyHandler } from './handlers';
 
 export const proxyContainer = new ProxyContainerImpl()

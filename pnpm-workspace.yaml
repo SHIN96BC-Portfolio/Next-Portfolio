@@ -1,9 +1,12 @@
 packages:
   - 'apps/**'
   - 'core/libs/*'
+  - 'core/bc-ui'
 
 allowBuilds:
+  '@parcel/watcher': true
   esbuild: true
+  msgpackr-extract: true
   msw: true
   sharp: true
   unrs-resolver: true

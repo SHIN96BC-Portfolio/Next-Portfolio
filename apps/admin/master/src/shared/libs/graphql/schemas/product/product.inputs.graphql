@@ -1,0 +1,25 @@
+input ProductsFilter {
+  keyword: String
+  categoryId: ID
+  minPrice: Int
+  maxPrice: Int
+}
+
+input CreateProductInput {
+  name: String!
+  description: String
+  price: Int!
+  currency: String!
+  inStock: Boolean = true
+  categoryId: ID
+}
+
+input UpdateProductInput {
+  id: ID!
+  name: String
+  description: String
+  price: Int
+  currency: String
+  inStock: Boolean
+  categoryId: ID
+}

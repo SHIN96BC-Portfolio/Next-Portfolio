@@ -1,6 +1,6 @@
 // libs/cookie/jar.ts
-import type { CookieOptions, WithTTL } from '@Libs/cookie/cookie.types';
-import { aesDecrypt, aesEncrypt } from '@Libs/crypto';
+import { aesDecrypt, aesEncrypt } from '@core/crypto';
+import type { CookieOptions, WithTTL } from '../../cookie.types';
 
 export default abstract class CookieBaseJar {
   protected readonly secretKey?: string;

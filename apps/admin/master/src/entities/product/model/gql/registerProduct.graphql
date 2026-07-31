@@ -1,0 +1,22 @@
+mutation RegisterProduct($input: CreateProductInput!) {
+  createProduct(input: $input) {
+    ok
+    items {
+      id
+      name
+      price
+      currency
+      inStock
+      rating
+      createdAt
+    }
+    error {
+      code
+      message
+      details {
+        field
+        message
+      }
+    }
+  }
+}

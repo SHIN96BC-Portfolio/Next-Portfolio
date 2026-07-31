@@ -20,6 +20,7 @@
     "gen:i18n": "pnpm run gen:i18n-types && pnpm run gen:i18n-namespaces && pnpm run gen:i18n-locales"
   },
   "dependencies": {
+    "@core/bc-ui": "workspace:*",
     "@core/cookie": "workspace:*",
     "@core/crypto": "workspace:*",
     "@core/proxy-container": "workspace:*",

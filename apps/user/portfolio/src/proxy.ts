@@ -1,6 +1,6 @@
 import { supportedLocales } from '@FsdShared/config/i18n/auto-gen/constants/i18n-locales';
 import { proxyContainer } from '@FsdShared/config/proxy/proxy.setup';
-import { stripPathPrefix } from '@Libs/proxy-container';
+import { stripPathPrefix } from '@core/proxy-container';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function proxy(request: NextRequest) {

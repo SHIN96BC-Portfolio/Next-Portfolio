@@ -1,4 +1,4 @@
-import { EncryptedStorage, StorageLike } from '@Libs/storage';
+import { EncryptedStorage, StorageLike } from '@core/storage';
 
 const storageKey = process.env.NEXT_PUBLIC_STORAGE_CRYPTO_SECRET_KEY ?? '';
 

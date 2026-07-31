@@ -1,0 +1,44 @@
+# Scalar 정의
+
+scalar DateTime
+
+# Paging 공용 타입
+type PageInfo {
+  total: Int!
+  page: Int!
+  pageSize: Int!
+  pages: Int!
+}
+
+# response 규격
+enum ErrorCode {
+  NONE
+  UNAUTHORIZED
+  FORBIDDEN
+  NOT_FOUND
+  CONFLICT
+  INVALID_INPUT
+  RATE_LIMITED
+  INTERNAL
+}
+
+type ErrorDetail {
+  field: String
+  message: String
+}
+
+type ErrorInfo {
+  code: ErrorCode! # FE가 분기할 열거형 코드
+  message: String! # 사용자/개발자 메시지
+  details: [ErrorDetail!] # 필드 단위 검증 오류 등
+}
+
+interface ApiResult {
+  ok: Boolean! # 비즈니스 성공/실패
+  error: ErrorInfo # 실패 시 상세 정보 (성공이면 null)
+}
+
+# --- Root (최초 정의) ---
+type Query
+
+type Mutation

@@ -8,7 +8,7 @@ import {
   resolveContentLang,
 } from '@FsdEntities/content/model/types';
 import { serviceContainer } from '@FsdShared/config/service/service.setup';
-import { SERVICE_NAME } from '@Libs/service-container';
+import { SERVICE_NAME } from '@core/service-container';
 
 export default async function fetchHomeSectionsSSR(
   lang: ContentLang,

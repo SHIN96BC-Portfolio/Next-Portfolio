@@ -1,5 +1,5 @@
-import ProxyChain from '@Libs/proxy-container/chain/ProxyChain';
-import { Proxy, ProxyChainOption } from '@Libs/proxy-container/proxy.type';
+import ProxyChain from '../chain/ProxyChain';
+import { Proxy, ProxyChainOption } from '../proxy.type';
 
 export default interface ProxyContainer {
   use(name: string, proxy: Proxy): this;

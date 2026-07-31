@@ -1,24 +1,39 @@
 {
   "name": "@core/cookie",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "private": true,
-  "main": "./index.ts",
-  "types": "./index.ts",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
-    ".": "./index.ts"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./package.json": "./package.json"
   },
+  "files": ["dist"],
   "scripts": {
-    "build": "tsc --noEmit -p ../tsconfig.json",
-    "typecheck": "tsc --noEmit -p ../tsconfig.json"
+    "build": "tsup",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "dev": "tsup --watch"
   },
   "dependencies": {
-    "@core/crypto": "workspace:*"
+    "@core/crypto": "workspace:*",
+    "crypto-js": "^4.2.0"
   },
   "peerDependencies": {
     "next": ">=15"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "devDependencies": {
     "@types/node": "^20",
-    "next": "16.0.10"
+    "next": "16.0.10",
+    "tsup": "^8.5.0",
+    "typescript": "^5"
   }
 }

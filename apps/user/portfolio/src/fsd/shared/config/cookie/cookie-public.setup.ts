@@ -1,4 +1,4 @@
-import { BrowserCookieJar, makeNextServerCookieJar, ProxyCookieJar } from '@Libs/cookie';
+import { BrowserCookieJar, makeNextServerCookieJar, ProxyCookieJar } from '@core/cookie';
 import { NextRequest, NextResponse } from 'next/server';
 
 /** 브라우저용 */

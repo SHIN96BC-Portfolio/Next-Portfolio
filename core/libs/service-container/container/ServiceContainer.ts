@@ -1,6 +1,6 @@
-import BaseBinding from '@Libs/service-container/binding/BaseBinding';
-import Binding from '@Libs/service-container/binding/Binding';
-import { BatchBaseBinding, BatchBinding } from '@Libs/service-container/service.type';
+import BaseBinding from '../binding/BaseBinding';
+import Binding from '../binding/Binding';
+import { BatchBaseBinding, BatchBinding } from '../service.type';
 
 export default interface ServiceContainer {
   bind<T>(name: symbol): Binding<T>;

@@ -32,7 +32,7 @@ export const portfolioProjectsEn: ProjectCompany[] = [
           '[Refactoring] Gradual state management migration — RTK Query → TanStack Query, Redux → Zustand (zero-downtime parallel operation)',
           '[Refactoring] Component standardization — resolved duplicated code and severe props drilling from the as-is era alongside next-gen rebuild',
           '[Refactoring] Domain logic consolidation — extracted scattered page-level logic (filters, booking, alerts, popups) into shared modules to reduce side effects',
-          '[UI System] Removed antd and rebuilt Core UI — eliminated UI breakage side effects and introduced a playground for component-level validation',
+          '[UI System] Removed antd and built Modetour UI library — eliminated UI breakage side effects and introduced a playground for component-level validation',
           '[UI System] Replaced react-print with in-house solution — solved multi-second print delays on large pages using iframe-based printing',
           '[UI System] Replaced react-date with react-day-picker — removed bug-prone library and stabilized date selection UX',
           '[Infra & Quality] Centralized hardcoded strings, introduced documentation automation, and documented onboarding and deployment rules',

@@ -1,5 +1,5 @@
-import { Constructor } from '@Libs/service-container/service.type';
-import { BindingScopeType } from '@Libs/service-container/service-constants';
+import { Constructor } from '../service.type';
+import { BindingScopeType } from '../service-constants';
 
 export default interface BaseBinding<T> {
   id: number;

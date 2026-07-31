@@ -1,5 +1,5 @@
-import { Proxy } from '@Libs/proxy-container/proxy.type';
 import { NextRequest, NextResponse } from 'next/server';
+import { Proxy } from '../proxy.type';
 import ProxyChain from './ProxyChain';
 
 /**

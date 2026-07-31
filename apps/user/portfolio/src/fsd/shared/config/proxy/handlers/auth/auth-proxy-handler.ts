@@ -1,4 +1,4 @@
-import { NextHandler, Proxy } from '@Libs/proxy-container';
+import { NextHandler, Proxy } from '@core/proxy-container';
 import { NextRequest, NextResponse } from 'next/server';
 import { getToken } from 'next-auth/jwt';
 

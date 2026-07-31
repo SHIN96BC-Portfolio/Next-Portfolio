@@ -1,4 +1,4 @@
-import { makeNextServerCookieJar, ProxyCookieJar } from '@Libs/cookie';
+import { makeNextServerCookieJar, ProxyCookieJar } from '@core/cookie';
 import { NextRequest, NextResponse } from 'next/server';
 
 /** 서버용 (public 과 다른 secret key 사용) */

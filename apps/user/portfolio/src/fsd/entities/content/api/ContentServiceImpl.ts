@@ -1,6 +1,6 @@
 import ContentService from '@FsdEntities/content/api/ContentService';
 import { ContentLang, ContentMode, HomeSectionRes, PageKey } from '@FsdEntities/content/model/types';
-import { CommonRes, CommonServiceBase } from '@Libs/service-container';
+import { CommonRes, CommonServiceBase } from '@core/service-container';
 
 class ContentServiceImpl implements ContentService {
   private readonly base: CommonServiceBase;

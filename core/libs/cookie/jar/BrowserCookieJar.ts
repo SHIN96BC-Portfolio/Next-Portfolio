@@ -1,7 +1,7 @@
-import { CookieOptions } from '@Libs/cookie/cookie.types';
-import CookieBaseJar from '@Libs/cookie/jar/abstract/CookieBaseJar';
-import parseCookieHeader from '@Libs/cookie/utils/parseCookieHeader';
-import serializeCookie from '@Libs/cookie/utils/serializeCookie';
+import { CookieOptions } from '../cookie.types';
+import parseCookieHeader from '../utils/parseCookieHeader';
+import serializeCookie from '../utils/serializeCookie';
+import CookieBaseJar from './abstract/CookieBaseJar';
 
 /** 클라이언트 측 document.cookie 사용 */
 export default class BrowserCookieJar extends CookieBaseJar {

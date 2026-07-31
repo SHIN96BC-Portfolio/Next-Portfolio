@@ -15,8 +15,7 @@
       "@FsdWidgets/*": ["./src/fsd/widgets/*"],
       "@FsdFeatures/*": ["./src/fsd/features/*"],
       "@FsdEntities/*": ["./src/fsd/entities/*"],
-      "@FsdShared/*": ["./src/fsd/shared/*"],
-      "@Libs/*": ["../../../core/libs/*"]
+      "@FsdShared/*": ["./src/fsd/shared/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", ".next/dev/types/**/*.ts"],
