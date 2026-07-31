@@ -1,7 +1,7 @@
-import ProxyChain from '@Libs/proxy-container/chain/ProxyChain';
-import ProxyChainImpl from '@Libs/proxy-container/chain/ProxyChainImpl';
-import { Proxy, ProxyChainOption, ProxyChainValue } from '@Libs/proxy-container/proxy.type';
-import { mergeUniquePreserveOrder } from '@Libs/utils/merge-unique-preserve-order';
+import { mergeUniquePreserveOrder } from '@core/utils';
+import ProxyChain from '../chain/ProxyChain';
+import ProxyChainImpl from '../chain/ProxyChainImpl';
+import { Proxy, ProxyChainOption, ProxyChainValue } from '../proxy.type';
 import ProxyContainer from './ProxyContainer';
 
 const globalChainName = 'Global';

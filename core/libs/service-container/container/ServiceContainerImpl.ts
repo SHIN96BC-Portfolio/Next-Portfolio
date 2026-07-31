@@ -1,9 +1,9 @@
-import BaseBinding from '@Libs/service-container/binding/BaseBinding';
-import BaseBindingImpl from '@Libs/service-container/binding/BaseBindingImpl';
-import Binding from '@Libs/service-container/binding/Binding';
-import BindingImpl from '@Libs/service-container/binding/BindingImpl';
-import { BatchBaseBinding, BatchBinding } from '@Libs/service-container/service.type';
-import { BINDING_SCOPE } from '@Libs/service-container/service-constants';
+import BaseBinding from '../binding/BaseBinding';
+import BaseBindingImpl from '../binding/BaseBindingImpl';
+import Binding from '../binding/Binding';
+import BindingImpl from '../binding/BindingImpl';
+import { BatchBaseBinding, BatchBinding } from '../service.type';
+import { BINDING_SCOPE } from '../service-constants';
 import ServiceContainer from './ServiceContainer';
 
 /**

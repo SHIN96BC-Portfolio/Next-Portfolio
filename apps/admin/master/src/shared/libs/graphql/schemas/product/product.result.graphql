@@ -1,0 +1,13 @@
+# Result Type
+type ProductsResult implements ApiResult {
+  ok: Boolean!
+  items: [Product!]!
+  pageInfo: PageInfo!
+  error: ErrorInfo
+}
+
+type ProductResult implements ApiResult {
+  ok: Boolean!
+  items: Product!
+  error: ErrorInfo
+}

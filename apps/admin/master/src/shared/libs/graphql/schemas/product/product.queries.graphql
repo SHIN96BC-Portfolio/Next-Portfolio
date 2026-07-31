@@ -1,0 +1,4 @@
+extend type Query {
+  getProducts(filter: ProductsFilter, page: Int = 1, pageSize: Int = 20): ProductsResult!
+  getProductById(id: ID!): ProductResult
+}

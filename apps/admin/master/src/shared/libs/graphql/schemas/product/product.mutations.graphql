@@ -1,0 +1,4 @@
+extend type Mutation {
+  createProduct(input: CreateProductInput!): ProductResult!
+  updateProduct(input: UpdateProductInput!): ProductResult!
+}

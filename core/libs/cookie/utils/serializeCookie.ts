@@ -1,4 +1,4 @@
-import { CookieOptions } from '@Libs/cookie/cookie.types';
+import { CookieOptions } from '../cookie.types';
 
 /** 쿠키 조립 유틸 */
 export default function serializeCookie(name: string, value: string, opt: CookieOptions = {}) {

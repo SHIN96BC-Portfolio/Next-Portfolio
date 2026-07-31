@@ -1,7 +1,7 @@
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  transpilePackages: ['@core/bc-ui'],
   reactStrictMode: false,
   async headers() {
     return [

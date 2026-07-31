@@ -39,6 +39,7 @@ package-lock.json
 
 # env files
 apps/user/portfolio/.env
+apps/admin/master/.env
 
 # vercel
 .vercel

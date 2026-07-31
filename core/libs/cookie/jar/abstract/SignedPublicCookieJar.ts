@@ -1,6 +1,6 @@
-import { CookieOptions } from '@Libs/cookie/cookie.types';
-import CookieBaseJar from '@Libs/cookie/jar/abstract/CookieBaseJar';
-import hmacSha256 from '@Libs/crypto/hmacSha256/hmac-sha-256.node';
+import { hmacSha256 } from '@core/crypto/index.node';
+import { CookieOptions } from '../../cookie.types';
+import CookieBaseJar from './CookieBaseJar';
 
 /** 서명 쿠키 jar 개발 중 */
 export default abstract class SignedPublicCookieJar extends CookieBaseJar {

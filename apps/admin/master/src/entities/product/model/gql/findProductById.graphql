@@ -1,0 +1,30 @@
+query FindProductById($id: ID!) {
+  getProductById(id: $id) {
+    ok
+    items {
+      id
+      name
+      description
+      price
+      currency
+      inStock
+      rating
+      thumbnailUrl
+      images
+      category {
+        id
+        name
+      }
+      createdAt
+      updatedAt
+    }
+    error {
+      code
+      message
+      details {
+        field
+        message
+      }
+    }
+  }
+}

@@ -1,5 +1,5 @@
-import { aesDecrypt, aesEncrypt } from '@Libs/crypto';
-import { StorageLike } from '@Libs/storage/storage.type';
+import { aesDecrypt, aesEncrypt } from '@core/crypto';
+import { StorageLike } from './storage.type';
 
 /**
  * AES 기반 암호화 Storage 유틸리티.

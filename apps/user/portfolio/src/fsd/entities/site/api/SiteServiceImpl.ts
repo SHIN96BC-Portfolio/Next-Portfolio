@@ -1,7 +1,7 @@
 import SiteService from '@FsdEntities/site/api/SiteService';
 import { GnbGetRes } from '@FsdEntities/site/model/server';
 import { PortfolioGetRes } from '@FsdEntities/site/model/server/portfolio';
-import { CommonRes, CommonServiceBase } from '@Libs/service-container';
+import { CommonRes, CommonServiceBase } from '@core/service-container';
 
 class SiteServiceImpl implements SiteService {
   /**

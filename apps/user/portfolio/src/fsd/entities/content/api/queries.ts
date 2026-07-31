@@ -1,7 +1,7 @@
 import ContentService from '@FsdEntities/content/api/ContentService';
 import { ContentLang, ContentMode, HomeSectionRes, PAGE_KEY } from '@FsdEntities/content/model/types';
 import { serviceContainer } from '@FsdShared/config/service/service.setup';
-import { CommonRes, SERVICE_NAME } from '@Libs/service-container';
+import { CommonRes, SERVICE_NAME } from '@core/service-container';
 
 const queryKeys = {
   homeSections: (pageKey: string, lang: ContentLang, mode: ContentMode) =>

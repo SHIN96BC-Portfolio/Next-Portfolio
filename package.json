@@ -8,9 +8,11 @@
   },
   "scripts": {
     "dev:portfolio": "turbo dev --filter=@apps/user-portfolio",
+    "dev:admin": "turbo dev --filter=@apps/admin-master",
     "build": "turbo build",
     "build:libs": "turbo build --filter=@core/*",
     "start:portfolio": "turbo start --filter=@apps/user-portfolio",
+    "start:admin": "turbo start --filter=@apps/admin-master",
     "lint": "turbo lint",
     "lint:fix": "biome check --write .",
     "check-types": "turbo run typecheck",
@@ -18,7 +20,8 @@
     "test": "turbo test",
     "biome": "biome check .",
     "prepare": "husky",
-    "gen:i18n": "pnpm --filter @apps/user-portfolio run gen:i18n"
+    "gen:i18n": "pnpm --filter @apps/user-portfolio run gen:i18n",
+    "gen:graphql": "pnpm --filter @apps/admin-master run gen:graphql"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.5.6",

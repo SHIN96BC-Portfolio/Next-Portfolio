@@ -1,6 +1,6 @@
-import { CookieOptions, NextCookieStore } from '@Libs/cookie/cookie.types';
-import CookieBaseJar from '@Libs/cookie/jar/abstract/CookieBaseJar';
 import { cookies } from 'next/headers';
+import { CookieOptions, NextCookieStore } from '../cookie.types';
+import CookieBaseJar from './abstract/CookieBaseJar';
 
 /** Next App Router 서버 사이드용: next/headers의 cookies() 래핑 */
 class NextServerCookieJar extends CookieBaseJar {

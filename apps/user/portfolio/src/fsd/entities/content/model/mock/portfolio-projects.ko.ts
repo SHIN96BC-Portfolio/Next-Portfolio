@@ -32,7 +32,7 @@ export const portfolioProjectsKo: ProjectCompany[] = [
           '【리팩토링】 상태관리 점진 전환 — RTK Query → TanStack Query, Redux → Zustand (서비스 무중단 병행 운영)',
           '【리팩토링】 컴포넌트 공통화 — as-is 시대 중복 코드·심각한 props drilling 해소, 차세대 재구축과 병행한 점진적 통합',
           '【리팩토링】 도메인 로직 공통화 — 필터·예약·alert·popup 등 페이지마다 산재하던 로직을 공통 모듈로 추출, 사이드이펙트 발생 가능성 감소',
-          '【UI 시스템】 antd 제거 및 Core UI 재구축 — UI 깨짐 사이드이펙트 해소, playground 도입으로 컴포넌트 단위 검증 환경 구축',
+          '【UI 시스템】 antd 제거 및 모두투어용 UI 라이브러리 구축 — UI 깨짐 사이드이펙트 해소, playground 도입으로 컴포넌트 단위 검증 환경 구축',
           '【UI 시스템】 react-print 제거·자체 구현 — iframe 기반 인쇄로 대용량 페이지에서 인쇄 화면 지연(수십 초) 문제 해결',
           '【UI 시스템】 react-date → react-day-picker 교체 — 버그 다발 라이브러리 제거 및 날짜 선택 UX 안정화',
           '【인프라·품질】 하드코딩 문자열 상수화, 문서 자동화 라이브러리 도입, 온보딩·배포 규칙 문서화',

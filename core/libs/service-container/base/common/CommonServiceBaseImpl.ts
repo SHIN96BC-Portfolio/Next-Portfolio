@@ -1,5 +1,5 @@
-import HttpError from '@Libs/service-container/error/HttpError';
-import convertToQueryString, { QueryParamObject } from '@Libs/utils/convert-to-query-string';
+import { ConvertToQueryString, type QueryParamObject } from '@core/utils';
+import HttpError from '../../error/HttpError';
 import { CommonServiceBase, HTTPInstance } from './CommonServiceBase';
 
 /**
@@ -150,7 +150,7 @@ class CommonServiceBaseImpl implements CommonServiceBase {
 
       const reqUrl =
         (method === 'GET' || method === 'DELETE') && typeof params === 'object'
-          ? `${url}?${convertToQueryString(params as QueryParamObject)}`
+          ? `${url}?${ConvertToQueryString(params as QueryParamObject)}`
           : url;
 
       const response = await fetch(this.baseURL + reqUrl, {

@@ -1,0 +1,40 @@
+query FindProducts(
+  $keyword: String
+  $categoryId: ID
+  $minPrice: Int
+  $maxPrice: Int
+  $page: Int = 1
+  $pageSize: Int = 20
+) {
+  getProducts(
+    filter: { keyword: $keyword, categoryId: $categoryId, minPrice: $minPrice, maxPrice: $maxPrice }
+    page: $page
+    pageSize: $pageSize
+  ) {
+    ok
+    items {
+      id
+      name
+      price
+      currency
+      thumbnailUrl
+      inStock
+      rating
+      createdAt
+    }
+    pageInfo {
+      total
+      page
+      pageSize
+      pages
+    }
+    error {
+      code
+      message
+      details {
+        field
+        message
+      }
+    }
+  }
+}

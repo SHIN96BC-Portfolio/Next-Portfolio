@@ -9,13 +9,13 @@ export const portfolioProjectsJa: ProjectCompany[] = [
     projects: [
       {
         id: 'modetour',
-        name: '모두투어 네트워크',
+        name: 'Modetour Network',
         period: '2024.08 –',
         role: 'フロントエンド開発者',
         summary:
-          'モドゥツアー B2C/B2B 旅行プラットフォームの as-is サービス運用と、次世代フロントエンドの全面再構築を同時に担当。PC・モバイル Web の主要ドメイン（航空・ホテル・ツアーパス・プロモーション等）を刷新し、約300の BP/ONBP サイトを単一 Turborepo モノレポで運用・デプロイするマルチテナント構造を設計・実装。',
+          'Modetour B2C/B2B 旅行プラットフォームの as-is サービス運用と、次世代フロントエンドの全面再構築を同時に担当。PC・モバイル Web の主要ドメイン（航空・ホテル・ツアーパス・プロモーション等）を刷新し、約300の BP/ONBP サイトを単一 Turborepo モノレポで運用・デプロイするマルチテナント構造を設計・実装。',
         highlights: [
-          '[Next-Gen] モドゥツアー フロントエンド次世代開発 — B2C・B2B PC/モバイルサービスの全面再構築を主導',
+          '[Next-Gen] Modetour フロントエンド次世代開発 — B2C・B2B PC/モバイルサービスの全面再構築を主導',
           '[Next-Gen] 航空サービス刷新 — Topas 連携に基づく予約・検索・決済フローの再設計と実装',
           '[Next-Gen] ツアーパスサービス刷新 — Klook 連携、商品探索・オプション選択・予約 UX の全面改善',
           '[Next-Gen] ホテルサービス刷新 — 検索・フィルター・詳細・予約プロセスを次世代アーキテクチャへ移行',
@@ -32,7 +32,7 @@ export const portfolioProjectsJa: ProjectCompany[] = [
           '[Refactoring] 状態管理の段階的移行 — RTK Query → TanStack Query、Redux → Zustand（サービス無停止での並行運用）',
           '[Refactoring] コンポーネント共通化 — as-is 時代の重複コード・深刻な props drilling を解消し、次世代再構築と並行した段階的統合',
           '[Refactoring] ドメインロジック共通化 — フィルター・予約・アラート・ポップアップ等、ページごとに散在していたロジックを共通モジュールへ抽出し、副作用発生の可能性を低減',
-          '[UI System] antd 削除と Core UI 再構築 — UI 崩れの副作用を解消し、playground 導入でコンポーネント単位の検証環境を構築',
+          '[UI System] antd 削除とModetour向け UI ライブラリ構築 — UI 崩れの副作用を解消し、playground 導入でコンポーネント単位の検証環境を構築',
           '[UI System] react-print 削除・自社実装 — iframe ベースの印刷で大容量ページにおける印刷画面の遅延（数十秒）問題を解決',
           '[UI System] react-date → react-day-picker 置換 — バグ多発ライブラリを排除し、日付選択 UX を安定化',
           '[Infra & Quality] ハードコード文字列の定数化、ドキュメント自動化ライブラリ導入、オンボーディング・デプロイルールの文書化',

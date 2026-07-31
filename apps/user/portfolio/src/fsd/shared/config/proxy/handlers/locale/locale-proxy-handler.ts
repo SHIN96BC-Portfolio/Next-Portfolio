@@ -2,7 +2,7 @@ import { createCustomPublicProxyCookie } from '@FsdShared/config/cookie/cookie-p
 import { COOKIE_DEFAULT_AGE, COOKIE_LANG_NAME } from '@FsdShared/config/cookie/model';
 import { supportedLocales } from '@FsdShared/config/i18n/auto-gen/constants/i18n-locales';
 import getPreferredLang from '@FsdShared/config/proxy/utils/get-preferred-lang';
-import { NextHandler, Proxy } from '@Libs/proxy-container';
+import { NextHandler, Proxy } from '@core/proxy-container';
 import { NextRequest, NextResponse } from 'next/server';
 
 /**

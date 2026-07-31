@@ -1,6 +1,6 @@
-import { CookieOptions } from '@Libs/cookie/cookie.types';
-import CookieBaseJar from '@Libs/cookie/jar/abstract/CookieBaseJar';
 import { NextRequest, NextResponse } from 'next/server';
+import { CookieOptions } from '../cookie.types';
+import CookieBaseJar from './abstract/CookieBaseJar';
 
 /** 미들웨어용 쿠키(NextResponse 의 cookies 사용) */
 export default class ProxyCookieJar extends CookieBaseJar {

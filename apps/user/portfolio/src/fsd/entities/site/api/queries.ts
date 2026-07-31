@@ -2,7 +2,7 @@ import { SiteService } from '@FsdEntities/site/api';
 import { SiteGnb } from '@FsdEntities/site/model/client/gnb';
 import mapServerGnbToClient from '@FsdEntities/site/model/mapper/map-server-gnb-to-client';
 import { serviceContainer } from '@FsdShared/config/service/service.setup';
-import { CommonRes, SERVICE_NAME } from '@Libs/service-container';
+import { CommonRes, SERVICE_NAME } from '@core/service-container';
 
 /**
  * React Query Keys Object

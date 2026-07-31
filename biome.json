@@ -252,8 +252,12 @@
               "options": {
                 "patterns": [
                   {
-                    "group": ["../**"],
-                    "message": "🚫 libs에서는 상대경로 import 금지. alias(@Libs/*)만 사용하세요."
+                    "group": ["@Libs/**"],
+                    "message": "🚫 @Libs/*는 deprecated. 패키지 내부는 상대경로, 다른 @core 패키지는 루트 엔트리(@core/<pkg>)만 사용하세요."
+                  },
+                  {
+                    "group": ["@core/*/*/**"],
+                    "message": "🚫 다른 @core 패키지의 내부 경로 import 금지. @core/<pkg> 루트(또는 package.json exports)만 사용하세요."
                   },
                   {
                     "group": [
@@ -267,7 +271,7 @@
                       "@NextApp/**",
                       "@Public/**"
                     ],
-                    "message": "🚫 libs에서는 app 레이어 import 금지"
+                    "message": "🚫 @core 패키지에서 app 레이어 import 금지"
                   }
                 ]
               }
@@ -286,8 +290,8 @@
               "options": {
                 "patterns": [
                   {
-                    "group": ["@Libs/*/**"],
-                    "message": "🚫 @Libs/<pkg> 루트 엔트리만 사용하세요 (deep import 금지)"
+                    "group": ["@core/*/*/**"],
+                    "message": "🚫 @core/<pkg> 내부 경로 import 금지. 루트(@core/<pkg>) 또는 package.json exports만 사용하세요."
                   }
                 ]
               }

@@ -1,11 +1,15 @@
 {
   "extends": "../../tsconfig.base.json",
+
   "compilerOptions": {
     "types": ["node"],
-    "paths": {
-      "@Libs/*": ["./*"]
-    }
+
+    "baseUrl": ".",
+
+    "incremental": false
   },
+
   "include": ["**/*.ts"],
+
   "exclude": ["node_modules", "dist"]
 }
