@@ -7,8 +7,15 @@
       }
     ],
     "paths": {
+      "@NextApp/*": ["./src/app/*"],
+      "@Public/*": ["./public/*"],
       "@Src/*": ["./src/*"],
-      "@FsdApp/*": ["./src/fsd/app/*"]
+      "@FsdApp/*": ["./src/fsd/app/*"],
+      "@FsdPages/*": ["./src/fsd/pages/*"],
+      "@FsdWidgets/*": ["./src/fsd/widgets/*"],
+      "@FsdFeatures/*": ["./src/fsd/features/*"],
+      "@FsdEntities/*": ["./src/fsd/entities/*"],
+      "@FsdShared/*": ["./src/fsd/shared/*"]
     },
     "jsx": "preserve"
   },

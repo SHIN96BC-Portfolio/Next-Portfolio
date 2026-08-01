@@ -1,6 +1,6 @@
 'use client';
 
-import { showCommonAlert } from '@Src/shared/alert/model/common-alert-slice';
+import { showCommonAlert } from '@FsdShared/alert/model/common-alert-slice';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { ReactNode, useEffect } from 'react';
