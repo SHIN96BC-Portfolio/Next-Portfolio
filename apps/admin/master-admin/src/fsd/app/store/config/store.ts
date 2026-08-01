@@ -1,4 +1,4 @@
-import { commonAlertSlice } from '@Src/shared/alert/model';
+import { commonAlertSlice } from '@FsdShared/alert/model';
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import { persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';

@@ -1,4 +1,4 @@
-import { InterceptionModal } from '@Src/shared/modal/ui';
+import { InterceptionModal } from '@FsdShared/modal/ui';
 
 export default function MainModalProductDetailPage() {
   return (

@@ -5,7 +5,7 @@ import { globSync } from 'glob';
 import path from 'path';
 
 // 로컬에 저장된 schema 파일 경로
-const schemaLocalPath = 'src/shared/libs/graphql/schema.graphql';
+const schemaLocalPath = 'src/fsd/shared/libs/graphql/schema.graphql';
 
 const SCHEMA =
   process.env.NEXT_PUBLIC_RUNTIME_MODE === 'prod'
@@ -13,7 +13,7 @@ const SCHEMA =
     : (process.env.NEXT_PUBLIC_GRAPHQL_CODEGEN_SCHEMA ?? 'http://localhost:8080/graphql');
 
 // Windows 에서도 역슬래시 이스케이프 이슈 줄여줌
-const docPaths = globSync('src/entities/**/model/gql/*.graphql', {
+const docPaths = globSync('src/fsd/entities/**/model/gql/*.graphql', {
   windowsPathsNoEscape: true,
 });
 
@@ -41,7 +41,7 @@ const generates = docPaths.reduce(
       plugins: ['typescript', 'typescript-operations', 'typescript-react-query'],
       config: {
         // 커스텀 fetcher
-        fetcher: '@Src/shared/api/graphql-fetcher#graphqlFetcher',
+        fetcher: '@FsdShared/libs/graphql/graphql-fetcher#graphqlFetcher',
         exposeQueryKeys: true,
       },
     };
@@ -54,7 +54,7 @@ const config: CodegenConfig = {
   schema: SCHEMA,
   generates: {
     // 스키마 아티팩트도 같이 떨어뜨려서 repo에 보관
-    'src/shared/libs/graphql/schema.graphql': { plugins: ['schema-ast'] },
+    'src/fsd/shared/libs/graphql/schema.graphql': { plugins: ['schema-ast'] },
     ...generates,
   },
 };

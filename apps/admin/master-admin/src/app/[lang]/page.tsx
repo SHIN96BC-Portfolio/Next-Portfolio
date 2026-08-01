@@ -1,4 +1,4 @@
-import { getI18nTranslator, I18N_DICTIONARY_NAMESPACE, Locale } from '@Src/shared/libs/i18n';
+import { getI18nTranslator, I18N_DICTIONARY_NAMESPACE, Locale } from '@FsdShared/libs/i18n';
 import Image from 'next/image';
 
 export default async function Home({ params }: { params: Promise<{ lang: Locale }> }) {

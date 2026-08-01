@@ -8,7 +8,7 @@ import I18nProvider from '@FsdApp/i18n/providers/I18nProvider';
 import MockServerInit from '@FsdApp/mock/inits/MockServerInit';
 import ReactQueryProvider from '@FsdApp/react-query/providers/ReactQueryProvider';
 import StoreProvider from '@FsdApp/store/providers/StoreProvider';
-import { Locale } from '@Src/shared/libs/i18n';
+import { Locale } from '@FsdShared/libs/i18n';
 import { getServerSession } from 'next-auth';
 
 const geistSans = Geist({
