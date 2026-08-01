@@ -24,9 +24,9 @@
 #   출처: GitHub Repo → Settings → Secrets and variables → Actions
 #   값은 워크플로 로그에 노출되지 않음
 #   이 파일:
-#     secrets.VERCEL_TOKEN        → Vercel Account Settings → Tokens
-#     secrets.VERCEL_ORG_ID       → .vercel/project.json orgId
-#     secrets.VERCEL_PROJECT_ID   → Vercel Project ID (prj_xxx)
+#     secrets.VERCEL_TOKEN                      → Vercel Account Settings → Tokens (저장소 공통)
+#     secrets.VERCEL_ORG_ID                     → vercel link 후 orgId (저장소 공통)
+#     secrets.VERCEL_PROJECT_ID_USER_PORTFOLIO    → 앱별 Vercel Project ID (prj_xxx)
 #
 # needs.*
 #   출처: 같은 워크플로의 다른 job 실행 결과 (needs: 로 연결된 job)
@@ -49,8 +49,8 @@
 #
 # =============================================================================
 
-# Portfolio 앱(@apps/user-portfolio)을 Vercel에 수동 배포합니다.
-# Vercel Git 자동 배포는 vercel.json ignoreCommand로 비활성화하고, 이 워크플로만 사용합니다.
+# Portfolio 앱(@apps/user-portfolio)을 Vercel CLI로 배포합니다.
+# Root Directory 비움(.) + 앱 폴더에서 vercel deploy. 프로젝트 생성: scripts/vercel/setup-portfolio-project.sh
 # 실행: GitHub → Actions → Deploy Portfolio (Vercel) → Run workflow
 name: Deploy Portfolio (Vercel)
 
@@ -95,6 +95,8 @@ permissions:
 env:
   NODE_VERSION: "22"
   APP_DIR: apps/user/portfolio
+  # 모노레포: 앱마다 VERCEL_PROJECT_ID_<SLUG> secret 사용 (@apps/user-portfolio → USER_PORTFOLIO)
+  VERCEL_PROJECT_ID_SECRET: VERCEL_PROJECT_ID_USER_PORTFOLIO
 
 jobs:
   # 1단계: 배포 전 품질 검사 (skip_checks=true면 스킵)
@@ -150,14 +152,37 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Install Vercel CLI
-        run: npm install -g vercel@latest
+        run: npm install -g vercel@58
+
+      - name: Validate Vercel secrets
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_USER_PORTFOLIO }}
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: |
+          set -euo pipefail
+          missing=()
+          [[ -z "${VERCEL_TOKEN:-}" ]] && missing+=(VERCEL_TOKEN)
+          [[ -z "${VERCEL_ORG_ID:-}" ]] && missing+=(VERCEL_ORG_ID)
+          [[ -z "${VERCEL_PROJECT_ID:-}" ]] && missing+=(${{ env.VERCEL_PROJECT_ID_SECRET }})
+          if ((${#missing[@]} > 0)); then
+            echo "::error::GitHub Secrets 미등록: ${missing[*]}"
+            echo ""
+            echo "Vercel 프로젝트가 아직 없다면 Actions 실행 전 로컬에서 생성:"
+            echo "  ./scripts/vercel/setup-project.sh user-portfolio apps/user/portfolio"
+            echo ""
+            echo "공통: VERCEL_TOKEN, VERCEL_ORG_ID"
+            echo "앱별: ${{ env.VERCEL_PROJECT_ID_SECRET }}"
+            exit 1
+          fi
 
       - name: Deploy to Vercel
         id: deploy
+        # Root Directory 비움(.) + 앱 폴더에서 vercel deploy (모노레포 패턴 B)
         working-directory: ${{ env.APP_DIR }}
         env:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_USER_PORTFOLIO }}
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
         run: |
           set -euo pipefail

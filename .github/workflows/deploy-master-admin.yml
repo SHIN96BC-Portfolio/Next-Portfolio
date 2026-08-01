@@ -1,0 +1,146 @@
+# Master Admin 앱(@apps/admin-master-admin)을 Vercel CLI로 배포합니다.
+# Root Directory 비움(.) + 앱 폴더에서 vercel deploy. 프로젝트 생성: scripts/vercel/setup-master-admin-project.sh
+# 실행: GitHub → Actions → Deploy Master Admin (Vercel) → Run workflow
+name: Deploy Master Admin (Vercel)
+
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: 배포 대상
+        required: true
+        type: choice
+        default: preview
+        options:
+          - preview
+          - production
+      ref:
+        description: 배포할 Git ref (branch / tag / SHA)
+        required: true
+        type: string
+        default: master
+      skip_checks:
+        description: lint / typecheck 생략 (긴급 배포용)
+        required: false
+        type: boolean
+        default: false
+
+concurrency:
+  group: deploy-master-admin-${{ inputs.target }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+env:
+  NODE_VERSION: "22"
+  APP_DIR: apps/admin/master-admin
+  TURBO_FILTER: "@apps/admin-master-admin"
+  VERCEL_PROJECT_ID_SECRET: VERCEL_PROJECT_ID_ADMIN_MASTER_ADMIN
+
+jobs:
+  quality:
+    name: Lint & Typecheck
+    if: ${{ inputs.skip_checks == false }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref }}
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint & typecheck master-admin app
+        run: pnpm turbo run lint typecheck --filter=${{ env.TURBO_FILTER }}
+
+  deploy:
+    name: Deploy (${{ inputs.target }})
+    needs: quality
+    if: ${{ always() && (needs.quality.result == 'success' || needs.quality.result == 'skipped') }}
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.target }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref }}
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Vercel CLI
+        run: npm install -g vercel@58
+
+      - name: Validate Vercel secrets
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_ADMIN_MASTER_ADMIN }}
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: |
+          set -euo pipefail
+          missing=()
+          [[ -z "${VERCEL_TOKEN:-}" ]] && missing+=(VERCEL_TOKEN)
+          [[ -z "${VERCEL_ORG_ID:-}" ]] && missing+=(VERCEL_ORG_ID)
+          [[ -z "${VERCEL_PROJECT_ID:-}" ]] && missing+=(${{ env.VERCEL_PROJECT_ID_SECRET }})
+          if ((${#missing[@]} > 0)); then
+            echo "::error::GitHub Secrets 미등록: ${missing[*]}"
+            echo ""
+            echo "Vercel 프로젝트가 아직 없다면 Actions 실행 전 로컬에서 생성:"
+            echo "  ./scripts/vercel/setup-master-admin-project.sh"
+            echo ""
+            echo "공통: VERCEL_TOKEN, VERCEL_ORG_ID"
+            echo "앱별: ${{ env.VERCEL_PROJECT_ID_SECRET }}"
+            exit 1
+          fi
+
+      - name: Deploy to Vercel
+        id: deploy
+        working-directory: ${{ env.APP_DIR }}
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_ADMIN_MASTER_ADMIN }}
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: |
+          set -euo pipefail
+
+          DEPLOY_ARGS=(--yes --token "$VERCEL_TOKEN")
+
+          if [ "${{ inputs.target }}" = "production" ]; then
+            DEPLOY_ARGS+=(--prod)
+          fi
+
+          url="$(vercel deploy "${DEPLOY_ARGS[@]}")"
+          echo "url=${url}" >> "$GITHUB_OUTPUT"
+          echo "Deployed to ${url}"
+
+      - name: Summary
+        run: |
+          {
+            echo "## Master Admin deployment"
+            echo ""
+            echo "| | |"
+            echo "|---|---|"
+            echo "| Target | \`${{ inputs.target }}\` |"
+            echo "| Ref | \`${{ inputs.ref }}\` |"
+            echo "| URL | ${{ steps.deploy.outputs.url }} |"
+          } >> "$GITHUB_STEP_SUMMARY"

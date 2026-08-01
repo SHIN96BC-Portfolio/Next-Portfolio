@@ -1,4 +1,4 @@
-import { SiteGnb } from '@Src/entities/site/model/client/gnb';
+import { SiteGnb } from '@FsdEntities/site/model/client/gnb';
 
 interface Props {
   isLogin: boolean;

@@ -1,6 +1,6 @@
 'use client';
 
-import { serviceContainer } from '@Src/shared/libs/services';
+import { serviceContainer } from '@FsdShared/libs/services';
 import { useSession } from 'next-auth/react';
 import { ReactNode, useEffect } from 'react';
 
