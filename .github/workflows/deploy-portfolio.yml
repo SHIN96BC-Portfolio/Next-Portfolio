@@ -1,56 +1,58 @@
 # =============================================================================
-# GitHub Actions 표현식 참조 정리 (이 워크플로에서 쓰는 것)
+# Portfolio (@apps/user-portfolio) — Vercel prebuilt 배포
 # =============================================================================
 #
-# ${{ ... }} 안에서 쓰는 컨텍스트 — "어디 값을 참조하는지"
+# 실행: GitHub → Actions → Deploy Portfolio (Vercel) → Run workflow
 #
-# inputs.*
-#   출처: Actions UI "Run workflow" 폼 (workflow_dispatch.inputs)
-#   이 파일: on.workflow_dispatch.inputs 에 정의
-#   사용 예:
-#     inputs.target       → preview | production (배포 대상)
-#     inputs.ref          → master 등 branch/tag/SHA
-#     inputs.skip_checks  → true면 quality job 생략
+# ## 흐름
 #
-# env.*
-#   출처: 이 파일 상단 env 블록 (워크플로 전역 환경 변수)
-#   사용 예:
-#     env.PNPM_VERSION    → (삭제) package.json packageManager 사용
-#     env.NODE_VERSION    → "22"
-#     env.APP_DIR         → apps/user/portfolio
-#   참고: step의 env 블록은 셸 환경 변수 — VERCEL_TOKEN 등은 secrets에서 주입
+#   quality:  lint & typecheck (pnpm install + turbo)
+#   deploy:   vercel pull → vercel build → vercel deploy --prebuilt
 #
-# secrets.*
-#   출처: GitHub Repo → Settings → Secrets and variables → Actions
-#   값은 워크플로 로그에 노출되지 않음
-#   이 파일:
-#     secrets.VERCEL_TOKEN                      → Vercel Account Settings → Tokens (저장소 공통)
-#     secrets.VERCEL_ORG_ID                     → vercel link 후 orgId (저장소 공통)
-#     secrets.VERCEL_PROJECT_ID_USER_PORTFOLIO    → 앱별 Vercel Project ID (prj_xxx)
+#   - 빌드는 CI(GitHub Actions)에서 1번만 (vercel build)
+#   - Vercel은 .vercel/output만 받아 호스팅 (원격 next build 없음)
+#   - deploy job에는 별도 pnpm install 없음 (vercel.json installCommand가 처리)
 #
-# needs.*
-#   출처: 같은 워크플로의 다른 job 실행 결과 (needs: 로 연결된 job)
-#   이 파일: deploy job이 needs: quality 이므로
-#     needs.quality.result → success | failure | skipped | cancelled
+# ## prebuilt 모노레포 필수 설정
 #
-# always()
-#   출처: GitHub Actions 내장 함수 (job/step 조건용)
-#   의미: 선행 job이 실패해도 if 조건 평가를 계속함
-#   이 파일: quality가 skipped( skip_checks )일 때도 deploy 실행 허용
+#   Vercel 대시보드 (portfolio 프로젝트)
+#     Root Directory: apps/user/portfolio
+#     Git Integration: 연결하지 않음
 #
-# steps.*
-#   출처: 같은 job 안에서 id가 붙은 step의 output
-#   이 파일:
-#     steps.deploy.outputs.url → Deploy step이 GITHUB_OUTPUT에 쓴 배포 URL
+#   이 워크플로 (deploy job)
+#     vercel pull / build / deploy → 저장소 루트에서 실행
+#     working-directory 로 앱 폴더 지정하지 않음
 #
-# github.*
-#   출처: GitHub가 제공하는 저장소/워크플로 메타 (이 파일에서는 직접 미사용)
-#   예: github.ref, github.repository, github.sha
+#   ✅ Root Directory = apps/user/portfolio  +  CLI = 저장소 루트
+#   ❌ Root Directory 비움 + working-directory = apps/user/portfolio
+#      → prebuilt 실패, Vercel 원격 빌드, "No Next.js version detected"
+#   ❌ Root Directory + working-directory 둘 다 앱 폴더
+#      → apps/user/portfolio/apps/user/portfolio 경로 중복
+#
+# ## Deployments 제목 (커밋 메시지)
+#
+#   Git 연동 없이 CLI만 쓰면 Vercel이 랜덤 배포 ID를 제목으로 씀.
+#   deploy 스텝에서 --meta 로 Git 정보 전달:
+#     githubDeployment=1, githubCommitMessage, githubCommitSha, githubCommitRef, ...
+#
+# ## Secrets (Repository → Settings → Secrets → Actions)
+#
+#   VERCEL_TOKEN
+#   VERCEL_ORG_ID
+#   VERCEL_PROJECT_ID_USER_PORTFOLIO
+#
+# ## vercel.json (apps/user/portfolio/)
+#
+#   installCommand / buildCommand — vercel build 시 cd ../.. 로 모노레포 루트에서 실행
+#
+# ## inputs (Run workflow)
+#
+#   target       preview | production
+#   ref          배포할 branch / tag / SHA
+#   skip_checks  true면 quality job 생략
 #
 # =============================================================================
 
-# Portfolio 앱(@apps/user-portfolio) — prebuilt 배포 (GitHub Actions에서 빌드, Vercel은 결과물만 호스팅)
-# 실행: GitHub → Actions → Deploy Portfolio (Vercel) → Run workflow
 name: Deploy Portfolio (Vercel)
 
 # push/trigger 자동 실행 없음 — Actions UI에서 수동 실행(workflow_dispatch)만 허용
@@ -173,7 +175,6 @@ jobs:
           fi
 
       - name: Pull Vercel environment
-        working-directory: ${{ env.APP_DIR }}
         env:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_USER_PORTFOLIO }}
@@ -187,7 +188,6 @@ jobs:
           vercel pull --yes --environment="$ENV_NAME" --token="$VERCEL_TOKEN"
 
       - name: Build (prebuilt)
-        working-directory: ${{ env.APP_DIR }}
         env:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_USER_PORTFOLIO }}
@@ -199,10 +199,13 @@ jobs:
             BUILD_ARGS+=(--prod)
           fi
           vercel build "${BUILD_ARGS[@]}" --token="$VERCEL_TOKEN"
+          if [ ! -d .vercel/output ]; then
+            echo "::error::.vercel/output not found — vercel build did not produce prebuilt artifacts"
+            exit 1
+          fi
 
       - name: Deploy prebuilt to Vercel
         id: deploy
-        working-directory: ${{ env.APP_DIR }}
         env:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_USER_PORTFOLIO }}
@@ -210,7 +213,24 @@ jobs:
         run: |
           set -euo pipefail
 
-          DEPLOY_ARGS=(--prebuilt --yes --token "$VERCEL_TOKEN")
+          COMMIT_SHA_SHORT="$(git rev-parse --short HEAD)"
+          COMMIT_MSG="$(git log -1 --pretty=%s | head -c 200 | tr -d '"')"
+          COMMIT_AUTHOR="$(git log -1 --pretty=%an)"
+
+          DEPLOY_ARGS=(
+            --prebuilt
+            --yes
+            --token "$VERCEL_TOKEN"
+            -m "githubDeployment=1"
+            -m "githubCommitSha=${COMMIT_SHA_SHORT}"
+            -m "githubCommitMessage=${COMMIT_MSG}"
+            -m "githubCommitRef=${{ inputs.ref }}"
+            -m "githubCommitOrg=${{ github.repository_owner }}"
+            -m "githubRepo=${{ github.event.repository.name }}"
+            -m "githubOrg=${{ github.repository_owner }}"
+            -m "githubCommitAuthorName=${COMMIT_AUTHOR}"
+            -m "githubCommitAuthorLogin=${{ github.actor }}"
+          )
 
           if [ "${{ inputs.target }}" = "production" ]; then
             DEPLOY_ARGS+=(--prod)

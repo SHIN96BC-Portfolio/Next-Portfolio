@@ -347,8 +347,8 @@ parallel + interception routes를 새로 만들었는데 react-dom, router 에�
 | 배포 방식 | **prebuilt** (`vercel deploy --prebuilt`) |
 | Vercel 프로젝트 생성 | 로컬 `vercel link` (CLI, 1회) |
 | 배포 인증 | GitHub Secrets (`VERCEL_TOKEN` 등) |
-| Vercel Root Directory | **비움** (`.`) — 서브디렉터리 지정 안 함 |
-| Actions CLI 실행 위치 | **앱 폴더** (`working-directory: apps/...`) |
+| Vercel Root Directory | **`apps/<앱 경로>`** — 대시보드에서 앱 폴더 지정 |
+| Actions CLI 실행 위치 | **저장소 루트** (`vercel pull/build/deploy` — `working-directory` 없음) |
 | 앱 : Vercel 프로젝트 | **1:1** (portfolio, master-admin 각각 별도 프로젝트) |
 | 모노레포 Secret | 공통 2개 + **앱별** `VERCEL_PROJECT_ID_*` |
 
@@ -384,10 +384,10 @@ parallel + interception routes를 새로 만들었는데 react-dom, router 에�
         ↓
   quality: lint & typecheck
         ↓
-  deploy (앱 폴더에서):
+  deploy (저장소 루트에서):
     vercel pull  → Vercel env/설정 동기화
     vercel build → CI에서 빌드 (vercel.json 사용)
-    vercel deploy --prebuilt → 빌드 결과물만 Vercel에 업로드
+    vercel deploy --prebuilt → 빌드 결과물만 Vercel에 업로드 (+ Git 커밋 메타)
         ↓
   배포 URL
 ```
@@ -470,7 +470,7 @@ pnpm turbo run lint typecheck --filter=@apps/user-portfolio
 경로: `apps/user/portfolio/vercel.json` (앱마다 1개)
 
 Vercel **prebuilt 빌드** (`vercel build`) 시 사용하는 install/build 명령입니다.  
-이 저장소는 **Root Directory를 비우는 방식(패턴 B)** 이므로, `vercel.json`은 반드시 **앱 폴더 안**에 두고, install/build는 `cd`로 **모노레포 루트**로 올라가 실행합니다.
+모노레포 prebuilt에서는 **Vercel 대시보드 Root Directory = 앱 폴더**이고, **CLI는 저장소 루트**에서 실행합니다. `vercel.json`은 앱 폴더에 두되, install/build는 `cd`로 **모노레포 루트**로 올라가 실행합니다.
 
 ### 2-1. portfolio 예시
 
@@ -509,29 +509,38 @@ Vercel **prebuilt 빌드** (`vercel build`) 시 사용하는 install/build 명�
 | `apps/user/commerce` | `cd ../..` |
 | `apps/admin/master-admin` | `cd ../../..` |
 
-### 2-4. Root Directory와의 관계
+### 2-4. Root Directory와 CLI 실행 위치
 
 | 항목 | `vercel.json` | Vercel 대시보드 | GitHub Actions |
 |------|:-------------:|:---------------:|:--------------:|
-| Root Directory | ❌ **설정 불가** | **비움** (`.`) | — |
+| Root Directory | ❌ **설정 불가** | **`apps/user/portfolio` 등** | — |
 | Install / Build Command | ✅ 여기서 정의 | 입력 안 해도 됨 | `vercel build`가 사용 |
-| `vercel pull` / `vercel build` / `vercel deploy --prebuilt` | — | — | **앱 폴더** (`working-directory`) |
+| `vercel pull` / `vercel build` / `vercel deploy --prebuilt` | — | — | **저장소 루트** |
+
+**prebuilt 모노레포 규칙 (Vercel 공식)**
+
+- `vercel pull` / `vercel build` / `vercel deploy --prebuilt` 는 **저장소 루트**에서 실행
+- Vercel 대시보드 **Root Directory**는 앱 폴더 (`apps/user/portfolio`)
+- 앱 폴더를 `working-directory`로 **또** 지정하면 경로가 중복되어 실패
 
 **왜 `cd`가 필요한가**
 
-- Vercel Root Directory를 **비우면**, 빌드 컨텍스트의 기준은 **앱 폴더**입니다.
-- `pnpm-lock.yaml`과 `@core/*` workspace 패키지는 **모노레포 루트**에 있으므로, install/build 전에 `cd`로 루트로 이동해야 합니다.
-- Root Directory에 `apps/user/portfolio`를 넣는 방식(패턴 A)이었다면 install은 루트에서 자동 실행되지만, **이 저장소는 패턴 B를 쓰므로 `vercel.json`에서 직접 `cd`합니다.**
+- Root Directory가 `apps/user/portfolio`이면, install/build 명령의 기준 경로는 **앱 폴더**입니다.
+- `pnpm-lock.yaml`과 `@core/*`는 **모노레포 루트**에 있으므로 `cd`로 루트로 이동합니다.
 
 **하지 말아야 할 조합**
 
 ```
-❌ Vercel Root Directory = apps/user/portfolio
+❌ Root Directory = apps/user/portfolio
    + Actions working-directory = apps/user/portfolio
    → apps/user/portfolio/apps/user/portfolio 경로 중복
 
-✅ Vercel Root Directory = 비움 (.)
+❌ Root Directory = 비움 (.)
    + Actions working-directory = apps/user/portfolio
+   → prebuilt 실패, Vercel 원격 빌드 시 "No Next.js version detected"
+
+✅ Root Directory = apps/user/portfolio
+   + Actions vercel CLI = 저장소 루트 (working-directory 없음)
    + vercel.json install/build = cd ../.. && ...
 ```
 
@@ -590,24 +599,25 @@ checkout (inputs.ref)
 
 ```
 checkout
-  → Setup pnpm / Node.js (vercel build의 installCommand에서 pnpm 사용)
+  → Setup pnpm / Node.js
   → vercel CLI 설치
   → Validate Vercel secrets
-  → vercel pull (앱 폴더, preview|production)
-  → vercel build (앱 폴더 — vercel.json install/build 실행, 별도 pnpm install 없음)
-  → vercel deploy --prebuilt (앱 폴더)
+  → vercel pull (저장소 루트, preview|production)
+  → vercel build (저장소 루트 — vercel.json install/build 실행)
+  → vercel deploy --prebuilt (저장소 루트 — Git 커밋 메타 포함)
   → Summary에 배포 URL 출력
 ```
 
-**중요:** `vercel pull` / `vercel build` / `vercel deploy --prebuilt` 는 모두 **앱 폴더**에서 실행합니다 (`working-directory: apps/user/portfolio`).
+**중요:** `vercel pull` / `vercel build` / `vercel deploy --prebuilt` 는 **저장소 루트**에서 실행합니다. Vercel 대시보드 Root Directory는 `apps/user/portfolio` 입니다.
 
-`deploy` job에는 **별도 `pnpm install` 스텝이 없습니다.** `vercel build`가 `vercel.json`의 `installCommand`로 의존성 설치와 빌드를 한 번에 처리합니다.
+`deploy` job에는 **별도 `pnpm install` 스텝이 없습니다.** `vercel build`가 `vercel.json`의 `installCommand`로 의존성 설치와 빌드를 처리합니다.
 
-Vercel 대시보드 Root Directory는 **비워 둡니다** (`.`). Root Directory에 `apps/user/portfolio`를 **또** 지정하면 경로가 중복되어 `apps/user/portfolio/apps/user/portfolio` 오류가 납니다.
+배포 제목에 커밋 메시지를 표시하려면 `vercel deploy`에 `--meta` (`githubDeployment=1`, `githubCommitMessage` 등)를 전달합니다. Git 연동 없이 CLI만 쓸 때는 이 메타가 없으면 Vercel이 랜덤 배포 ID를 제목으로 씁니다.
+
+Vercel 대시보드 Root Directory는 **`apps/user/portfolio`** 입니다. Root Directory를 비우고 Actions에서 앱 폴더 `working-directory`를 쓰면 prebuilt가 깨지고 Vercel 원격 빌드가 시도됩니다.
 
 ```yaml
-# deploy steps (모두 동일한 working-directory)
-working-directory: apps/user/portfolio
+# deploy steps — 저장소 루트에서 실행 (working-directory 없음)
 
 env:
   VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
@@ -616,7 +626,7 @@ env:
 
 # 1) vercel pull --yes --environment=preview|production
 # 2) vercel build [--prod]
-# 3) vercel deploy --prebuilt --yes [--prod]
+# 3) vercel deploy --prebuilt --yes [--prod] -m githubDeployment=1 -m githubCommitMessage=...
 ```
 
 ### 3-5. GitHub Environments
@@ -781,7 +791,7 @@ VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_USER_PORTFOLIO }}
 |------|:-------------:|:---------------:|------|
 | Install Command | ✅ | 불필요 | `vercel build`가 `vercel.json` 사용 |
 | Build Command | ✅ | 불필요 | `vercel build`가 `vercel.json` 사용 |
-| **Root Directory** | ❌ | **비움** (`.`) | 대시보드에서 서브디렉터리 지정 금지 |
+| **Root Directory** | ❌ | **`apps/user/portfolio`** | 대시보드에서 앱 폴더 지정 |
 | Include files outside root | ❌ | 선택 | prebuilt CI는 전체 repo checkout — **필수 아님** |
 | Environment Variables | (선택) | ✅ | `vercel pull`로 CI 빌드에 주입 |
 | Git 연동 | — | ❌ 연결 안 함 | 연결 시 push마다 Vercel 원격 빌드(이중 빌드) |
@@ -792,22 +802,21 @@ Install / Build는 **`vercel.json`에만** 두면 됩니다. 대시보드 Build 
 
 | 항목 | 값 |
 |------|-----|
-| Root Directory | **비움** (`.`) — `apps/user/portfolio` 등 입력하지 않음 |
-| Include source files outside of the Root Directory | 선택 (prebuilt CI에서는 전체 repo를 checkout하므로 필수 아님) |
+| Root Directory | **`apps/user/portfolio`** (portfolio 프로젝트 기준) |
 | Framework Preset | Next.js |
 
-#### Root Directory는 비워 두는 이유
+#### Root Directory를 앱 경로로 두는 이유
 
-이 저장소는 **패턴 B**를 사용합니다.
+prebuilt 모노레포에서는 Vercel CLI를 **저장소 루트**에서 실행하고, 대시보드 Root Directory로 **어느 앱인지** 지정합니다.
 
-| | 패턴 A (사용 안 함) | **패턴 B (현재)** |
-|--|-------------------|------------------|
-| Vercel Root Directory | `apps/user/portfolio` | **비움** (`.`) |
-| Actions prebuilt CLI | repo root | **앱 폴더** (`working-directory`) |
+| | 잘못된 조합 | **올바른 조합** |
+|--|------------|----------------|
+| Vercel Root Directory | 비움 (`.`) | **`apps/user/portfolio`** |
+| Actions vercel CLI | 앱 폴더 `working-directory` | **저장소 루트** |
 
-Root Directory에 앱 경로를 넣고 Actions에서도 `working-directory`를 쓰면 경로가 **두 번** 붙어 실패합니다. **둘 중 하나만** 씁니다.
+Root Directory와 Actions `working-directory`를 **둘 다** 앱 폴더로 지정하면 경로가 중복됩니다. **대시보드만** 앱 경로, **CLI는 루트**입니다.
 
-5단계 `vercel link`는 **앱 폴더 안**에서 실행하고, Code directory는 **`.`** 입니다. 대시보드 Root Directory가 `apps/...`로 잡혀 있으면 **비우세요**.
+5단계 `vercel link`는 **앱 폴더 안**에서 실행합니다. link 후 대시보드 Root Directory를 **`apps/user/portfolio`** 로 맞춥니다.
 
 > **prebuilt 배포에서 빌드는 1번만:** CI `vercel build` → `vercel deploy --prebuilt`. Vercel Git 연동을 켜 두면 push 시 Vercel이 **또** 빌드하므로 반드시 끕니다.
 
@@ -872,15 +881,19 @@ Running "build" command: cd ../.. && pnpm turbo build --filter=@apps/user-portfo
 CI 없이 직접 올려볼 때 (`vercel link` 완료 후):
 
 ```bash
-cd apps/user/portfolio
-vercel pull --yes --environment=preview   # 또는 production
-vercel build                              # preview
-vercel deploy --prebuilt --yes            # preview
+# 저장소 루트 (대시보드 Root Directory = apps/user/portfolio)
+vercel pull --yes --environment=preview
+vercel build
+vercel deploy --prebuilt --yes \
+  -m githubDeployment=1 \
+  -m githubCommitMessage="$(git log -1 --pretty=%s)"
 
 # production
 vercel pull --yes --environment=production
 vercel build --prod
-vercel deploy --prebuilt --yes --prod
+vercel deploy --prebuilt --yes --prod \
+  -m githubDeployment=1 \
+  -m githubCommitMessage="$(git log -1 --pretty=%s)"
 ```
 
 ---
@@ -898,7 +911,7 @@ commerce 등 **두 번째 앱**부터는 portfolio 설정을 복제·수정합�
 | 3 | 워크플로 복제·수정 | `.github/workflows/deploy-commerce.yml` |
 | 4 | Vercel 프로젝트 생성 | `./scripts/vercel/setup-project.sh user-commerce apps/user/commerce` |
 | 5 | 앱별 Secret 등록 | `VERCEL_PROJECT_ID_USER_COMMERCE` |
-| 6 | Vercel Root Directory **비움** 확인 | 대시보드 |
+| 6 | Vercel Root Directory = `apps/user/commerce` 확인 | 대시보드 |
 | 7 | Actions Run workflow | Deploy Commerce (Vercel) |
 
 ### 9-2. `vercel.json` 예시 (commerce)
@@ -911,7 +924,7 @@ commerce 등 **두 번째 앱**부터는 portfolio 설정을 복제·수정합�
 }
 ```
 
-워크플로 deploy step에 `working-directory: apps/user/commerce` 추가.
+워크플로에서 `APP_DIR`·filter·Secret만 앱에 맞게 수정합니다. `vercel pull/build/deploy`는 **저장소 루트**에서 실행합니다 (`working-directory` 사용 안 함).
 
 ### 9-3. 워크플로에서 바꿀 항목
 
@@ -930,7 +943,7 @@ env:
 # quality job
 run: pnpm turbo run lint typecheck --filter=@apps/user-commerce
 
-# deploy job — working-directory: apps/user/commerce
+# deploy job — 저장소 루트에서 vercel CLI (working-directory 없음)
 VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_USER_COMMERCE }}
 ```
 
@@ -958,7 +971,9 @@ VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_USER_COMMERCE }}
 | 증상 | 원인 | 해결 |
 |------|------|------|
 | `GitHub Secrets 미등록: VERCEL_PROJECT_ID_USER_PORTFOLIO` | Secret 미등록 또는 이름 오타 | 6단계 Secret 체크리스트 확인 |
-| `apps/user/portfolio/apps/user/portfolio` does not exist | Root Directory + `working-directory` **둘 다** 설정됨 | Root Directory **비우기** + Actions는 앱 폴더에서 prebuilt CLI 실행 |
+| `apps/user/portfolio/apps/user/portfolio` does not exist | Root Directory + `working-directory` **둘 다** 앱 폴더 | Root Directory만 `apps/user/portfolio`, CLI는 **저장소 루트** |
+| `No Next.js version detected` (Washington 원격 빌드) | prebuilt 실패 → Vercel이 소스 원격 빌드 시도 | Root Directory = `apps/user/portfolio`, CLI를 **루트**에서 실행 |
+| Deployments 제목이 랜덤 ID | CLI 배포에 Git 메타 없음 | `vercel deploy --prebuilt`에 `-m githubDeployment=1` `-m githubCommitMessage=...` |
 | Biome format errors (`␍`) | LF/CRLF 불일치 | `biome.json` `lineEnding: "lf"` + `.gitattributes` |
 | `@core/*` 모듈 not found (CI) | `vercel.json` `cd` 깊이 오류 또는 install 실패 | Actions `Build (prebuilt)` 로그에서 install/build 확인 |
 | `@core/*` 모듈 not found (Vercel Git 빌드) | 원격 빌드 시 루트 밖 파일 미포함 | Git 연동 끄고 prebuilt만 사용 (권장) |
@@ -979,7 +994,7 @@ VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_USER_COMMERCE }}
 □ 4단계: git commit & push
 □ 5단계: vercel link 로 Vercel 프로젝트 생성 (Git 연결 X)
 □ 6단계: VERCEL_TOKEN / VERCEL_ORG_ID / VERCEL_PROJECT_ID_USER_PORTFOLIO 등록
-□ 7단계: Vercel Root Directory **비움** (.) 확인
+□ 7단계: Vercel Root Directory = `apps/user/portfolio` 확인
 □ Vercel Environment Variables 등록
 □ GitHub Environments: preview, production 생성
 □ 8단계: Actions → Deploy Portfolio → Run workflow (preview)
@@ -998,14 +1013,15 @@ portfolio와 동일한 흐름이며, 경로·Secret·워크플로만 다릅니�
 □ 5단계: ./scripts/vercel/setup-project.sh admin-master-admin apps/admin/master-admin
     → Code directory: . (앱 폴더 안에서 link)
 □ 6단계: VERCEL_PROJECT_ID_ADMIN_MASTER_ADMIN 등록 (공통 Secret 2개는 재사용)
-□ 7단계: Vercel Root Directory **비움** (.) 확인
+□ 7단계: Vercel Root Directory = `apps/user/portfolio` 확인
 □ 8단계: Actions → Deploy Master Admin (Vercel) → Run workflow (preview)
 ```
 
 | portfolio | master-admin |
 |-----------|--------------|
 | `VERCEL_PROJECT_ID_USER_PORTFOLIO` | `VERCEL_PROJECT_ID_ADMIN_MASTER_ADMIN` |
-| `working-directory: apps/user/portfolio` | `working-directory: apps/admin/master-admin` |
+| Root Directory | `apps/user/portfolio` | `apps/admin/master-admin` |
+| vercel CLI 실행 | 저장소 루트 | 저장소 루트 |
 | `vercel.json` cd `../..` | `vercel.json` cd `../../..` |
 | Deploy Portfolio (Vercel) | Deploy Master Admin (Vercel) |
 

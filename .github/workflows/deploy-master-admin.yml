@@ -110,7 +110,6 @@ jobs:
           fi
 
       - name: Pull Vercel environment
-        working-directory: ${{ env.APP_DIR }}
         env:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_ADMIN_MASTER_ADMIN }}
@@ -124,7 +123,6 @@ jobs:
           vercel pull --yes --environment="$ENV_NAME" --token="$VERCEL_TOKEN"
 
       - name: Build (prebuilt)
-        working-directory: ${{ env.APP_DIR }}
         env:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_ADMIN_MASTER_ADMIN }}
@@ -136,10 +134,13 @@ jobs:
             BUILD_ARGS+=(--prod)
           fi
           vercel build "${BUILD_ARGS[@]}" --token="$VERCEL_TOKEN"
+          if [ ! -d .vercel/output ]; then
+            echo "::error::.vercel/output not found — vercel build did not produce prebuilt artifacts"
+            exit 1
+          fi
 
       - name: Deploy prebuilt to Vercel
         id: deploy
-        working-directory: ${{ env.APP_DIR }}
         env:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_ADMIN_MASTER_ADMIN }}
@@ -147,7 +148,24 @@ jobs:
         run: |
           set -euo pipefail
 
-          DEPLOY_ARGS=(--prebuilt --yes --token "$VERCEL_TOKEN")
+          COMMIT_SHA_SHORT="$(git rev-parse --short HEAD)"
+          COMMIT_MSG="$(git log -1 --pretty=%s | head -c 200 | tr -d '"')"
+          COMMIT_AUTHOR="$(git log -1 --pretty=%an)"
+
+          DEPLOY_ARGS=(
+            --prebuilt
+            --yes
+            --token "$VERCEL_TOKEN"
+            -m "githubDeployment=1"
+            -m "githubCommitSha=${COMMIT_SHA_SHORT}"
+            -m "githubCommitMessage=${COMMIT_MSG}"
+            -m "githubCommitRef=${{ inputs.ref }}"
+            -m "githubCommitOrg=${{ github.repository_owner }}"
+            -m "githubRepo=${{ github.event.repository.name }}"
+            -m "githubOrg=${{ github.repository_owner }}"
+            -m "githubCommitAuthorName=${COMMIT_AUTHOR}"
+            -m "githubCommitAuthorLogin=${{ github.actor }}"
+          )
 
           if [ "${{ inputs.target }}" = "production" ]; then
             DEPLOY_ARGS+=(--prod)
