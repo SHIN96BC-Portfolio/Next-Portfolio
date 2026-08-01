@@ -15,7 +15,7 @@
 # env.*
 #   출처: 이 파일 상단 env 블록 (워크플로 전역 환경 변수)
 #   사용 예:
-#     env.PNPM_VERSION    → "11.17.0"
+#     env.PNPM_VERSION    → (삭제) package.json packageManager 사용
 #     env.NODE_VERSION    → "22"
 #     env.APP_DIR         → apps/user/portfolio
 #   참고: step의 env 블록은 셸 환경 변수 — VERCEL_TOKEN 등은 secrets에서 주입
@@ -90,9 +90,9 @@ concurrency:
 permissions:
   contents: read
 
-# 워크플로 전역 환경 변수 — Node/pnpm 버전 및 앱 경로 (모노레포)
+# 워크플로 전역 환경 변수 — Node 버전 및 앱 경로 (모노레포)
+# pnpm 버전은 package.json packageManager 필드에서 자동으로 읽음
 env:
-  PNPM_VERSION: "11.17.0"
   NODE_VERSION: "22"
   APP_DIR: apps/user/portfolio
 
@@ -110,8 +110,6 @@ jobs:
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
-        with:
-          version: ${{ env.PNPM_VERSION }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -141,8 +139,6 @@ jobs:
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
-        with:
-          version: ${{ env.PNPM_VERSION }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
