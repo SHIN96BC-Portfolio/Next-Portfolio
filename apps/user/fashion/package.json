@@ -1,0 +1,26 @@
+{
+  "name": "@apps/user-fashion",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev -p 3021",
+    "build": "next build",
+    "start": "next start -p 3021",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "lint": "pnpm run typecheck && biome check .",
+    "lint:fix": "biome check --write ."
+  },
+  "dependencies": {
+    "next": "16.0.10",
+    "react": "19.2.3",
+    "react-dom": "19.2.3"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}

@@ -4,15 +4,15 @@ interface EmploymentDuration {
 }
 
 function calculateEmploymentDuration(startYear: number, startMonth: number, endDate: Date): EmploymentDuration {
-  let years = endDate.getFullYear() - startYear;
-  let months = endDate.getMonth() + 1 - startMonth;
+  const endYear = endDate.getFullYear();
+  const endMonth = endDate.getMonth() + 1;
 
-  if (months < 0) {
-    years -= 1;
-    months += 12;
-  }
+  // 시작월·현재월 모두 포함 (잡코리아/사람인 등 이력서 사이트 방식)
+  const totalMonths = Math.max((endYear - startYear) * 12 + (endMonth - startMonth) + 1, 0);
+  const years = Math.floor(totalMonths / 12);
+  const months = totalMonths % 12;
 
-  return { years: Math.max(years, 0), months: Math.max(months, 0) };
+  return { years, months };
 }
 
 function formatDuration({ years, months }: EmploymentDuration) {
