@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
-# Vercel 프로젝트 최초 생성 (Git 연동 없음)
+# Vercel 프로젝트 최초 생성 (Git 연동 없음) + Root Directory API 자동 설정
 #
 # 사용:
+#   export VERCEL_TOKEN=<Account Settings → Tokens>
 #   ./scripts/vercel/setup-project.sh <app-slug> <app-dir>
 #
 # 예:
@@ -29,17 +30,26 @@ if ! command -v vercel >/dev/null 2>&1; then
   exit 1
 fi
 
+if [[ -z "${VERCEL_TOKEN:-}" ]]; then
+  echo "VERCEL_TOKEN이 필요합니다 (Root Directory API 설정 + GitHub Secret 등록용)."
+  echo "발급: https://vercel.com/account/tokens"
+  echo ""
+  echo "  export VERCEL_TOKEN=<your-token>"
+  exit 1
+fi
+
 echo "== Vercel 프로젝트 초기 설정 =="
 echo "App slug:        ${APP_SLUG}"
 echo "App directory:   ${APP_DIR}"
 echo "Project ID secret name: ${PROJECT_ID_SECRET}"
 echo ""
-echo "앱 폴더에서 vercel link 실행 후, 대시보드 Root Directory를 설정합니다."
+echo "1) vercel link (앱 폴더)"
+echo "2) Vercel API로 Root Directory = ${APP_DIR} 자동 설정"
 echo ""
 echo "vercel link 실행 시 안내:"
 echo "  1) Set up and deploy?        → N"
 echo "  2) Which scope?              → 본인 팀/계정"
-echo "  3) Link to existing project? → N (새 프로젝트)"
+echo "  3) Link to existing project? → N (새 프로젝트) / Y (기존)"
 echo "  4) Project name              → 예: ${APP_SLUG}"
 echo "  5) Code directory            → .  (현재 앱 폴더 = ${APP_DIR})"
 echo ""
@@ -56,20 +66,50 @@ ORG_ID="$(node -pe "JSON.parse(require('fs').readFileSync('.vercel/project.json'
 PROJECT_ID="$(node -pe "JSON.parse(require('fs').readFileSync('.vercel/project.json','utf8')).projectId")"
 
 echo ""
+echo "== Root Directory API 설정 =="
+
+PATCH_BODY="$(node -pe "JSON.stringify({ rootDirectory: process.argv[1], framework: 'nextjs' })" "$APP_DIR")"
+API_URL="https://api.vercel.com/v9/projects/${PROJECT_ID}"
+
+if [[ "$ORG_ID" == team_* ]]; then
+  API_URL="${API_URL}?teamId=${ORG_ID}"
+fi
+
+PATCH_RESPONSE_FILE="$(mktemp)"
+HTTP_CODE="$(
+  curl -sS -o "$PATCH_RESPONSE_FILE" -w "%{http_code}" \
+    -X PATCH "$API_URL" \
+    -H "Authorization: Bearer ${VERCEL_TOKEN}" \
+    -H "Content-Type: application/json" \
+    -d "$PATCH_BODY"
+)"
+
+if [[ "$HTTP_CODE" != "200" ]]; then
+  echo "오류: Root Directory API 설정 실패 (HTTP ${HTTP_CODE})"
+  cat "$PATCH_RESPONSE_FILE"
+  rm -f "$PATCH_RESPONSE_FILE"
+  exit 1
+fi
+
+ROOT_DIR_SET="$(node -pe "JSON.parse(require('fs').readFileSync(process.argv[1],'utf8')).rootDirectory || ''" "$PATCH_RESPONSE_FILE")"
+rm -f "$PATCH_RESPONSE_FILE"
+
+echo "Root Directory 설정 완료: ${ROOT_DIR_SET:-$APP_DIR}"
+
+echo ""
 echo "== GitHub Secrets 등록 =="
 echo "Repository → Settings → Secrets and variables → Actions"
 echo ""
 echo "# 공통 (저장소당 1회, 이미 있으면 생략)"
-echo "VERCEL_TOKEN=<Vercel Account Settings → Tokens>"
+echo "VERCEL_TOKEN=<위에서 사용한 토큰>"
 echo "VERCEL_ORG_ID=${ORG_ID}"
 echo ""
 echo "# 앱 전용 (${APP_SLUG})"
 echo "${PROJECT_ID_SECRET}=${PROJECT_ID}"
 echo ""
-echo "== Vercel 대시보드 확인 =="
-echo "  - Root Directory: ${APP_DIR}  (prebuilt 모노레포 필수)"
+echo "== 확인 사항 =="
 echo "  - Git Integration: 연결하지 않음"
+echo "  - GitHub Actions: 저장소 루트에서 vercel pull → build → deploy --prebuilt"
+echo "  - Actions working-directory로 앱 폴더 지정 금지 (경로 중복)"
 echo ""
-echo "GitHub Actions는 저장소 루트에서 vercel pull → vercel build → vercel deploy --prebuilt 합니다."
-echo "Actions working-directory로 앱 폴더를 지정하면 경로가 중복됩니다 — 사용하지 마세요."
 echo "워크플로에서 사용할 secret: secrets.${PROJECT_ID_SECRET}"

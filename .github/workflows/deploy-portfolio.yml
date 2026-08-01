@@ -15,9 +15,8 @@
 #
 # ## prebuilt 모노레포 필수 설정
 #
-#   Vercel 대시보드 (portfolio 프로젝트)
-#     Root Directory: apps/user/portfolio
-#     Git Integration: 연결하지 않음
+#   Vercel Root Directory (apps/user/portfolio)
+#     setup-project.sh 가 Vercel API로 1회 자동 설정 (대시보드 수동 불필요)
 #
 #   이 워크플로 (deploy job)
 #     vercel pull / build / deploy → 저장소 루트에서 실행
@@ -181,6 +180,12 @@ jobs:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
         run: |
           set -euo pipefail
+          cd "$GITHUB_WORKSPACE"
+          echo "vercel CLI cwd: $(pwd)"
+          if [ ! -f "apps/user/portfolio/package.json" ]; then
+            echo "::error::모노레포 루트가 아닙니다. vercel CLI는 저장소 루트에서 실행해야 합니다."
+            exit 1
+          fi
           ENV_NAME=preview
           if [ "${{ inputs.target }}" = "production" ]; then
             ENV_NAME=production
@@ -194,6 +199,7 @@ jobs:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
         run: |
           set -euo pipefail
+          cd "$GITHUB_WORKSPACE"
           BUILD_ARGS=()
           if [ "${{ inputs.target }}" = "production" ]; then
             BUILD_ARGS+=(--prod)
@@ -212,6 +218,7 @@ jobs:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
         run: |
           set -euo pipefail
+          cd "$GITHUB_WORKSPACE"
 
           COMMIT_SHA_SHORT="$(git rev-parse --short HEAD)"
           COMMIT_MSG="$(git log -1 --pretty=%s | head -c 200 | tr -d '"')"

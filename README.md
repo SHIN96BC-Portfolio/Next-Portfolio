@@ -347,7 +347,7 @@ parallel + interception routes를 새로 만들었는데 react-dom, router 에�
 | 배포 방식 | **prebuilt** (`vercel deploy --prebuilt`) |
 | Vercel 프로젝트 생성 | 로컬 `vercel link` (CLI, 1회) |
 | 배포 인증 | GitHub Secrets (`VERCEL_TOKEN` 등) |
-| Vercel Root Directory | **`apps/<앱 경로>`** — 대시보드에서 앱 폴더 지정 |
+| Vercel Root Directory | **`apps/<앱 경로>`** — `setup-project.sh` API로 1회 설정 |
 | Actions CLI 실행 위치 | **저장소 루트** (`vercel pull/build/deploy` — `working-directory` 없음) |
 | 앱 : Vercel 프로젝트 | **1:1** (portfolio, master-admin 각각 별도 프로젝트) |
 | 모노레포 Secret | 공통 2개 + **앱별** `VERCEL_PROJECT_ID_*` |
@@ -358,9 +358,9 @@ parallel + interception routes를 새로 만들었는데 react-dom, router 에�
 |------|-------|------|
 | 모노레포 앱 코드 추가 | ❌ | 개발자 작업 |
 | `vercel.json` / 워크플로 작성 | ❌ | 1회 설정 후 커밋 |
-| Vercel 프로젝트 생성 | ❌ | 로컬 CLI (`vercel link`) |
+| Vercel 프로젝트 생성 + Root Directory | ❌ | 로컬 `setup-project.sh` (1회) |
 | GitHub Secrets 등록 | ❌ | 대시보드 수동 |
-| Vercel 대시보드 설정 | ❌ | Root Directory 등 확인 |
+| Vercel Git / 대시보드 Root Directory | ❌ | 스크립트 API가 Root Directory 설정 |
 | Actions 워크플로 실행 | ❌ | Run workflow 버튼 |
 | lint / typecheck | ✅ | quality job |
 | `vercel pull` → `vercel build` → `vercel deploy --prebuilt` | ✅ | Secrets 등록 **후** |
@@ -373,11 +373,11 @@ parallel + interception routes를 새로 만들었는데 react-dom, router 에�
         ↓
   4단계: git commit & push
         ↓
-  5단계: vercel link (로컬) → Vercel 프로젝트 생성
+  5단계: setup-project.sh (vercel link + Root Directory API)
         ↓
   6단계: GitHub Secrets 등록 (공통 + 앱별)
         ↓
-  7단계: Vercel 대시보드 설정 확인
+  7단계: (선택) Vercel 대시보드에서 Root Directory 확인
 
 [배포할 때마다 — 8단계 Actions 수동 실행]
   GitHub Actions → Deploy Portfolio → Run workflow
@@ -470,7 +470,7 @@ pnpm turbo run lint typecheck --filter=@apps/user-portfolio
 경로: `apps/user/portfolio/vercel.json` (앱마다 1개)
 
 Vercel **prebuilt 빌드** (`vercel build`) 시 사용하는 install/build 명령입니다.  
-모노레포 prebuilt에서는 **Vercel 대시보드 Root Directory = 앱 폴더**이고, **CLI는 저장소 루트**에서 실행합니다. `vercel.json`은 앱 폴더에 두되, install/build는 `cd`로 **모노레포 루트**로 올라가 실행합니다.
+모노레포 prebuilt에서는 **Root Directory = 앱 폴더**이고, **CLI는 저장소 루트**에서 실행합니다. Root Directory는 **`setup-project.sh`가 Vercel API로 1회 설정**합니다.
 
 ### 2-1. portfolio 예시
 
@@ -546,7 +546,7 @@ Vercel **prebuilt 빌드** (`vercel build`) 시 사용하는 install/build 명�
 
 **`vercel.json`에 넣지 않는 것**
 
-- Root Directory — 대시보드에서 **비워 둠** (7단계 참고)
+- Root Directory — `setup-project.sh` API로 설정 (5단계). `vercel.json`에는 넣지 않음
 - `ignoreCommand` — Vercel Git 연동 시에만 의미 있음. 이 저장소는 Git 연동 없음
 
 > Environment Variables(`NEXT_PUBLIC_*` 등)는 보통 Vercel **대시보드**에 등록합니다. `vercel.json`의 `env`로도 가능하지만, 이 저장소는 대시보드 사용을 권장합니다.
@@ -663,25 +663,37 @@ git push
 
 ---
 
-## 5단계. Vercel 프로젝트 생성 (Git 연결 없음)
+## 5단계. Vercel 프로젝트 생성 (Bootstrap)
 
-**Vercel 대시보드에서 GitHub Import를 하지 않습니다.** 로컬 CLI로 프로젝트만 만듭니다.
+**Vercel 대시보드에서 GitHub Import를 하지 않습니다.** 로컬 스크립트가 `vercel link` + **Root Directory API 설정**까지 처리합니다.
 
-### 5-1. 스크립트 실행 (권장)
+### 5-1. 사전 준비
+
+```bash
+npm install -g vercel   # 최초 1회
+vercel login            # 최초 1회
+export VERCEL_TOKEN=... # https://vercel.com/account/tokens
+```
+
+`VERCEL_TOKEN`은 Root Directory API 호출과 GitHub Secret 등록에 동일하게 사용합니다.
+
+### 5-2. 스크립트 실행
 
 ```bash
 # 저장소 루트
-npm install -g vercel   # 최초 1회
-vercel login            # 최초 1회
-
-# portfolio
 ./scripts/vercel/setup-project.sh user-portfolio apps/user/portfolio
 
 # master-admin
 ./scripts/vercel/setup-project.sh admin-master-admin apps/admin/master-admin
 ```
 
-### 5-2. `vercel link` 프롬프트 응답
+스크립트가 수행하는 작업:
+
+1. `apps/<app>`에서 `vercel link` (프로젝트 생성/연결)
+2. `PATCH /v9/projects/{id}` — `rootDirectory: apps/<app>`, `framework: nextjs`
+3. 등록할 GitHub Secret 이름·값 출력
+
+### 5-3. `vercel link` 프롬프트 응답
 
 | 질문 | 답 |
 |------|-----|
@@ -693,7 +705,7 @@ vercel login            # 최초 1회
 
 스크립트가 `apps/user/portfolio`로 이동한 뒤 `vercel link`를 실행합니다. Code directory는 **`.`** 입니다.
 
-### 5-3. 생성 결과 확인
+### 5-4. 생성 결과 확인
 
 로컬 `apps/user/portfolio/.vercel/project.json`이 생성됩니다 (`.gitignore` 대상, **커밋하지 않음**).
 
@@ -709,7 +721,7 @@ vercel login            # 최초 1회
 > **주의:** 앱마다 `vercel link`를 하면 `apps/<앱>/.vercel/`이 생깁니다.  
 > portfolio link → Secret 등록 후, master-admin link → 해당 Secret 등록 순으로 진행하세요.
 
-### 5-4. 수동으로 할 경우
+### 5-5. 수동으로 할 경우
 
 ```bash
 vercel login
@@ -791,14 +803,16 @@ VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_USER_PORTFOLIO }}
 |------|:-------------:|:---------------:|------|
 | Install Command | ✅ | 불필요 | `vercel build`가 `vercel.json` 사용 |
 | Build Command | ✅ | 불필요 | `vercel build`가 `vercel.json` 사용 |
-| **Root Directory** | ❌ | **`apps/user/portfolio`** | 대시보드에서 앱 폴더 지정 |
+| **Root Directory** | ❌ | **`apps/user/portfolio`** | `setup-project.sh` API (5단계) |
 | Include files outside root | ❌ | 선택 | prebuilt CI는 전체 repo checkout — **필수 아님** |
 | Environment Variables | (선택) | ✅ | `vercel pull`로 CI 빌드에 주입 |
 | Git 연동 | — | ❌ 연결 안 함 | 연결 시 push마다 Vercel 원격 빌드(이중 빌드) |
 
 Install / Build는 **`vercel.json`에만** 두면 됩니다. 대시보드 Build & Development Settings는 비워 두거나 기본값이어도 `vercel.json`이 우선합니다.
 
-### 7-1. General — Root Directory
+### 7-1. General — Root Directory (확인만)
+
+`setup-project.sh`가 API로 설정합니다. 대시보드에서 **확인만** 하면 됩니다.
 
 | 항목 | 값 |
 |------|-----|
@@ -807,16 +821,12 @@ Install / Build는 **`vercel.json`에만** 두면 됩니다. 대시보드 Build 
 
 #### Root Directory를 앱 경로로 두는 이유
 
-prebuilt 모노레포에서는 Vercel CLI를 **저장소 루트**에서 실행하고, 대시보드 Root Directory로 **어느 앱인지** 지정합니다.
+prebuilt 모노레포에서는 Vercel CLI를 **저장소 루트**에서 실행하고, Vercel 프로젝트의 Root Directory로 **어느 앱인지** 지정합니다. 이 값은 **bootstrap 스크립트가 API로 넣습니다.**
 
 | | 잘못된 조합 | **올바른 조합** |
 |--|------------|----------------|
 | Vercel Root Directory | 비움 (`.`) | **`apps/user/portfolio`** |
 | Actions vercel CLI | 앱 폴더 `working-directory` | **저장소 루트** |
-
-Root Directory와 Actions `working-directory`를 **둘 다** 앱 폴더로 지정하면 경로가 중복됩니다. **대시보드만** 앱 경로, **CLI는 루트**입니다.
-
-5단계 `vercel link`는 **앱 폴더 안**에서 실행합니다. link 후 대시보드 Root Directory를 **`apps/user/portfolio`** 로 맞춥니다.
 
 > **prebuilt 배포에서 빌드는 1번만:** CI `vercel build` → `vercel deploy --prebuilt`. Vercel Git 연동을 켜 두면 push 시 Vercel이 **또** 빌드하므로 반드시 끕니다.
 
@@ -911,7 +921,7 @@ commerce 등 **두 번째 앱**부터는 portfolio 설정을 복제·수정합�
 | 3 | 워크플로 복제·수정 | `.github/workflows/deploy-commerce.yml` |
 | 4 | Vercel 프로젝트 생성 | `./scripts/vercel/setup-project.sh user-commerce apps/user/commerce` |
 | 5 | 앱별 Secret 등록 | `VERCEL_PROJECT_ID_USER_COMMERCE` |
-| 6 | Vercel Root Directory = `apps/user/commerce` 확인 | 대시보드 |
+| 6 | (자동) Root Directory API | `setup-project.sh` |
 | 7 | Actions Run workflow | Deploy Commerce (Vercel) |
 
 ### 9-2. `vercel.json` 예시 (commerce)
@@ -962,7 +972,7 @@ VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_USER_COMMERCE }}
 | `apps/admin/master-admin/vercel.json` | master-admin용 install/build 명령 |
 | `.github/workflows/deploy-portfolio.yml` | portfolio lint + prebuilt deploy |
 | `.github/workflows/deploy-master-admin.yml` | master-admin lint + prebuilt deploy |
-| `scripts/vercel/setup-project.sh` | Vercel 프로젝트 최초 생성 (`vercel link`, Secret 안내) |
+| `scripts/vercel/setup-project.sh` | vercel link + Root Directory API + Secret 안내 |
 
 ---
 
@@ -992,9 +1002,9 @@ VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_USER_COMMERCE }}
 □ apps/user/portfolio/vercel.json 작성
 □ .github/workflows/deploy-portfolio.yml 작성
 □ 4단계: git commit & push
-□ 5단계: vercel link 로 Vercel 프로젝트 생성 (Git 연결 X)
+□ 5단계: VERCEL_TOKEN export 후 setup-project.sh 실행
 □ 6단계: VERCEL_TOKEN / VERCEL_ORG_ID / VERCEL_PROJECT_ID_USER_PORTFOLIO 등록
-□ 7단계: Vercel Root Directory = `apps/user/portfolio` 확인
+□ 7단계: (선택) Vercel 대시보드 Root Directory = apps/user/portfolio 확인
 □ Vercel Environment Variables 등록
 □ GitHub Environments: preview, production 생성
 □ 8단계: Actions → Deploy Portfolio → Run workflow (preview)
@@ -1010,10 +1020,9 @@ portfolio와 동일한 흐름이며, 경로·Secret·워크플로만 다릅니�
 
 ```
 □ 1~3단계: vercel.json + deploy-master-admin.yml 작성 후 4단계 push
-□ 5단계: ./scripts/vercel/setup-project.sh admin-master-admin apps/admin/master-admin
-    → Code directory: . (앱 폴더 안에서 link)
+□ 5단계: VERCEL_TOKEN export 후 setup-project.sh admin-master-admin ...
 □ 6단계: VERCEL_PROJECT_ID_ADMIN_MASTER_ADMIN 등록 (공통 Secret 2개는 재사용)
-□ 7단계: Vercel Root Directory = `apps/user/portfolio` 확인
+□ 7단계: (선택) Vercel 대시보드 Root Directory = apps/admin/master-admin 확인
 □ 8단계: Actions → Deploy Master Admin (Vercel) → Run workflow (preview)
 ```
 
