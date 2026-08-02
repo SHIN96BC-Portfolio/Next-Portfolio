@@ -692,6 +692,9 @@ export VERCEL_TOKEN=... # https://vercel.com/account/tokens
 1. `apps/<app>`에서 `vercel link` (프로젝트 생성/연결)
 2. `PATCH /v9/projects/{id}` — `rootDirectory: apps/<app>`, `framework: nextjs`
 3. 등록할 GitHub Secret 이름·값 출력
+4. Which project 는 create a new projects 선택
+5. Project name 입력
+6. Customize settings 는 기본적으로 N으로 응답
 
 ### 5-3. `vercel link` 프롬프트 응답
 
