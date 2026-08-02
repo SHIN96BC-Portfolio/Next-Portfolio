@@ -238,6 +238,11 @@ jobs:
               exit 1
             fi
 
+            if [ "$len" -eq 11 ] && [ "$value" = "[SENSITIVE]" ]; then
+              echo "::error::${key} is Vercel Sensitive placeholder — disable Sensitive for prebuilt CI or use GitHub overlay (see README 7-3)"
+              exit 1
+            fi
+
             echo "✓ ${key} (length=${len})"
           done
 
