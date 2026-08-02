@@ -33,13 +33,16 @@
     "biome": "biome check .",
     "prepare": "husky",
     "gen:i18n": "pnpm --filter @apps/user-portfolio run gen:i18n",
-    "gen:graphql": "pnpm --filter @apps/admin-master-admin run gen:graphql"
+    "gen:graphql": "pnpm --filter @apps/admin-master-admin run gen:graphql",
+    "crypto:debug": "tsx scripts/cookie-crypto-debug.ts"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.5.6",
+    "@core/crypto": "workspace:*",
     "@types/node": "^20",
     "husky": "^9.1.7",
     "lint-staged": "^17.2.0",
+    "tsx": "^4.20.3",
     "turbo": "^2.10.7",
     "typescript": "^7.0.2"
   },
