@@ -603,6 +603,7 @@ checkout
   → vercel CLI 설치
   → Validate Vercel secrets
   → vercel pull (저장소 루트, preview|production)
+  → Verify pulled Vercel env (필수 키 존재·길이 검증 — 값은 로그에 출력하지 않음)
   → vercel build (저장소 루트 — vercel.json install/build 실행)
   → vercel deploy --prebuilt (저장소 루트 — Git 커밋 메타 포함)
   → Summary에 배포 URL 출력
@@ -843,12 +844,88 @@ Git을 연결하면 push마다 Vercel이 자동 빌드합니다. 이 저장소�
 
 ### 7-3. Environment Variables
 
-`NEXT_PUBLIC_*`, `NEXTAUTH_*` 등 런타임/빌드 시 필요한 값을 Vercel 대시보드에 등록합니다.
+앱 env(`NEXT_PUBLIC_*`, `NEXTAUTH_*` 등)는 **Vercel 대시보드**에 등록합니다.  
+GitHub Actions Secrets에는 **Vercel CLI 인증용 3개만** 넣고, 앱 env는 워크플로에서 직접 넘기지 않습니다.
 
-- Actions 워크플로는 env를 직접 넘기지 않습니다
-- `vercel pull`이 대시보드에 등록된 값을 `.vercel/` 아래로 가져옵니다
-- `vercel build`가 그 env를 사용해 **CI에서** 빌드합니다
-- preview / production 환경별로 분리 설정 가능
+| 저장 위치 | 등록하는 값 |
+|-----------|-------------|
+| **GitHub Secrets** | `VERCEL_TOKEN`, `VERCEL_ORG_ID`, `VERCEL_PROJECT_ID_*` |
+| **Vercel 대시보드** | 앱 실행에 필요한 모든 env (`NEXT_PUBLIC_*`, `NEXTAUTH_*` 등) |
+
+#### prebuilt에서 env가 쓰이는 시점
+
+```
+Vercel 대시보드 env
+      ↓  vercel pull (CI)
+.vercel/.env.production.local  (또는 .env.preview.local)
+      ↓  vercel build (CI)
+Next.js / proxy / Edge 번들에 NEXT_PUBLIC_* 등이 빌드 시점에 인라인
+      ↓  vercel deploy --prebuilt
+Vercel은 이미 만들어진 .vercel/output 만 호스팅
+```
+
+- **대시보드에서 env만 수정**하고 Vercel Deployments에서 **Redeploy**만 하면, prebuilt 번들은 **바뀌지 않습니다.**
+- env 반영하려면 GitHub Actions에서 **`vercel pull` → `vercel build` → `vercel deploy` 전체**를 다시 실행하세요. (Re-run all jobs 가능 — 단, **Vercel env 수정 후**에 실행)
+
+`vercel build` 로그의 `Build not running on Vercel. System environment variables will not be available.` 는 prebuilt에서 **항상 나올 수 있는 경고**입니다. Vercel 시스템 env(`VERCEL_URL` 등)가 CI에 없다는 뜻이며, 대시보드에 등록한 앱 env와는 별개입니다.
+
+#### Sensitive 플래그 (prebuilt 필수)
+
+Vercel **Sensitive** env는 생성 후 대시보드/CLI에서 **값을 다시 읽을 수 없습니다.**  
+`vercel pull` 시 Sensitive 값은 실제 secret이 아니라 **`[SENSITIVE]`**(11자) placeholder로 내려옵니다.
+
+CI `vercel build`가 이 placeholder를 그대로 번들에 넣으면, 쿠키 암복호화·API URL 등이 **로컬과 다르게 동작**합니다. (prebuilt 도입 이후 env 관련 이슈의 대표 원인)
+
+| env 종류 | Vercel Sensitive | GitHub Secrets (앱 env) | 비고 |
+|----------|------------------|-------------------------|------|
+| **`NEXT_PUBLIC_*`** | **OFF** | 불필요 | CI `vercel pull`로 실제 값 필요. 번들에 인라인됨 |
+| **proxy/Edge에서 쓰는 비밀** (예: `NEXT_PUBLIC_COOKIE_SECRET_KEY`) | **OFF** (또는 GitHub overlay) | overlay 시에만 | `NEXT_PUBLIC_` 없어도 Edge 번들에 들어가면 빌드 시 값 필요 |
+| **런타임 전용 서버 비밀** (`PRIVATE_*` 등, Edge/빌드 미사용) | **ON** | 불필요 | Vercel 런타임 주입. CI pull 불필요 |
+
+**운영 규칙 (권장):**
+
+1. **`NEXT_PUBLIC_` 접두사가 붙은 변수** → Vercel에 등록, **Sensitive OFF**, Production / Preview scope 확인
+2. **진짜 서버 전용 비밀** → Vercel만, **Sensitive ON** (GitHub에 중복 등록하지 않음)
+3. env 변경 후 → Actions **Re-run** 또는 Run workflow (Vercel만 Redeploy ❌)
+
+Sensitive를 유지하면서 prebuilt를 쓰려면, `vercel pull` 직후 GitHub Secrets로 `.vercel/.env.*.local`을 **overlay**하는 방식이 필요합니다. 이 저장소는 우선 **Vercel `NEXT_PUBLIC_*` Sensitive OFF** 로 운영하는 것을 권장합니다.
+
+또는 Vercel 대시보드상의 env와 github env를 동일하게 맞추고 빌드시에 github쪽에 설정한 env를 넣고 빌드하는 방법도 있지만 양쪽 env를 양쪽에서 관리해야 하는 단점이 있습니다.
+
+#### CI에서 env 검증
+
+`deploy-portfolio` 워크플로의 **Verify pulled Vercel env** 스텝에서 pull 결과를 검사합니다.
+
+- `.vercel/.env.{production|preview}.local` 파일 존재
+- 필수 키 이름 존재 (`NEXT_PUBLIC_COOKIE_SECRET_KEY` 등)
+- 값 **길이** 출력 (값 자체는 로그에 남기지 않음)
+- `length=11` 이면 `[SENSITIVE]` placeholder 의심 → 해당 키 Sensitive OFF 후 재배포
+
+로컬에서 동일하게 확인하려면:
+
+```bash
+# 저장소 루트
+export VERCEL_ORG_ID=... VERCEL_PROJECT_ID=... VERCEL_TOKEN=...
+vercel pull --yes --environment=production
+grep '^NEXT_PUBLIC_COOKIE_SECRET_KEY=' .vercel/.env.production.local | cut -d= -f1
+# 값 길이는 로컬에서만 직접 확인 (커밋 금지)
+```
+
+쿠키 암복호화 디버그: 저장소 루트에서 `pnpm crypto:debug encrypt|decrypt <key> <value>` (`pnpm crypto:debug --help`).
+
+#### portfolio 앱 env 체크리스트 (예시)
+
+| 변수 | Sensitive | 비고 |
+|------|-----------|------|
+| `NEXT_PUBLIC_COOKIE_SECRET_KEY` | OFF | proxy + Server Action 쿠키 |
+| `NEXT_PUBLIC_API_SERVER_URL` | OFF | absolute URL (`https://...`) |
+| `NEXT_PUBLIC_API_MOCKING` | OFF | production은 `disabled` 권장 |
+| `NEXT_PUBLIC_CRYPTO_SECRET_KEY` | OFF | storage 등 |
+| `NEXTAUTH_SECRET` | OFF (auth proxy 사용 시) | `auth-proxy-handler`에서 Edge 사용 |
+| `NEXTAUTH_URL` | OFF | |
+| `PRIVATE_COOKIE_SECRET_KEY` | ON | 사용처 연결 시에만 |
+
+preview / production 환경별로 scope가 맞는지 배포 `target`과 함께 확인하세요.
 
 ### 7-4. Build & Development Settings
 
@@ -995,6 +1072,8 @@ VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_USER_COMMERCE }}
 | 빌드가 두 번 도는 것 같음 | Actions `vercel build` + Vercel Git 원격 빌드 | Git 연동 제거, `vercel deploy --prebuilt`만 사용 |
 | 로컬 lint 통과, CI만 실패 | 줄바꿈 또는 캐시 차이 | `pnpm biome check .` 로컬 실행 후 LF 정규화 |
 | `vercel build` 실패 | install/build 또는 env 문제 | Actions → `Build (prebuilt)` 로그 확인, `vercel pull` env·`vercel.json` `cd` 깊이 확인 |
+| 쿠키 복호화 실패 / theme·API만 Vercel에서 깨짐 | Sensitive env → `vercel pull`이 `[SENSITIVE]`(length=11) | `NEXT_PUBLIC_*` Sensitive **OFF** 후 Actions 재배포 (7-3절) |
+| env 수정했는데 배포물이 안 바뀜 | Vercel Redeploy만 함 (prebuilt 번들 재사용) | Actions에서 `vercel pull` → `vercel build` → `vercel deploy` 전체 재실행 |
 | `vercel deploy --prebuilt` 실패 | 빌드 산출물 없음 | 직전 `vercel build` 성공 여부 확인 |
 
 ---
@@ -1009,7 +1088,7 @@ VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_USER_COMMERCE }}
 □ 5단계: VERCEL_TOKEN export 후 setup-project.sh 실행
 □ 6단계: VERCEL_TOKEN / VERCEL_ORG_ID / VERCEL_PROJECT_ID_USER_PORTFOLIO 등록
 □ 7단계: (선택) Vercel 대시보드 Root Directory = apps/user/portfolio 확인
-□ Vercel Environment Variables 등록
+□ 7-3절: Vercel Environment Variables 등록 (`NEXT_PUBLIC_*` Sensitive OFF)
 □ GitHub Environments: preview, production 생성
 □ 8단계: Actions → Deploy Portfolio → Run workflow (preview)
 □ 배포 URL 접속 확인
