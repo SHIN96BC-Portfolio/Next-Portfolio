@@ -853,6 +853,7 @@ Git을 연결하면 push마다 Vercel이 자동 빌드합니다. 이 저장소�
 ### 7-4. Build & Development Settings
 
 대시보드의 Install / Build Command는 **입력하지 않아도 됩니다.** 2단계 `vercel.json`이 `vercel build` 시 사용됩니다.
+Install / Build Command 가 자동으로 입력되는 경우에는 Override 꺼도 됩니다.(끄고 vercel.json을 의존하는걸 권장)
 
 **빌드 로그는 GitHub Actions** 의 `Build (prebuilt)` 스텝에서 확인합니다. Vercel Deployments에는 업로드·호스팅 로그만 남습니다.
 
