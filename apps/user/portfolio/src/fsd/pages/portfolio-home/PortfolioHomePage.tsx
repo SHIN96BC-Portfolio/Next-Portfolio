@@ -30,12 +30,12 @@ export default async function PortfolioHomePage({ lang }: PortfolioHomePageProps
 
   return (
     <div className="font-[family-name:var(--font-geist-sans)]">
-      <PortfolioSectionRenderer sections={sections} />
+      <PortfolioSectionRenderer sections={sections} lang={lang} />
     </div>
   );
 }
 
-function PortfolioSectionRenderer({ sections }: { sections: HomeSectionRes[] }) {
+function PortfolioSectionRenderer({ sections, lang }: { sections: HomeSectionRes[]; lang: ContentLang }) {
   const activeSections = [...sections].filter((s) => s.isActive).sort((a, b) => a.displayOrder - b.displayOrder);
 
   return (
@@ -63,6 +63,7 @@ function PortfolioSectionRenderer({ sections }: { sections: HomeSectionRes[] }) 
                 key={section.id}
                 title={section.title ?? 'Projects'}
                 config={section.config as ProjectGridConfig}
+                lang={lang}
               />
             );
 
@@ -72,6 +73,7 @@ function PortfolioSectionRenderer({ sections }: { sections: HomeSectionRes[] }) 
                 key={section.id}
                 title={section.title ?? 'Career'}
                 config={section.config as TimelineConfig}
+                lang={lang}
               />
             );
 

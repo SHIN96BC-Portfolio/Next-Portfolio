@@ -136,7 +136,7 @@ export const portfolioProjectsJa: ProjectCompany[] = [
   {
     id: 'pinetechsoft',
     name: '(주) Pinetechsoft',
-    period: '2023.10 – 2024.05（8ヶ月）',
+    period: '2023.10 – 2024.05',
     role: '開発3チーム / フロントエンド開発者',
     projects: [
       {
@@ -307,7 +307,7 @@ export const portfolioProjectsJa: ProjectCompany[] = [
   {
     id: 'er-solution',
     name: '(주) ER Solution',
-    period: '2022.07 – 2023.09（1年3ヶ月）',
+    period: '2022.07 – 2023.09',
     role: '開発1チーム / フルスタック開発者',
     projects: [
       {
