@@ -94,7 +94,7 @@ AI 時代には、コード量より **問題定義の精度と AI を通じた�
         {
           id: 'career-yrism',
           company: 'YRISM株式会社',
-          period: '2024年8月 – 在職中',
+          period: '2024.08 – 在職中',
           location: '韓国',
           department: '開発チーム',
           position: 'マネージャー',
@@ -105,7 +105,7 @@ AI 時代には、コード量より **問題定義の精度と AI を通じた�
         {
           id: 'career-pinetechsoft',
           company: 'Pinetechsoft株式会社',
-          period: '2023年10月 – 2024年5月（8ヶ月）',
+          period: '2023.10 – 2024.05',
           location: '韓国',
           department: '開発3チーム',
           position: '研究員',
@@ -116,23 +116,12 @@ AI 時代には、コード量より **問題定義の精度と AI を通じた�
         {
           id: 'career-er',
           company: 'ER Solution株式会社',
-          period: '2022年7月 – 2023年9月（1年3ヶ月）',
+          period: '2022.07 – 2023.09',
           location: '韓国',
           department: '開発1チーム',
           position: '研究員',
           role: 'フルスタックエンジニア',
           description: 'Web アプリケーション SI 開発（フロント・バックエンド）',
-          isDevRole: true,
-        },
-        {
-          id: 'career-education-prep',
-          company: '韓国ソフトウェア人材開発院',
-          period: '2021年11月 – 2022年4月',
-          location: '韓国',
-          department: 'Java フルスタック課程',
-          position: '修了',
-          role: '研修生',
-          description: 'Java フルスタック Web 開発者養成課程（6ヶ月）— 開発者転身',
           isDevRole: true,
         },
       ],
@@ -179,13 +168,13 @@ AI 時代には、コード量より **問題定義の精度と AI を通じた�
       items: [
         {
           school: '韓国放送通信大学校',
-          period: '2023年9月 – 在学中',
+          period: '2023.09 – 在学中',
           location: '韓国',
           details: ['コンピュータ科学科', '3年次編入'],
         },
         {
           school: '韓国ソフトウェア人材開発院',
-          period: '2021年11月 – 2022年4月',
+          period: '2021.11 – 2022.04',
           location: '韓国',
           details: [
             'Java フルスタック Web 開発者養成課程（6ヶ月）',
@@ -195,7 +184,7 @@ AI 時代には、コード量より **問題定義の精度と AI を通じた�
         },
         {
           school: '東放学園メディア・トレーニング・カレッジ',
-          period: '2019年4月 – 2021年3月',
+          period: '2019.04 – 2021.03',
           location: '日本',
           details: ['放送音響科 卒業', '成績優秀奨学金受賞'],
         },

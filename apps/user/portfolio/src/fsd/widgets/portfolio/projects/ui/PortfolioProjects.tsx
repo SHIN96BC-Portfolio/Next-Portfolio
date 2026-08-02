@@ -1,6 +1,6 @@
 'use client';
 
-import { ProjectGridConfig } from '@FsdEntities/content/model/types';
+import { ContentLang, ProjectGridConfig } from '@FsdEntities/content/model/types';
 import ScrollReveal from '@FsdFeatures/scroll-reveal/ui/ScrollReveal';
 import { AccordionItem } from '@FsdShared/accordion/ui';
 import { SectionHeader } from '@FsdShared/section-header/ui';
@@ -11,9 +11,10 @@ import HighlightListItem from './HighlightListItem';
 interface Props {
   title: string;
   config: ProjectGridConfig;
+  lang: ContentLang;
 }
 
-export default function PortfolioProjects({ title, config }: Props) {
+export default function PortfolioProjects({ title, config, lang }: Props) {
   const [openCompany, setOpenCompany] = useState<string | null>(config.companies[0]?.id ?? null);
   const [openProject, setOpenProject] = useState<string | null>('modetour');
 
@@ -43,117 +44,121 @@ export default function PortfolioProjects({ title, config }: Props) {
                   variant="card"
                   isOpen={isCompanyOpen}
                   onToggle={() => toggleCompany(company.id)}
-                  contentClassName="space-y-3"
                   scrollOnOpen
                   trigger={
                     <div>
                       <h3 className="text-lg sm:text-xl font-bold text-card-foreground">{company.name}</h3>
-                      <p className="mt-1 text-sm text-primary font-medium">{formatEmploymentPeriod(company.period)}</p>
+                      <p className="mt-1 text-sm text-primary font-medium">
+                        {formatEmploymentPeriod(company.period, lang)}
+                      </p>
                       {company.role && <p className="mt-1 text-sm text-muted-foreground">{company.role}</p>}
                     </div>
                   }
                 >
-                  {company.projects.map((project) => {
-                    const isProjectOpen = openProject === project.id;
+                  <div className="space-y-3 pb-3">
+                    {company.projects.map((project) => {
+                      const isProjectOpen = openProject === project.id;
 
-                    return (
-                      <AccordionItem
-                        key={project.id}
-                        variant="nested"
-                        isOpen={isProjectOpen}
-                        onToggle={() => toggleProject(project.id)}
-                        contentClassName="space-y-5"
-                        scrollOnOpen
-                        trigger={
-                          <div>
-                            <h4 className="font-semibold text-foreground">{project.name}</h4>
-                            <p className="mt-1 text-xs text-muted-foreground">
-                              {project.period} · {project.role}
-                            </p>
-                            <p className="mt-2 text-sm text-muted-foreground line-clamp-2">{project.summary}</p>
-                          </div>
-                        }
-                      >
-                        <div>
-                          <h5 className="text-sm font-semibold text-foreground mb-2">주요 업무</h5>
-                          <ul className="space-y-2">
-                            {project.highlights.map((item) => (
-                              <HighlightListItem key={item} item={item} />
-                            ))}
-                          </ul>
-                        </div>
+                      return (
+                        <AccordionItem
+                          key={project.id}
+                          variant="nested"
+                          isOpen={isProjectOpen}
+                          onToggle={() => toggleProject(project.id)}
+                          scrollOnOpen
+                          trigger={
+                            <div>
+                              <h4 className="font-semibold text-foreground">{project.name}</h4>
+                              <p className="mt-1 text-xs text-muted-foreground">
+                                {project.period} · {project.role}
+                              </p>
+                              <p className="mt-2 text-sm text-muted-foreground">{project.summary}</p>
+                            </div>
+                          }
+                        >
+                          <div className="space-y-5 py-5">
+                            <div>
+                              <h5 className="text-sm font-semibold text-foreground mb-2">주요 업무</h5>
+                              <ul className="space-y-2">
+                                {project.highlights.map((item) => (
+                                  <HighlightListItem key={item} item={item} />
+                                ))}
+                              </ul>
+                            </div>
 
-                        {project.issues && project.issues.length > 0 && (
-                          <div>
-                            <h5 className="text-sm font-semibold text-foreground mb-2">이슈 & 해결</h5>
-                            <ul className="space-y-1.5">
-                              {project.issues.map((item) => (
-                                <li
-                                  key={item}
-                                  className="text-sm text-muted-foreground flex gap-2 before:content-['→'] before:text-warning before:shrink-0"
-                                >
-                                  {item}
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        )}
-
-                        <div>
-                          <h5 className="text-sm font-semibold text-foreground mb-2">기술 스택</h5>
-                          <div className="flex flex-wrap gap-2">
-                            {project.techStack.map((tech) => (
-                              <span
-                                key={tech}
-                                className="rounded-full bg-muted px-3 py-1 text-xs font-medium text-muted-foreground"
-                              >
-                                {tech}
-                              </span>
-                            ))}
-                          </div>
-                        </div>
-
-                        {(project.linkGroups?.length ?? 0) > 0 && (
-                          <div className="space-y-4">
-                            {project.linkGroups?.map((group) => (
-                              <div key={group.title}>
-                                <h5 className="text-sm font-semibold text-foreground mb-2">{group.title}</h5>
-                                <div className="flex flex-wrap gap-3">
-                                  {group.links.map((link) => (
-                                    <a
-                                      key={link.url}
-                                      href={link.url}
-                                      target="_blank"
-                                      rel="noopener noreferrer"
-                                      className="text-sm text-primary hover:underline"
+                            {project.issues && project.issues.length > 0 && (
+                              <div>
+                                <h5 className="text-sm font-semibold text-foreground mb-2">이슈 & 해결</h5>
+                                <ul className="space-y-1.5">
+                                  {project.issues.map((item) => (
+                                    <li
+                                      key={item}
+                                      className="text-sm text-muted-foreground flex gap-2 before:content-['→'] before:text-warning before:shrink-0"
                                     >
-                                      {link.label} →
-                                    </a>
+                                      {item}
+                                    </li>
                                   ))}
-                                </div>
+                                </ul>
                               </div>
-                            ))}
-                          </div>
-                        )}
+                            )}
 
-                        {!project.linkGroups?.length && project.links && project.links.length > 0 && (
-                          <div className="flex flex-wrap gap-3">
-                            {project.links.map((link) => (
-                              <a
-                                key={link.url}
-                                href={link.url}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-sm text-primary hover:underline"
-                              >
-                                {link.label} →
-                              </a>
-                            ))}
+                            <div>
+                              <h5 className="text-sm font-semibold text-foreground mb-2">기술 스택</h5>
+                              <div className="flex flex-wrap gap-2">
+                                {project.techStack.map((tech) => (
+                                  <span
+                                    key={tech}
+                                    className="rounded-full bg-muted px-3 py-1 text-xs font-medium text-muted-foreground"
+                                  >
+                                    {tech}
+                                  </span>
+                                ))}
+                              </div>
+                            </div>
+
+                            {(project.linkGroups?.length ?? 0) > 0 && (
+                              <div className="space-y-4">
+                                {project.linkGroups?.map((group) => (
+                                  <div key={group.title}>
+                                    <h5 className="text-sm font-semibold text-foreground mb-2">{group.title}</h5>
+                                    <div className="flex flex-wrap gap-3">
+                                      {group.links.map((link) => (
+                                        <a
+                                          key={link.url}
+                                          href={link.url}
+                                          target="_blank"
+                                          rel="noopener noreferrer"
+                                          className="text-sm text-primary hover:underline"
+                                        >
+                                          {link.label} →
+                                        </a>
+                                      ))}
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+
+                            {!project.linkGroups?.length && project.links && project.links.length > 0 && (
+                              <div className="flex flex-wrap gap-3">
+                                {project.links.map((link) => (
+                                  <a
+                                    key={link.url}
+                                    href={link.url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-sm text-primary hover:underline"
+                                  >
+                                    {link.label} →
+                                  </a>
+                                ))}
+                              </div>
+                            )}
                           </div>
-                        )}
-                      </AccordionItem>
-                    );
-                  })}
+                        </AccordionItem>
+                      );
+                    })}
+                  </div>
                 </AccordionItem>
               </ScrollReveal>
             );
