@@ -14,6 +14,17 @@
     "skills": "Skills",
     "contact": "Contact"
   },
+  "resume": {
+    "title": "경력기술서",
+    "print": "인쇄 / PDF",
+    "backToHome": "홈",
+    "viewDetail": "상세 경력기술서 보기",
+    "labels": {
+      "problem": "배경·문제",
+      "outcomes": "성과",
+      "techStack": "기술 스택"
+    }
+  },
   "btn": {
     "title": "버튼"
   }

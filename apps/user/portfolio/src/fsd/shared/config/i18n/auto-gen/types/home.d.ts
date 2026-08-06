@@ -19,4 +19,15 @@ export interface DictionaryHome {
   btn: {
     title: string;
   };
+  resume: {
+    title: string;
+    print: string;
+    backToHome: string;
+    viewDetail: string;
+    labels: {
+      problem: string;
+      outcomes: string;
+      techStack: string;
+    };
+  };
 }

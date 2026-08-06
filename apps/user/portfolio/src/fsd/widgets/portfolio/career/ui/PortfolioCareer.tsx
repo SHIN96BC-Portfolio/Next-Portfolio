@@ -2,16 +2,19 @@
 
 import { ContentLang, TimelineConfig } from '@FsdEntities/content/model/types';
 import ScrollReveal from '@FsdFeatures/scroll-reveal/ui/ScrollReveal';
+import { buildPortfolioPath } from '@FsdShared/config/routing/site-routes';
 import { SectionHeader } from '@FsdShared/section-header/ui';
 import formatEmploymentPeriod, { formatTotalEmploymentPeriod } from '@FsdShared/utils/date/format-employment-period';
+import Link from 'next/link';
 
 interface Props {
   title: string;
   config: TimelineConfig;
   lang: ContentLang;
+  resumeLinkLabel: string;
 }
 
-export default function PortfolioCareer({ title, config, lang }: Props) {
+export default function PortfolioCareer({ title, config, lang, resumeLinkLabel }: Props) {
   const totalEmploymentPeriod = formatTotalEmploymentPeriod(
     config.items.map((item) => item.period),
     lang
@@ -60,6 +63,17 @@ export default function PortfolioCareer({ title, config, lang }: Props) {
             ))}
           </div>
         </div>
+
+        <ScrollReveal variant="fade-up" delay={200}>
+          <div className="mt-10 flex justify-center">
+            <Link
+              href={buildPortfolioPath(lang, 'resume')}
+              className="inline-flex items-center rounded-full border border-border bg-card px-5 py-2.5 text-sm font-medium text-foreground transition-colors hover:border-primary/40 hover:bg-primary/5 hover:text-primary"
+            >
+              {resumeLinkLabel}
+            </Link>
+          </div>
+        </ScrollReveal>
       </div>
     </section>
   );

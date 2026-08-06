@@ -7,8 +7,8 @@ import { DictionaryHome } from '@FsdShared/config/i18n/auto-gen/types/home';
 import { buildPortfolioPath } from '@FsdShared/config/routing/site-routes';
 import { ThemeType } from '@FsdShared/config/theme/model/type';
 import mergeClassNames from '@FsdShared/utils/style/merge-class-names';
-import HomeSectionNav from '@FsdWidgets/header/ui/HomeSectionNav';
 import SiteNavLinks from '@FsdWidgets/header/ui/SiteNavLinks';
+import ResumePrintButton from '@FsdWidgets/resume/ui/ResumePrintButton';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -19,7 +19,7 @@ interface Props {
   gnbList: SiteGnb[];
 }
 
-export default function PortfolioHeader({ themeType, homeDict, gnbList }: Props) {
+export default function PortfolioDocumentHeader({ themeType, homeDict, gnbList }: Props) {
   const params = useParams<{ lang: string }>();
   const lang = params?.lang ?? 'ko';
   const [isScrolled, setIsScrolled] = useState(false);
@@ -34,8 +34,8 @@ export default function PortfolioHeader({ themeType, homeDict, gnbList }: Props)
   return (
     <header
       className={mergeClassNames(
-        'sticky top-0 z-50 transition-all duration-300',
-        isScrolled ? 'border-b border-border/60 bg-background/80 backdrop-blur-md shadow-sm' : 'bg-transparent'
+        'no-print sticky top-0 z-50 transition-all duration-300',
+        isScrolled ? 'border-b border-border/60 bg-background/80 backdrop-blur-md shadow-sm' : 'bg-background'
       )}
     >
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-6">
@@ -49,12 +49,11 @@ export default function PortfolioHeader({ themeType, homeDict, gnbList }: Props)
         <SiteNavLinks items={gnbList} className="hidden md:flex flex-1 justify-center" />
 
         <div className="flex shrink-0 items-center gap-2">
+          <ResumePrintButton homeDict={homeDict} />
           <LangToggle />
           <ThemeToggle themeType={themeType} />
         </div>
       </div>
-
-      <HomeSectionNav homeDict={homeDict} />
     </header>
   );
 }

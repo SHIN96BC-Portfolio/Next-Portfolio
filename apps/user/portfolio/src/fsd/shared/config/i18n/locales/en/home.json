@@ -14,6 +14,17 @@
     "skills": "Skills",
     "contact": "Contact"
   },
+  "resume": {
+    "title": "Resume",
+    "print": "Print / PDF",
+    "backToHome": "Home",
+    "viewDetail": "View full resume",
+    "labels": {
+      "problem": "Background & Problem",
+      "outcomes": "Outcomes",
+      "techStack": "Tech Stack"
+    }
+  },
   "btn": {
     "title": "Button"
   }

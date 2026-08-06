@@ -11,6 +11,8 @@ import {
   SkillsConfig,
   TimelineConfig,
 } from '@FsdEntities/content/model/types';
+import { I18N_DICTIONARY_NAMESPACE } from '@FsdShared/config/i18n';
+import getI18nTranslator from '@FsdShared/config/i18n/utils/get-i18n-translator';
 import PortfolioCareer from '@FsdWidgets/portfolio/career/ui/PortfolioCareer';
 import PortfolioContact from '@FsdWidgets/portfolio/contact/ui/PortfolioContact';
 import PortfolioEducation from '@FsdWidgets/portfolio/education/ui/PortfolioEducation';
@@ -26,16 +28,27 @@ type PortfolioHomePageProps = {
 };
 
 export default async function PortfolioHomePage({ lang }: PortfolioHomePageProps) {
-  const sections = await fetchHomeSectionsSSR(lang);
+  const [sections, { dict: homeDict }] = await Promise.all([
+    fetchHomeSectionsSSR(lang),
+    getI18nTranslator(lang, I18N_DICTIONARY_NAMESPACE.HOME),
+  ]);
 
   return (
     <div className="font-[family-name:var(--font-geist-sans)]">
-      <PortfolioSectionRenderer sections={sections} lang={lang} />
+      <PortfolioSectionRenderer sections={sections} lang={lang} resumeLinkLabel={homeDict.resume.viewDetail} />
     </div>
   );
 }
 
-function PortfolioSectionRenderer({ sections, lang }: { sections: HomeSectionRes[]; lang: ContentLang }) {
+function PortfolioSectionRenderer({
+  sections,
+  lang,
+  resumeLinkLabel,
+}: {
+  sections: HomeSectionRes[];
+  lang: ContentLang;
+  resumeLinkLabel: string;
+}) {
   const activeSections = [...sections].filter((s) => s.isActive).sort((a, b) => a.displayOrder - b.displayOrder);
 
   return (
@@ -74,6 +87,7 @@ function PortfolioSectionRenderer({ sections, lang }: { sections: HomeSectionRes
                 title={section.title ?? 'Career'}
                 config={section.config as TimelineConfig}
                 lang={lang}
+                resumeLinkLabel={resumeLinkLabel}
               />
             );
 

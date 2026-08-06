@@ -167,3 +167,44 @@ dialog::backdrop {
     transition: none;
   }
 }
+
+/* Resume document + print */
+@media print {
+  @page {
+    size: A4;
+    margin: 18mm 16mm;
+  }
+
+  html,
+  body {
+    background: #fff !important;
+    color: #111 !important;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  .resume-document,
+  .resume-paper {
+    background: #fff !important;
+    box-shadow: none !important;
+    border: 0 !important;
+  }
+
+  .resume-project {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .resume-intro {
+    break-after: avoid;
+  }
+
+  a[href^="http"]::after {
+    content: " (" attr(href) ")";
+    font-size: 0.75rem;
+    color: #555;
+    word-break: break-all;
+  }
+}
