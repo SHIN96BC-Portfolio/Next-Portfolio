@@ -13,7 +13,7 @@ export const portfolioHomeSectionsJa: HomeSectionRes[] = [
     displayOrder: 0,
     isActive: true,
     config: {
-      name: '申炳哲',
+      name: '申秉澈(シン・ビョンチョル)',
       title: 'Frontend Developer（5年目）',
       tagline: '問い続け、より良い方向を見つける開発者',
       links: [

@@ -14,6 +14,35 @@
     "skills": "Skills",
     "contact": "Contact"
   },
+  "resume": {
+    "title": "職務経歴書",
+    "print": "印刷 / PDF",
+    "backToHome": "ホーム",
+    "viewDetail": "詳細な職務経歴書を見る",
+    "labels": {
+      "problem": "背景・課題",
+      "outcomes": "成果",
+      "techStack": "技術スタック"
+    }
+  },
+  "settings": {
+    "title": "設定",
+    "close": "閉じる",
+    "language": "言語",
+    "theme": "テーマ"
+  },
+  "share": {
+    "title": "共有",
+    "button": "共有",
+    "copyUrl": "URLをコピー",
+    "copied": "コピーしました",
+    "native": "端末で共有",
+    "sns": "SNSで共有",
+    "kakao": "カカオトーク",
+    "facebook": "Facebook",
+    "twitter": "X",
+    "linkedin": "LinkedIn"
+  },
   "btn": {
     "title": "ボタン"
   }

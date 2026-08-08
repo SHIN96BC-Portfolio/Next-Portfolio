@@ -1,3 +1,4 @@
+import { ContentLang } from '@FsdEntities/content/model/types';
 import SiteService from '@FsdEntities/site/api/SiteService';
 import { GnbGetRes } from '@FsdEntities/site/model/server';
 import { PortfolioGetRes } from '@FsdEntities/site/model/server/portfolio';
@@ -23,8 +24,9 @@ class SiteServiceImpl implements SiteService {
    * GNB 조회
    * @returns {Promise<CommonRes<GnbGetRes>>}
    */
-  getGnb(): Promise<CommonRes<GnbGetRes[]>> {
-    return this.base.http.get<CommonRes<GnbGetRes[]>>('/site/gnb');
+  getGnb(lang?: ContentLang): Promise<CommonRes<GnbGetRes[]>> {
+    const query = lang ? `?lang=${lang}` : '';
+    return this.base.http.get<CommonRes<GnbGetRes[]>>(`/site/gnb${query}`);
   }
 
   /**

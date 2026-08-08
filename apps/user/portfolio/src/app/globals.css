@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@source "../../../../../core/bc-ui/src/**/*.{ts,tsx}";
 
 /* v4에서는 다크모드를 class로 쓰려면 커스텀 variant를 CSS에 선언 */
 @custom-variant dark (&:where(.dark, .dark *));
@@ -165,5 +166,137 @@ dialog::backdrop {
     opacity: 1;
     transform: none;
     transition: none;
+  }
+}
+
+/* Print document — fluid layout for any paper size (@page size: auto) */
+.print-document {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.print-document--home section {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.print-document--home section > div {
+  width: 100%;
+  max-width: 100%;
+  margin-inline: 0;
+  padding-inline: 0;
+  box-sizing: border-box;
+}
+
+.print-section {
+  box-sizing: border-box;
+}
+
+.print-section__inner {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.print-document--home {
+  padding: 1.25rem 1.5rem;
+}
+
+.print-document--home section.print-section {
+  padding-block: 1.5rem 2rem;
+}
+
+.print-document--home .print-section + .print-section {
+  margin-top: 1rem;
+}
+
+.print-document--resume {
+  padding: 0;
+}
+
+.print-paper {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid color-mix(in srgb, var(--border) 60%, transparent);
+  border-radius: 0.75rem;
+  background: var(--card);
+  padding: 1.5rem 1.75rem;
+}
+
+.print-document .scroll-reveal,
+.print-document .scroll-reveal--fade-up,
+.print-document .scroll-reveal--fade-in,
+.print-document .scroll-reveal--slide-left,
+.print-document .scroll-reveal--slide-right {
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+.print-document .scroll-reveal-clip {
+  overflow: visible !important;
+}
+
+@media print {
+  @page {
+    size: auto;
+    margin: 12mm;
+  }
+
+  html,
+  body {
+    overflow: visible !important;
+    max-width: none !important;
+    width: 100% !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  .print-document,
+  .print-document * {
+    box-sizing: border-box;
+  }
+
+  .print-document {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .print-document--home section > div,
+  .print-section__inner,
+  .print-paper {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-shadow: none !important;
+  }
+
+  .print-document--home {
+    padding: 0;
+  }
+
+  .print-document--home section.print-section {
+    padding-block: 1.25rem 1.75rem !important;
+  }
+
+  .print-document--home .print-section + .print-section {
+    margin-top: 0.75rem;
+  }
+
+  .resume-intro {
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+
+  .resume-project > header,
+  .resume-section > h2 {
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+
+  .resume-project {
+    break-inside: auto;
+    page-break-inside: auto;
   }
 }

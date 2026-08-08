@@ -16,6 +16,35 @@ export interface DictionaryHome {
     skills: string;
     contact: string;
   };
+  resume: {
+    title: string;
+    print: string;
+    backToHome: string;
+    viewDetail: string;
+    labels: {
+      problem: string;
+      outcomes: string;
+      techStack: string;
+    };
+  };
+  settings: {
+    title: string;
+    close: string;
+    language: string;
+    theme: string;
+  };
+  share: {
+    title: string;
+    button: string;
+    copyUrl: string;
+    copied: string;
+    native: string;
+    sns: string;
+    kakao: string;
+    facebook: string;
+    twitter: string;
+    linkedin: string;
+  };
   btn: {
     title: string;
   };

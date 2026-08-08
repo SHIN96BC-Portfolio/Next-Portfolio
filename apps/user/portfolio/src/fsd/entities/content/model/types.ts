@@ -13,6 +13,7 @@ export const SECTION_TYPE = {
   PROJECT_GRID: 'PROJECT_GRID',
   TIMELINE: 'TIMELINE',
   CUSTOM: 'CUSTOM',
+  RESUME_PROJECT: 'RESUME_PROJECT',
 } as const;
 
 export type SectionType = (typeof SECTION_TYPE)[keyof typeof SECTION_TYPE];
@@ -56,6 +57,7 @@ export type SectionConfig =
   | MarkdownConfig
   | ProjectGridConfig
   | TimelineConfig
+  | ResumeProjectConfig
   | SkillsConfig
   | LicensesConfig
   | EducationConfig
@@ -127,6 +129,32 @@ export interface TimelineItem {
   role: string;
   description: string;
   isDevRole?: boolean;
+}
+
+export interface ResumeWorkSection {
+  title: string;
+  items: string[];
+}
+
+export interface ResumeExtraSection {
+  title: string;
+  body?: string;
+  items?: string[];
+}
+
+export interface ResumeProjectConfig {
+  projectId: string;
+  orderLabel?: string;
+  title: string;
+  company: string;
+  period: string;
+  role: string;
+  links: ProjectLink[];
+  problem: string;
+  workSections: ResumeWorkSection[];
+  outcomes: string[];
+  extraSections?: ResumeExtraSection[];
+  techStack: string[];
 }
 
 export interface SkillsConfig {

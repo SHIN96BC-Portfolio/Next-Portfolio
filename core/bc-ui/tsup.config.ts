@@ -17,6 +17,8 @@ export default defineConfig([
       index: 'src/index.ts',
       'accordion/index': 'src/accordion/index.ts',
       'modal/index': 'src/modal/index.ts',
+      'print/index': 'src/print/index.ts',
+      'sheet/index': 'src/sheet/index.ts',
     },
   },
   {

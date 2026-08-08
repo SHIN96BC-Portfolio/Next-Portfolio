@@ -1,5 +1,6 @@
+import { getPortfolioCareerSectionsMock } from '@FsdEntities/content/model/mock/portfolio-career-sections';
 import { getPortfolioHomeSectionsMock } from '@FsdEntities/content/model/mock/portfolio-home-sections';
-import { resolveContentLang } from '@FsdEntities/content/model/types';
+import { PAGE_KEY, resolveContentLang } from '@FsdEntities/content/model/types';
 import { addDelay } from '@FsdShared/config/mock/handlers';
 import { host } from '@FsdShared/config/mock/mock.config';
 import { HttpResponse, http } from 'msw';
@@ -13,26 +14,21 @@ const contentMockHandler = [
 
     console.info(`msw get /site/pages/${pageKey}/sections?mode=${mode}&lang=${lang}`);
 
-    if (pageKey !== 'HOME') {
-      return addDelay(
-        HttpResponse.json({
-          status: 200,
-          message: 'OK',
-          ok: true,
-          result: [],
-        }),
-        300
-      );
-    }
+    const sections =
+      pageKey === PAGE_KEY.CAREER
+        ? getPortfolioCareerSectionsMock(lang)
+        : pageKey === PAGE_KEY.HOME
+          ? getPortfolioHomeSectionsMock(lang)
+          : [];
 
     return addDelay(
       HttpResponse.json({
         status: 200,
         message: 'OK',
         ok: true,
-        result: getPortfolioHomeSectionsMock(lang),
+        result: sections,
       }),
-      500
+      pageKey === PAGE_KEY.HOME ? 500 : 300
     );
   }),
 ];
