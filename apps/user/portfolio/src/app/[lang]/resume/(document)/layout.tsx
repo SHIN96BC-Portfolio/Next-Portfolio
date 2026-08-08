@@ -6,7 +6,7 @@ interface Props {
   params: Promise<{ lang: string }>;
 }
 
-export default async function ResumeLayout({ children, params }: Props) {
+export default async function ResumeDocumentLayout({ children, params }: Props) {
   const { lang } = await params;
   const layoutProps = await getPortfolioLayoutProps(lang);
 

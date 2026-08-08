@@ -11,6 +11,10 @@ const clientOutputs = [
   'dist/accordion/index.cjs',
   'dist/modal/index.js',
   'dist/modal/index.cjs',
+  'dist/print/index.js',
+  'dist/print/index.cjs',
+  'dist/sheet/index.js',
+  'dist/sheet/index.cjs',
 ];
 
 const directive = '"use client";';

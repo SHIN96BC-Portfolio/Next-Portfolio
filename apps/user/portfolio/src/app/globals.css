@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@source "../../../../../core/bc-ui/src/**/*.{ts,tsx}";
 
 /* v4에서는 다크모드를 class로 쓰려면 커스텀 variant를 CSS에 선언 */
 @custom-variant dark (&:where(.dark, .dark *));
@@ -168,43 +169,126 @@ dialog::backdrop {
   }
 }
 
-/* Resume document + print */
+/* Print document — fluid layout for any paper size (@page size: auto) */
+.print-document {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.print-document--home section {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.print-document--home section > div {
+  width: 100%;
+  max-width: 100%;
+  margin-inline: 0;
+  padding-inline: 0;
+  box-sizing: border-box;
+}
+
+.print-section {
+  padding-block: 0.625rem;
+}
+
+.print-section__inner {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.print-document--home section {
+  padding-block: 0 !important;
+}
+
+.print-document--home .print-section + .print-section {
+  margin-top: 0;
+}
+
+.print-document--resume {
+  padding: 0;
+}
+
+.print-paper {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid color-mix(in srgb, var(--border) 60%, transparent);
+  border-radius: 0.75rem;
+  background: var(--card);
+  padding: 1.5rem 1.75rem;
+}
+
+.print-document .scroll-reveal,
+.print-document .scroll-reveal--fade-up,
+.print-document .scroll-reveal--fade-in,
+.print-document .scroll-reveal--slide-left,
+.print-document .scroll-reveal--slide-right {
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+.print-document .scroll-reveal-clip {
+  overflow: visible !important;
+}
+
 @media print {
   @page {
-    size: A4;
-    margin: 18mm 16mm;
+    size: auto;
+    margin: 12mm;
   }
 
   html,
   body {
-    background: #fff !important;
-    color: #111 !important;
+    overflow: visible !important;
+    max-width: none !important;
+    width: 100% !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
   }
 
   .no-print {
     display: none !important;
   }
 
-  .resume-document,
-  .resume-paper {
-    background: #fff !important;
-    box-shadow: none !important;
-    border: 0 !important;
+  .print-document,
+  .print-document * {
+    box-sizing: border-box;
   }
 
-  .resume-project {
-    break-inside: avoid;
-    page-break-inside: avoid;
+  .print-document {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .print-document--home section > div,
+  .print-section__inner,
+  .print-paper {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-shadow: none !important;
+  }
+
+  .print-document--home section {
+    padding-block: 0 !important;
+  }
+
+  .print-section {
+    padding-block: 0.5rem !important;
   }
 
   .resume-intro {
     break-after: avoid;
+    page-break-after: avoid;
   }
 
-  a[href^="http"]::after {
-    content: " (" attr(href) ")";
-    font-size: 0.75rem;
-    color: #555;
-    word-break: break-all;
+  .resume-project > header,
+  .resume-section > h2 {
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+
+  .resume-project {
+    break-inside: auto;
+    page-break-inside: auto;
   }
 }

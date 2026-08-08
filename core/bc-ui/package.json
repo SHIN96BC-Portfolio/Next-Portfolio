@@ -30,6 +30,16 @@
       "import": "./dist/utils/index.js",
       "require": "./dist/utils/index.cjs"
     },
+    "./print": {
+      "types": "./dist/print/index.d.ts",
+      "import": "./dist/print/index.js",
+      "require": "./dist/print/index.cjs"
+    },
+    "./sheet": {
+      "types": "./dist/sheet/index.d.ts",
+      "import": "./dist/sheet/index.js",
+      "require": "./dist/sheet/index.cjs"
+    },
     "./package.json": "./package.json"
   },
   "files": ["dist", "README.md"],

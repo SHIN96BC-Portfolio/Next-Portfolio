@@ -1,15 +1,12 @@
 'use client';
 
-import LangToggle from '@FsdEntities/lang/ui/LangToggle';
 import { SiteGnb } from '@FsdEntities/site/model/client/gnb';
-import ThemeToggle from '@FsdEntities/theme/ui/ThemeToggle';
 import { DictionaryHome } from '@FsdShared/config/i18n/auto-gen/types/home';
-import { buildPortfolioPath } from '@FsdShared/config/routing/site-routes';
 import { ThemeType } from '@FsdShared/config/theme/model/type';
+import { buildPortfolioPrintPath } from '@FsdShared/print/config/print-targets';
 import mergeClassNames from '@FsdShared/utils/style/merge-class-names';
 import HomeSectionNav from '@FsdWidgets/header/ui/HomeSectionNav';
-import SiteNavLinks from '@FsdWidgets/header/ui/SiteNavLinks';
-import Link from 'next/link';
+import PortfolioHeaderBar from '@FsdWidgets/header/ui/PortfolioHeaderBar';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
@@ -34,25 +31,16 @@ export default function PortfolioHeader({ themeType, homeDict, gnbList }: Props)
   return (
     <header
       className={mergeClassNames(
-        'sticky top-0 z-50 transition-all duration-300',
+        'no-print sticky top-0 z-50 transition-all duration-300',
         isScrolled ? 'border-b border-border/60 bg-background/80 backdrop-blur-md shadow-sm' : 'bg-transparent'
       )}
     >
-      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-6">
-        <Link
-          href={buildPortfolioPath(lang, 'home')}
-          className="shrink-0 text-lg font-bold tracking-tight text-foreground hover:text-primary transition-colors"
-        >
-          {homeDict.header.brand}
-        </Link>
-
-        <SiteNavLinks items={gnbList} className="hidden md:flex flex-1 justify-center" />
-
-        <div className="flex shrink-0 items-center gap-2">
-          <LangToggle />
-          <ThemeToggle themeType={themeType} />
-        </div>
-      </div>
+      <PortfolioHeaderBar
+        homeDict={homeDict}
+        gnbList={gnbList}
+        themeType={themeType}
+        printHref={buildPortfolioPrintPath(lang, 'homePrint')}
+      />
 
       <HomeSectionNav homeDict={homeDict} />
     </header>

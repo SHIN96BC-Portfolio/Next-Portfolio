@@ -25,6 +25,24 @@
       "techStack": "Tech Stack"
     }
   },
+  "settings": {
+    "title": "Settings",
+    "close": "Close",
+    "language": "Language",
+    "theme": "Theme"
+  },
+  "share": {
+    "title": "Share",
+    "button": "Share",
+    "copyUrl": "Copy URL",
+    "copied": "Copied",
+    "native": "Share via device",
+    "sns": "Share on SNS",
+    "kakao": "KakaoTalk",
+    "facebook": "Facebook",
+    "twitter": "X",
+    "linkedin": "LinkedIn"
+  },
   "btn": {
     "title": "Button"
   }

@@ -25,6 +25,24 @@
       "techStack": "技術スタック"
     }
   },
+  "settings": {
+    "title": "設定",
+    "close": "閉じる",
+    "language": "言語",
+    "theme": "テーマ"
+  },
+  "share": {
+    "title": "共有",
+    "button": "共有",
+    "copyUrl": "URLをコピー",
+    "copied": "コピーしました",
+    "native": "端末で共有",
+    "sns": "SNSで共有",
+    "kakao": "カカオトーク",
+    "facebook": "Facebook",
+    "twitter": "X",
+    "linkedin": "LinkedIn"
+  },
   "btn": {
     "title": "ボタン"
   }

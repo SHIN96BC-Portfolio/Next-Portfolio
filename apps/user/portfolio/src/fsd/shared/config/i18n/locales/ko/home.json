@@ -25,6 +25,24 @@
       "techStack": "기술 스택"
     }
   },
+  "settings": {
+    "title": "설정",
+    "close": "닫기",
+    "language": "언어",
+    "theme": "테마"
+  },
+  "share": {
+    "title": "공유하기",
+    "button": "공유하기",
+    "copyUrl": "URL 복사",
+    "copied": "복사됨",
+    "native": "기기에서 공유",
+    "sns": "SNS 공유",
+    "kakao": "카카오톡",
+    "facebook": "Facebook",
+    "twitter": "X",
+    "linkedin": "LinkedIn"
+  },
   "btn": {
     "title": "버튼"
   }

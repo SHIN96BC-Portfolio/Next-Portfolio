@@ -1,6 +1,10 @@
 'use client';
 
 import { DictionaryHome } from '@FsdShared/config/i18n/auto-gen/types/home';
+import {
+  getPortfolioLandingHeaderOffset,
+  PORTFOLIO_LANDING_HEADER_OFFSET_DESKTOP,
+} from '@FsdShared/config/layout/portfolio-landing-header';
 import mergeClassNames from '@FsdShared/utils/style/merge-class-names';
 import { useEffect, useMemo, useState } from 'react';
 
@@ -24,7 +28,7 @@ export default function HomeSectionNav({ homeDict }: Props) {
   );
 
   useEffect(() => {
-    const HEADER_OFFSET = 112;
+    const HEADER_OFFSET = PORTFOLIO_LANDING_HEADER_OFFSET_DESKTOP;
     const ACTIVATION_LINE = HEADER_OFFSET + 80;
 
     const updateActiveSection = () => {
@@ -76,7 +80,7 @@ export default function HomeSectionNav({ homeDict }: Props) {
 
     setActiveSection(id);
 
-    const top = element.getBoundingClientRect().top + window.scrollY - 112;
+    const top = element.getBoundingClientRect().top + window.scrollY - getPortfolioLandingHeaderOffset();
     window.scrollTo({ top, behavior: 'smooth' });
   };
 

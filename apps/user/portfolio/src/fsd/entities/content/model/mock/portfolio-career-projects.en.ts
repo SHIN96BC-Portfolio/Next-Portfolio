@@ -58,7 +58,7 @@ export const portfolioCareerProjectsEn: ResumeProjectConfig[] = [
     ],
     outcomes: [
       'Resolved critical payment and routing failures and **handled 300+ issues**, moving an unstable legacy system onto a stable footing',
-      'Established operations and deployment for 300 sites on a **single codebase and monorepo**',
+      'Established operations and deployment for **300+ sites** on a **single codebase and monorepo**',
       '**Cut deployment time by ~50–60%** and significantly improved key page load times, boosting both developer productivity and user experience',
       'Completed major version upgrades and state-management migration **without service downtime**, balancing stability with a modern stack',
     ],

@@ -21,8 +21,18 @@ export const PORTFOLIO_ROUTES = {
     pageKey: PAGE_KEY.HOME,
     layout: SITE_LAYOUT.LANDING,
   },
+  homePrint: {
+    segment: 'print',
+    pageKey: PAGE_KEY.HOME,
+    layout: SITE_LAYOUT.DOCUMENT,
+  },
   resume: {
     segment: 'resume',
+    pageKey: PAGE_KEY.CAREER,
+    layout: SITE_LAYOUT.DOCUMENT,
+  },
+  resumePrint: {
+    segment: 'resume/print',
     pageKey: PAGE_KEY.CAREER,
     layout: SITE_LAYOUT.DOCUMENT,
   },
@@ -39,7 +49,13 @@ const ROUTE_BY_SEGMENT = new Map<PortfolioRouteSegment, PortfolioRouteConfig>(
 /** `/ko/resume` → resume route config */
 export function resolvePortfolioRoute(pathname: string): PortfolioRouteConfig {
   const segments = pathname.split('/').filter(Boolean);
-  const routeSegment = (segments[1] ?? '') as PortfolioRouteSegment;
+  const routePath = segments.slice(1).join('/');
+
+  if (routePath === PORTFOLIO_ROUTES.resumePrint.segment) {
+    return PORTFOLIO_ROUTES.resumePrint;
+  }
+
+  const routeSegment = (routePath.split('/')[0] ?? '') as PortfolioRouteSegment;
 
   return ROUTE_BY_SEGMENT.get(routeSegment) ?? PORTFOLIO_ROUTES.home;
 }
