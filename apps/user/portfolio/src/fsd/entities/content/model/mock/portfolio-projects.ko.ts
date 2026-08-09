@@ -113,7 +113,7 @@ export const portfolioProjectsKo: ProjectCompany[] = [
     id: 'pinetechsoft',
     name: '(주) Pinetechsoft',
     period: '2023.10 – 2024.05',
-    role: '개발3팀 / Frontend Developer',
+    role: '개발1팀 / Frontend Developer',
     projects: [
       {
         id: 'lahat-mall-admin',

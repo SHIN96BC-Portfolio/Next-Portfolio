@@ -1,6 +1,6 @@
 'use client';
 
-import { I18N_DICTIONARY_NAMESPACE } from '@FsdShared/config/i18n';
+import { I18N_DICTIONARY_NAMESPACE } from '@FsdShared/config/i18n/client';
 import useI18n from '@FsdShared/config/i18n/hooks/useI18n';
 
 export default function TestWidgets() {

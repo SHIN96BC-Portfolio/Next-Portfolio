@@ -1,8 +1,10 @@
 import { PAGE_KEY, PageKey } from '@FsdEntities/content/model/types';
 
-/** 포트폴리오 앱 전용 라우트 레지스트리 (URL segment ↔ CMS page_key) */
+/** 페이지 shell 종류 — LANDING(홈 GNB+섹션 nav), DOCUMENT(단순 헤더) */
 export const SITE_LAYOUT = {
+  /** 홈 랜딩 — 2단 헤더 + 섹션 앵커 nav */
   LANDING: 'landing',
+  /** 문서형 페이지 — 이력서·인쇄 등 */
   DOCUMENT: 'document',
 } as const;
 
@@ -15,22 +17,30 @@ export interface PortfolioRouteConfig {
   layout: SiteLayout;
 }
 
+/**
+ * 포트폴리오 앱 라우트 레지스트리.
+ * URL segment, CMS `pageKey`, 사용할 layout shell을 한곳에서 관리합니다.
+ */
 export const PORTFOLIO_ROUTES = {
+  /** 홈 랜딩 (`/[lang]`) */
   home: {
     segment: '',
     pageKey: PAGE_KEY.HOME,
     layout: SITE_LAYOUT.LANDING,
   },
+  /** 홈 인쇄 전용 (`/[lang]/print`) */
   homePrint: {
     segment: 'print',
     pageKey: PAGE_KEY.HOME,
     layout: SITE_LAYOUT.DOCUMENT,
   },
+  /** 경력기술서 (`/[lang]/resume`) */
   resume: {
     segment: 'resume',
     pageKey: PAGE_KEY.CAREER,
     layout: SITE_LAYOUT.DOCUMENT,
   },
+  /** 경력기술서 인쇄 전용 (`/[lang]/resume/print`) */
   resumePrint: {
     segment: 'resume/print',
     pageKey: PAGE_KEY.CAREER,

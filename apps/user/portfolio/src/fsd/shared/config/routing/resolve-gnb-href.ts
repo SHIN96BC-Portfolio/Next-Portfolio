@@ -1,5 +1,4 @@
-import { Locale } from '@FsdShared/config/i18n';
-import { supportedLocales } from '@FsdShared/config/i18n/auto-gen/constants/i18n-locales';
+import { Locale, supportedLocales } from '@FsdShared/config/i18n/client';
 
 /** GNB link_url(`/resume`) → `/{lang}/resume` */
 export function resolveGnbHref(path: string, lang: string): string {

@@ -1,13 +1,17 @@
+/**
+ * locale·namespace에 해당하는 번역 JSON을 동적 import로 불러옵니다.
+ * `getI18nTranslator` 내부에서만 사용합니다.
+ */
 import 'server-only';
-import { Locale, Namespace } from '@FsdShared/config/i18n';
 import dictionaries from '@FsdShared/config/i18n/dictionaries';
+import type { Locale } from '../auto-gen/constants/i18n-locales';
+import type { Namespace } from '../auto-gen/constants/i18n-namespaces';
 
 /**
- * locale과 namespace에 해당하는 번역 메시지 JSON을 동적으로 불러옵니다.
+ * locale·namespace에 해당하는 번역 JSON을 동적 import로 불러옵니다.
  *
- * @param locale 언어 코드 (예: 'ko', 'en')
- * @param namespace JSON 파일명 (예: 'common', 'main')
- * @returns 해당 메시지 객체 (Promise<Record<string, string>>)
+ * @param locale 언어 코드 (예: `ko`, `en`, `ja`)
+ * @param namespace JSON 파일명 (예: `common`, `home`)
  */
 export default async function getI18nDictionary(locale: Locale, namespace: Namespace) {
   const localeDictionaries = dictionaries[locale];

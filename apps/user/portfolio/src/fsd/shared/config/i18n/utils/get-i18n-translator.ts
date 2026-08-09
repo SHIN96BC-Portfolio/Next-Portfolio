@@ -1,19 +1,23 @@
+/**
+ * 서버 전용 번역 로더.
+ *
+ * - `server-only`이므로 Client Component에서 import하면 빌드 에러가 납니다.
+ * - Server Component에서 `@FsdShared/config/i18n/utils/get-i18n-translator`로 직접 import하세요.
+ */
 import 'server-only';
-import { Locale, Namespace } from '@FsdShared/config/i18n';
 import { DictionaryNamespaceMap } from '@FsdShared/config/i18n/i18n.type';
 import getI18nDictionary from '@FsdShared/config/i18n/utils/get-i18n-dictionary';
+import type { Locale } from '../auto-gen/constants/i18n-locales';
+import type { Namespace } from '../auto-gen/constants/i18n-namespaces';
 
 /**
- * 주어진 locale에 맞는 번역 메시지를 불러오고,
- * 번역 함수 t(key)를 반환합니다.
+ * 주어진 locale에 맞는 번역 사전을 불러옵니다.
  *
- * 제네릭 N을 사용해서 namespace 에 따라 정확한 dictionary 타입으로 반환
+ * - `server-only` 모듈이므로 Server Component에서만 사용하세요.
+ * - Client Component에서는 `I18nProvider`에 서버에서 미리 로드한 dict를 넘깁니다.
  *
- * 서버 컴포넌트에서 직접 호출하여 사용합니다.
- *
- * @param locale 언어 코드 (예: 'ko', 'en')
- * @param namespace 지원하는 페이지(예: 'main', 'common')
- * @returns 번역 함수 t(key: string): string
+ * @param locale 언어 코드 (예: `ko`, `en`, `ja`)
+ * @param namespace 사전 namespace (예: `home`, `common`)
  */
 export default async function getI18nTranslator<N extends Namespace>(
   locale: Locale,
