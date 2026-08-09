@@ -1,5 +1,5 @@
 import I18nContext from '@FsdApp/i18n/contexts/I18nContext';
-import { Namespace } from '@FsdShared/config/i18n';
+import { Namespace } from '@FsdShared/config/i18n/client';
 import { DictionaryNamespaceMap } from '@FsdShared/config/i18n/i18n.type';
 import { useContext } from 'react';
 

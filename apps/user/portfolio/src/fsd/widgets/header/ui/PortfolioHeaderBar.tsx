@@ -4,6 +4,7 @@ import LangToggle from '@FsdEntities/lang/ui/LangToggle';
 import { SiteGnb } from '@FsdEntities/site/model/client/gnb';
 import ThemeToggle from '@FsdEntities/theme/ui/ThemeToggle';
 import { DictionaryHome } from '@FsdShared/config/i18n/auto-gen/types/home';
+import { resolveLocale } from '@FsdShared/config/i18n/client';
 import { buildPortfolioPath } from '@FsdShared/config/routing/site-routes';
 import { ThemeType } from '@FsdShared/config/theme/model/type';
 import PortfolioPrintButton from '@FsdShared/print/ui/PortfolioPrintButton';
@@ -25,7 +26,7 @@ interface Props {
 
 export default function PortfolioHeaderBar({ homeDict, gnbList, themeType, printHref }: Props) {
   const params = useParams<{ lang: string }>();
-  const lang = params?.lang ?? 'ko';
+  const lang = resolveLocale(params?.lang);
   const [isNavOpen, setIsNavOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isShareOpen, setIsShareOpen] = useState(false);

@@ -6,6 +6,7 @@ import MockServerInit from '@FsdApp/mock/inits/MockServerInit';
 import ReactQueryProvider from '@FsdApp/react-query/providers/ReactQueryProvider';
 import StoreProvider from '@FsdApp/store/providers/StoreProvider';
 import { Locale } from '@FsdShared/config/i18n';
+import { getThemeDomClassName } from '@FsdShared/config/theme/model/type';
 import getThemeCookie from '@FsdShared/config/theme/server-action/getThemeCookie';
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
@@ -43,7 +44,7 @@ export default async function LangLayout({
   const theme = await getThemeCookie();
 
   return (
-    <html lang={lang} className={theme === 'dark' ? 'dark' : ''} style={{ colorScheme: theme }}>
+    <html lang={lang} className={getThemeDomClassName(theme)} style={{ colorScheme: theme }}>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <StoreProvider>
           <ReactQueryProvider>

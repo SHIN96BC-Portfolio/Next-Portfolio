@@ -2,6 +2,7 @@
 
 import { SiteGnb } from '@FsdEntities/site/model/client/gnb';
 import { DictionaryHome } from '@FsdShared/config/i18n/auto-gen/types/home';
+import { resolveLocale } from '@FsdShared/config/i18n/client';
 import { ThemeType } from '@FsdShared/config/theme/model/type';
 import { buildPortfolioPrintPath } from '@FsdShared/print/config/print-targets';
 import mergeClassNames from '@FsdShared/utils/style/merge-class-names';
@@ -17,7 +18,7 @@ interface Props {
 
 export default function PortfolioDocumentHeader({ themeType, homeDict, gnbList }: Props) {
   const params = useParams<{ lang: string }>();
-  const lang = params?.lang ?? 'ko';
+  const lang = resolveLocale(params?.lang);
   const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {

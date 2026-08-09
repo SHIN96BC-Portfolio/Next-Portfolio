@@ -1,4 +1,4 @@
-import { Locale } from '@FsdShared/config/i18n';
+import { Locale } from '@FsdShared/config/i18n/client';
 import { DictionaryNamespaceMap } from '@FsdShared/config/i18n/i18n.type';
 import { createContext } from 'react';
 

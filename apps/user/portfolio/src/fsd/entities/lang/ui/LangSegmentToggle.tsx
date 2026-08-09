@@ -1,7 +1,6 @@
 'use client';
 
-import { I18N_LOCALE_OPTIONS, Locale, supportedLocales } from '@FsdShared/config/i18n/auto-gen/constants/i18n-locales';
-import { defaultLocale } from '@FsdShared/config/proxy/model';
+import { I18N_LOCALE_OPTIONS, Locale, resolveLocale, supportedLocales } from '@FsdShared/config/i18n/client';
 import mergeClassNames from '@FsdShared/utils/style/merge-class-names';
 import { useParams, usePathname, useRouter } from 'next/navigation';
 
@@ -25,8 +24,7 @@ export default function LangSegmentToggle({ fullWidth = false, onChange }: Props
   const router = useRouter();
   const pathname = usePathname() || '/';
   const params = useParams<{ lang: string }>();
-  const currentLang =
-    params?.lang && supportedLocales.includes(params.lang as Locale) ? (params.lang as Locale) : defaultLocale;
+  const currentLang = resolveLocale(params?.lang);
 
   return (
     <div className={mergeClassNames('flex flex-wrap gap-2', fullWidth && 'w-full')} role="group" aria-label="언어 선택">

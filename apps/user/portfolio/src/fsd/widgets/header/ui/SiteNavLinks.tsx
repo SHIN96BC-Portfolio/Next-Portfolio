@@ -1,6 +1,7 @@
 'use client';
 
 import { SiteGnb } from '@FsdEntities/site/model/client/gnb';
+import { resolveLocale } from '@FsdShared/config/i18n/client';
 import { isGnbLinkActive, resolveGnbHref } from '@FsdShared/config/routing/resolve-gnb-href';
 import mergeClassNames from '@FsdShared/utils/style/merge-class-names';
 import Link from 'next/link';
@@ -14,7 +15,7 @@ interface Props {
 export default function SiteNavLinks({ items, className }: Props) {
   const pathname = usePathname() ?? '/';
   const params = useParams<{ lang: string }>();
-  const lang = params?.lang ?? 'ko';
+  const lang = resolveLocale(params?.lang);
 
   if (items.length === 0) {
     return null;

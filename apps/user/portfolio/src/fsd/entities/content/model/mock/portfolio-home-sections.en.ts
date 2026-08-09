@@ -39,11 +39,15 @@ export const portfolioHomeSectionsEn: HomeSectionRes[] = [
     config: {
       body: `I am a web developer with 5 years of experience, specializing in **Next.js-based frontend development**.
 
-I have built and operated web services across SI, startups, travel/aviation, and B2C/B2B platforms, with hands-on experience in **Java API development**, **AWS/Azure infrastructure**, and **CI/CD automation**.
+I have built and operated web services across SI, startups, travel/aviation, and B2C/B2B platforms, with hands-on experience in **Java API development**, **AWS/Azure infrastructure design and deployment**, and **CI/CD automation**.
 
-I have delivered greenfield products and modernized legacy systems, with full-stack capability to ship end-to-end.
+I have delivered greenfield products from scratch and modernized legacy systems, with full-stack capability to ship products end-to-end.
 
-I improve quality through code review, test automation, and design validation, and actively use **AI-assisted workflows** to balance accuracy and productivity.`,
+I believe being a developer is not just about implementing features. True skill means optimizing user experience, anticipating and preventing problems as services grow, and voluntarily tackling work beyond pure development when needed.
+
+I collaborate actively with planning, design, CS, and other roles because I believe better outcomes come from working together.
+
+In the AI era, I believe what matters more than how much code you write is **how accurately you define problems and create value quickly through AI**. Understanding overall service architecture, business flows, and the essence of problems is essential—and I keep building habits of deep analysis, early risk identification, and asking the right questions.`,
     },
   },
   {
@@ -56,15 +60,29 @@ I improve quality through code review, test automation, and design validation, a
     displayOrder: 2,
     isActive: true,
     config: {
-      body: `I am a developer who **keeps asking questions to find better directions**.
+      body: `## Core Strengths
 
-Across SI, startups, and platform companies, I have worked on planning, architecture, DB design, frontend/backend development, and deployment automation—maximizing business value with small teams.
+· **Large-scale refactoring & architecture migration** — Experience rebuilding legacy services into next-gen structures with zero downtime (Next.js major upgrades, monorepo migration, state management migration)
 
-I believe developers should optimize user experience, anticipate risks, and solve problems beyond coding when needed.
+· **Performance optimization** — Structurally diagnosing large-data query and rendering bottlenecks, improving by orders of magnitude
 
-I collaborate actively with planning, design, and CS teams because better outcomes come from working together.
+· **Full-stack & infrastructure** — Frontend-first, spanning Java/Spring·Nest.js backends through CI/CD pipelines and K8s infrastructure redesign across deployment and operations
 
-In the AI era, I focus on **defining problems accurately and delivering value quickly with AI**, not just writing more code.`,
+· **End-to-end from planning to deployment** — Planning, architecture, DB design, frontend/backend development, and deployment automation—delivering complete products with small teams
+
+## Key Achievements
+
+· **Unified 300+ BP/ONBP sites into a single Turborepo monorepo** — Designed one-source multi-site architecture to operate and deploy 300+ sites from one codebase (yarn→pnpm migration, per-site build pipelines)
+
+· **Stabilized legacy services plagued by critical payment & routing bugs** — Resolved 300+ issues including payment failures and abnormal routing, significantly improving service reliability
+
+· **140M-row table queries: 4–6 min → under 5 sec (~50×+ improvement)** — Eliminated query bottlenecks with index and statistics table design
+
+· **CI/CD pipeline & K8s infrastructure redesign** — Reorganized multi-service (B2C·BP·ONBP) deployment pipelines by service and environment; contributed to Azure Local ARC migration and DR failover. Build-to-deploy 30+ min → 12–15 min; page load up to 15 sec → 5 sec (SSG/SSR mix, caching, useEffect cleanup)
+
+· **Led Next.js 12→15 major upgrade** — Incremental migration including App Router and React 19 with zero service interruption
+
+· **Established AI development workflow as team standard** — Introduced Cursor Agent rules and Claude Code·Gemini CLI guides, documenting shared team practices and onboarding`,
     },
   },
   {

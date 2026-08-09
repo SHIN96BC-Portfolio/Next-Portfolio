@@ -1,10 +1,16 @@
-// 언어 결정 함수
-
 import { COOKIE_LANG_NAME } from '@FsdShared/config/cookie/model';
-import { supportedLocales } from '@FsdShared/config/i18n/auto-gen/constants/i18n-locales';
-import { defaultLocale } from '@FsdShared/config/proxy/model';
+import { DEFAULT_LOCALE, isLocale, resolveLocale } from '@FsdShared/config/i18n/client';
 import { NextRequest } from 'next/server';
 
+/**
+ * proxy(미들웨어)에서 요청별 선호 언어를 결정합니다.
+ *
+ * 우선순위:
+ * 1. URL 첫 segment (`/ko/...`)
+ * 2. 언어 쿠키
+ * 3. Accept-Language 헤더
+ * 4. `DEFAULT_LOCALE`
+ */
 export default function getPreferredLang(request: NextRequest): string {
   const { pathname } = request.nextUrl;
   const cookies = request.cookies;
@@ -14,9 +20,9 @@ export default function getPreferredLang(request: NextRequest): string {
   let lang = pathname.split('/')[1];
 
   // 지원하는 언어가 아니거나 없는 경우 → 쿠키 or Accept-Language 기반 결정
-  if (!supportedLocales.includes(lang)) {
-    lang = cookies.get(COOKIE_LANG_NAME)?.value || acceptLanguage?.split(',')[0].split('-')[0] || defaultLocale;
+  if (!isLocale(lang)) {
+    lang = cookies.get(COOKIE_LANG_NAME)?.value || acceptLanguage?.split(',')[0].split('-')[0] || DEFAULT_LOCALE;
   }
 
-  return supportedLocales.includes(lang) ? lang : defaultLocale;
+  return resolveLocale(lang);
 }

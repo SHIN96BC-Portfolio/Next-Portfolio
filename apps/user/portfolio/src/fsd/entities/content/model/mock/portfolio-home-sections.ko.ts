@@ -125,7 +125,7 @@ AI 시대에는 코드를 얼마나 많이 작성했는지보다, **문제를 �
           company: '(주) Pinetechsoft',
           period: '2023.10 – 2024.05',
           location: '한국',
-          department: '개발3팀',
+          department: '개발1팀',
           position: '연구원',
           role: 'Frontend Developer',
           description: '자사 플랫폼 서비스(Lahat, Zootopia) 개발 및 운영',

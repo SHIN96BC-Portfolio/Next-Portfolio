@@ -1,22 +1,41 @@
 'use client';
 
+import {
+  getOppositeThemeType,
+  isDarkTheme,
+  resolveThemeType,
+  THEME_DOM_CLASS,
+  THEME_TYPE,
+  ThemeType,
+} from '@FsdShared/config/theme/model/type';
 import setThemeCookie from '@FsdShared/config/theme/server-action/setThemeCookie';
 import { startTransition, useEffect, useState } from 'react';
 
-/** TODO: theme 변경 시 즉시 반영이 안되고 쿠키 세팅때문에 살짝 딜레이가 있어서 redux-persist + localStorage 같은거 써서 반영을 빠르게 해야할 듯 */
-export default function ThemeToggle({ themeType = 'light' as 'light' | 'dark', path = '/' }) {
-  const next = themeType === 'dark' ? 'light' : 'dark';
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+interface Props {
+  themeType?: ThemeType;
+  path?: string;
+}
+
+/**
+ * 라이트/다크 테마 토글 (Client Component).
+ *
+ * - 클릭 시 DOM에 즉시 반영한 뒤 `setThemeCookie` server action으로 쿠키를 저장합니다.
+ * - `themeType`은 서버 layout에서 읽은 현재 테마입니다.
+ */
+export default function ThemeToggle({ themeType = THEME_TYPE.LIGHT, path = '/' }: Props) {
+  const resolvedTheme = resolveThemeType(themeType);
+  const next = getOppositeThemeType(resolvedTheme);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleThemeChange = () => {
     // 사용성을 위해 즉시 theme 업데이트
     if (typeof document !== 'undefined') {
       const html = document.documentElement;
 
-      if (next === 'dark') {
-        html.classList.add('dark');
+      if (isDarkTheme(next)) {
+        html.classList.add(THEME_DOM_CLASS.DARK);
       } else {
-        html.classList.remove('dark');
+        html.classList.remove(THEME_DOM_CLASS.DARK);
       }
 
       html.style.setProperty('color-scheme', next);
@@ -64,7 +83,7 @@ export default function ThemeToggle({ themeType = 'light' as 'light' | 'dark', p
       )}
 
       <span className={`transition-opacity ${isLoading ? 'opacity-0' : 'opacity-100'}`}>
-        {themeType === 'dark' ? '☀️ Light' : '🌙 Dark'}
+        {isDarkTheme(resolvedTheme) ? '☀️ Light' : '🌙 Dark'}
       </span>
     </button>
   );
