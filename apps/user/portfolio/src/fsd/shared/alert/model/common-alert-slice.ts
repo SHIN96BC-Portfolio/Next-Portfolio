@@ -1,7 +1,7 @@
 import { ThemeColorsType } from '@FsdShared/config/theme/model/colors';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-interface CommonAlertState {
+export interface CommonAlertState {
   isShow?: boolean;
   messageHTML: string;
   okBtnName?: string;

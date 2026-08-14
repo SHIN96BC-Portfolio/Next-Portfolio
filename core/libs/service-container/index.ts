@@ -11,3 +11,8 @@ export { default as ServiceContainerImpl } from './container/ServiceContainerImp
 export type * from './service.type';
 export * from './service-constants';
 export * from './service-model';
+export {
+  createTypedServiceContainer,
+  type TypedBindOptions,
+  type TypedServiceContainer,
+} from './typed-service-container';

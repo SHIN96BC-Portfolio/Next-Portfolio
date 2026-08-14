@@ -1,8 +1,8 @@
-import { SiteService } from '@FsdEntities/site/api';
 import { SiteGnb } from '@FsdEntities/site/model/client/gnb';
 import mapServerGnbToClient from '@FsdEntities/site/model/mapper/map-server-gnb-to-client';
 import { serviceContainer } from '@FsdShared/config/service/service.setup';
-import { CommonRes, SERVICE_NAME } from '@core/service-container';
+import { SERVICE_KEY } from '@FsdShared/config/service/service-map';
+import { CommonRes } from '@core/service-container';
 
 /**
  * React Query Keys Object
@@ -16,7 +16,7 @@ const queryOptions = {
   findGnb: () => ({
     queryKey: queryKeys.findGnb,
     queryFn: async (): Promise<CommonRes<SiteGnb[]>> => {
-      const service = serviceContainer.get<SiteService>(SERVICE_NAME.SITE);
+      const service = serviceContainer.get(SERVICE_KEY.SITE);
       const response = await service.getGnb();
 
       return {

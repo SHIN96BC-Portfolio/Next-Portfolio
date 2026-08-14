@@ -3,14 +3,14 @@ import {
   ContentLang,
   EducationConfig,
   HeroConfig,
-  HomeSectionRes,
+  HomeSection,
   LicensesConfig,
   MarkdownConfig,
   ProjectGridConfig,
   SECTION_TYPE,
   SkillsConfig,
   TimelineConfig,
-} from '@FsdEntities/content/model/types';
+} from '@FsdEntities/content/model';
 import { I18N_DICTIONARY_NAMESPACE } from '@FsdShared/config/i18n';
 import getI18nTranslator from '@FsdShared/config/i18n/utils/get-i18n-translator';
 import { DisplayVariant } from '@FsdShared/display/model/display-variant';
@@ -59,7 +59,7 @@ function PortfolioSectionRenderer({
   resumeLinkLabel,
   displayVariant,
 }: {
-  sections: HomeSectionRes[];
+  sections: HomeSection[];
   lang: ContentLang;
   resumeLinkLabel: string;
   displayVariant: DisplayVariant;
@@ -122,7 +122,7 @@ function PortfolioSectionRenderer({
   );
 }
 
-function renderCustomSection(section: HomeSectionRes, displayVariant: DisplayVariant) {
+function renderCustomSection(section: HomeSection, displayVariant: DisplayVariant) {
   switch (section.sectionKey) {
     case 'skills':
       return (

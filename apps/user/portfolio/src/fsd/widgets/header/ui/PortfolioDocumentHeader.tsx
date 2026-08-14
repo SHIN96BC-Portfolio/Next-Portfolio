@@ -3,7 +3,7 @@
 import { SiteGnb } from '@FsdEntities/site/model/client/gnb';
 import { DictionaryHome } from '@FsdShared/config/i18n/auto-gen/types/home';
 import { resolveLocale } from '@FsdShared/config/i18n/client';
-import { ThemeType } from '@FsdShared/config/theme/model/type';
+import { ThemeType } from '@FsdShared/config/theme/model/theme';
 import { buildPortfolioPrintPath } from '@FsdShared/print/config/print-targets';
 import mergeClassNames from '@FsdShared/utils/style/merge-class-names';
 import PortfolioHeaderBar from '@FsdWidgets/header/ui/PortfolioHeaderBar';

@@ -1,6 +1,6 @@
 import { createCustomPublicProxyCookie } from '@FsdShared/config/cookie/cookie-public.setup';
 import { COOKIE_DEFAULT_AGE, COOKIE_THEME_NAME } from '@FsdShared/config/cookie/model';
-import { isThemeType, THEME_TYPE, ThemeType } from '@FsdShared/config/theme/model/type';
+import { isThemeType, THEME_TYPE, ThemeType } from '@FsdShared/config/theme/model/theme';
 import { NextHandler, Proxy } from '@core/proxy-container';
 import { NextRequest, NextResponse } from 'next/server';
 

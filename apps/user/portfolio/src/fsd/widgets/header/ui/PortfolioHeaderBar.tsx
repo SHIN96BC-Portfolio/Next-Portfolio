@@ -6,7 +6,7 @@ import ThemeToggle from '@FsdEntities/theme/ui/ThemeToggle';
 import { DictionaryHome } from '@FsdShared/config/i18n/auto-gen/types/home';
 import { resolveLocale } from '@FsdShared/config/i18n/client';
 import { buildPortfolioPath } from '@FsdShared/config/routing/site-routes';
-import { ThemeType } from '@FsdShared/config/theme/model/type';
+import { ThemeType } from '@FsdShared/config/theme/model/theme';
 import PortfolioPrintButton from '@FsdShared/print/ui/PortfolioPrintButton';
 import HeaderIconButton from '@FsdWidgets/header/ui/HeaderIconButton';
 import PortfolioNavDrawer from '@FsdWidgets/header/ui/PortfolioNavDrawer';

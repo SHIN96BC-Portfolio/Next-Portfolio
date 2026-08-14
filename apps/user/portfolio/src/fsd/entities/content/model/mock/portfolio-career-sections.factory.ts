@@ -1,4 +1,4 @@
-import { HomeSectionRes, PAGE_KEY, ResumeProjectConfig, SECTION_TYPE } from '@FsdEntities/content/model/types';
+import { HomeSectionGetRes, PAGE_KEY, ResumeProjectConfig, SECTION_TYPE } from '@FsdEntities/content/model';
 
 export const CAREER_PROJECT_IDS = [
   'a1000001-0000-4000-8000-000000000002',
@@ -10,7 +10,7 @@ export const CAREER_PROJECT_IDS = [
 const CAREER_INTRO_SECTION_ID = 'a1000001-0000-4000-8000-000000000001';
 const CAREER_STRENGTHS_SECTION_ID = 'a1000001-0000-4000-8000-000000000006';
 
-function createResumeProjectSection(project: ResumeProjectConfig, displayOrder: number, id: string): HomeSectionRes {
+function createResumeProjectSection(project: ResumeProjectConfig, displayOrder: number, id: string): HomeSectionGetRes {
   return {
     id,
     pageKey: PAGE_KEY.CAREER,
@@ -30,7 +30,7 @@ export function createPortfolioCareerSections(options: {
   strengthsTitle: string;
   strengthsBody: string;
   projects: ResumeProjectConfig[];
-}): HomeSectionRes[] {
+}): HomeSectionGetRes[] {
   const { introTitle, introBody, strengthsTitle, strengthsBody, projects } = options;
 
   return [

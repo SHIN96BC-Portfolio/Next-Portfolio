@@ -3,6 +3,7 @@ export const SERVICE_BASE_NAME = {
   FILE_BASE: Symbol.for('FileBase'),
 };
 
+/** @deprecated 앱 `SERVICE_KEY` / `AppServiceMap` 사용. 마이그레이션 후 제거 예정 */
 export const SERVICE_NAME = {
   SITE: Symbol.for('Site'),
   CONTENT: Symbol.for('Content'),

@@ -1,8 +1,8 @@
+import { CONTENT_LANG, HomeSectionGetRes, PAGE_KEY, SECTION_TYPE } from '@FsdEntities/content/model';
 import { getPortfolioProjectsMock } from '@FsdEntities/content/model/mock/portfolio-projects.mock';
 import { portfolioSkillsMock } from '@FsdEntities/content/model/mock/portfolio-skills.mock';
-import { CONTENT_LANG, HomeSectionRes, PAGE_KEY, SECTION_TYPE } from '@FsdEntities/content/model/types';
 
-export const portfolioHomeSectionsJa: HomeSectionRes[] = [
+export const portfolioHomeSectionsJa: HomeSectionGetRes[] = [
   {
     id: 'sec-hero',
     pageKey: PAGE_KEY.HOME,

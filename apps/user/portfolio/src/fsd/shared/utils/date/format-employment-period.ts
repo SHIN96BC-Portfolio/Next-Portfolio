@@ -1,4 +1,4 @@
-import { CONTENT_LANG, ContentLang } from '@FsdEntities/content/model/types';
+import { I18N_LOCALE, Locale } from '@FsdShared/config/i18n/client';
 
 export interface EmploymentDuration {
   years: number;
@@ -73,14 +73,14 @@ function getEmploymentDuration(period: string, referenceDate = new Date()) {
   return calculateEmploymentDuration(parsed.startYear, parsed.startMonth, parsed.endYear, parsed.endMonth);
 }
 
-function formatDuration({ years, months }: EmploymentDuration, lang: ContentLang) {
-  if (lang === CONTENT_LANG.EN) {
+function formatDuration({ years, months }: EmploymentDuration, lang: Locale) {
+  if (lang === I18N_LOCALE.EN) {
     if (years === 0) return `(${months} mo)`;
     if (months === 0) return `(${years} yr)`;
     return `(${years} yr ${months} mo)`;
   }
 
-  if (lang === CONTENT_LANG.JA) {
+  if (lang === I18N_LOCALE.JA) {
     if (years === 0) return `（${months}ヶ月）`;
     if (months === 0) return `（${years}年）`;
     return `（${years}年${months}ヶ月）`;
@@ -91,14 +91,14 @@ function formatDuration({ years, months }: EmploymentDuration, lang: ContentLang
   return `(${years}년 ${months}개월)`;
 }
 
-function formatTotalDuration({ years, months }: EmploymentDuration, lang: ContentLang) {
-  if (lang === CONTENT_LANG.EN) {
+function formatTotalDuration({ years, months }: EmploymentDuration, lang: Locale) {
+  if (lang === I18N_LOCALE.EN) {
     if (years === 0) return `Total ${months} mo`;
     if (months === 0) return `Total ${years} yr`;
     return `Total ${years} yr ${months} mo`;
   }
 
-  if (lang === CONTENT_LANG.JA) {
+  if (lang === I18N_LOCALE.JA) {
     if (years === 0) return `合計 ${months}ヶ月`;
     if (months === 0) return `合計 ${years}年`;
     return `合計 ${years}年${months}ヶ月`;
@@ -120,7 +120,7 @@ export function sumEmploymentDurations(durations: EmploymentDuration[]): Employm
 
 export function formatTotalEmploymentPeriod(
   periods: string[],
-  lang: ContentLang = CONTENT_LANG.KO,
+  lang: Locale = I18N_LOCALE.KO,
   referenceDate = new Date()
 ) {
   const durations = periods
@@ -134,7 +134,7 @@ export function formatTotalEmploymentPeriod(
 
 export default function formatEmploymentPeriod(
   period: string,
-  lang: ContentLang = CONTENT_LANG.KO,
+  lang: Locale = I18N_LOCALE.KO,
   referenceDate = new Date()
 ) {
   const basePeriod = stripDurationSuffix(period);

@@ -1,6 +1,6 @@
 'use client';
 
-import { LoginSchemaType, loginSchema } from '@FsdFeatures/login/model/schema';
+import { LoginSchemaType, loginSchema } from '@FsdFeatures/login/model/login-schema';
 import { CommonInput } from '@FsdShared/input';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';

@@ -1,6 +1,6 @@
 // import ModalOverlay from '@FsdShared/modal/ui/ModalOverlay';
 import { RadialMenuType } from '@FsdFeatures/radial-menu/model';
-import { dataRadialMenu } from '@FsdFeatures/radial-menu/redial-menu.setup';
+import { dataRadialMenu } from '@FsdFeatures/radial-menu/radial-menu.setup';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useEffect, useRef, useState } from 'react';

@@ -1,11 +1,11 @@
 import {
   ContentLang,
-  HomeSectionRes,
+  HomeSection,
   MarkdownConfig,
   PAGE_KEY,
   ResumeProjectConfig,
   SECTION_TYPE,
-} from '@FsdEntities/content/model/types';
+} from '@FsdEntities/content/model';
 import { I18N_DICTIONARY_NAMESPACE } from '@FsdShared/config/i18n';
 import { DictionaryHome } from '@FsdShared/config/i18n/auto-gen/types/home';
 import getI18nTranslator from '@FsdShared/config/i18n/utils/get-i18n-translator';
@@ -57,7 +57,7 @@ function PortfolioResumeSectionRenderer({
   labels,
   displayVariant = 'screen',
 }: {
-  sections: HomeSectionRes[];
+  sections: HomeSection[];
   labels: DictionaryHome['resume']['labels'];
   displayVariant?: DisplayVariant;
 }) {
