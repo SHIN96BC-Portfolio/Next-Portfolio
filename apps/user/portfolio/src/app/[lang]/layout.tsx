@@ -5,9 +5,10 @@ import I18nProvider from '@FsdApp/i18n/providers/I18nProvider';
 import MockServerInit from '@FsdApp/mock/inits/MockServerInit';
 import ReactQueryProvider from '@FsdApp/react-query/providers/ReactQueryProvider';
 import StoreProvider from '@FsdApp/store/providers/StoreProvider';
-import { Locale } from '@FsdShared/config/i18n';
-import { getThemeDomClassName } from '@FsdShared/config/theme/model/type';
-import getThemeCookie from '@FsdShared/config/theme/server-action/getThemeCookie';
+import { resolveLocale } from '@FsdShared/config/i18n';
+import getI18nDictionaries from '@FsdShared/config/i18n/utils/get-i18n-dictionaries';
+import { getThemeDomClassName } from '@FsdShared/config/theme/model/theme';
+import getThemeCookie from '@FsdShared/config/theme/server-action/get-theme-cookie';
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import { getServerSession } from 'next-auth';
@@ -40,19 +41,19 @@ export default async function LangLayout({
   interceptionModal: React.ReactNode;
 }>) {
   const session = await getServerSession(nextAuthOptions);
-  const { lang } = await params;
-  const theme = await getThemeCookie();
+  const { lang: langParam } = await params;
+  const locale = resolveLocale(langParam);
+  const [theme, dictionaries] = await Promise.all([getThemeCookie(), getI18nDictionaries(locale)]);
 
   return (
-    <html lang={lang} className={getThemeDomClassName(theme)} style={{ colorScheme: theme }}>
+    <html lang={locale} className={getThemeDomClassName(theme)} style={{ colorScheme: theme }}>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <StoreProvider>
           <ReactQueryProvider>
             <NextAuthProvider session={session}>
               <AuthProvider>
                 <MockServerInit>
-                  {/* 미들웨어에서 Locale 이외의 값을 거르기 때문에 as 로 변환 */}
-                  <I18nProvider locale={lang as Locale}>
+                  <I18nProvider locale={locale} dictionaries={dictionaries}>
                     {children}
                     {interceptionModal}
                   </I18nProvider>

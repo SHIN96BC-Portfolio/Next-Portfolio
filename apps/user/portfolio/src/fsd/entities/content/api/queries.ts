@@ -1,19 +1,28 @@
-import ContentService from '@FsdEntities/content/api/ContentService';
-import { ContentLang, ContentMode, HomeSectionRes, PAGE_KEY } from '@FsdEntities/content/model/types';
+import type { HomeSection } from '@FsdEntities/content/model/client/home-section';
+import mapServerHomeSectionToClient from '@FsdEntities/content/model/mapper/map-server-home-section-to-client';
+import type { ContentLang } from '@FsdEntities/content/model/types/content-lang';
+import type { ContentMode } from '@FsdEntities/content/model/types/content-mode';
+import { PAGE_KEY, type PageKey } from '@FsdShared/config/routing/page-key';
 import { serviceContainer } from '@FsdShared/config/service/service.setup';
-import { CommonRes, SERVICE_NAME } from '@core/service-container';
+import { SERVICE_KEY } from '@FsdShared/config/service/service-map';
+import type { CommonRes } from '@core/service-container';
 
 const queryKeys = {
-  homeSections: (pageKey: string, lang: ContentLang, mode: ContentMode) =>
-    ['homeSections', pageKey, lang, mode] as const,
+  findHomeSections: (pageKey: PageKey, lang: ContentLang, mode: ContentMode) =>
+    ['findHomeSections', pageKey, lang, mode] as const,
 };
 
 const queryOptions = {
-  homeSections: (pageKey = PAGE_KEY.HOME, lang: ContentLang, mode: ContentMode = 'published') => ({
-    queryKey: queryKeys.homeSections(pageKey, lang, mode),
-    queryFn: async (): Promise<CommonRes<HomeSectionRes[]>> => {
-      const service = serviceContainer.get<ContentService>(SERVICE_NAME.CONTENT);
-      return service.getHomeSections(pageKey, lang, mode);
+  findHomeSections: (pageKey: PageKey = PAGE_KEY.HOME, lang: ContentLang, mode: ContentMode = 'published') => ({
+    queryKey: queryKeys.findHomeSections(pageKey, lang, mode),
+    queryFn: async (): Promise<CommonRes<HomeSection[]>> => {
+      const service = serviceContainer.get(SERVICE_KEY.CONTENT);
+      const response = await service.getHomeSections(pageKey, lang, mode);
+
+      return {
+        ...response,
+        result: response.result ? mapServerHomeSectionToClient(response.result) : undefined,
+      };
     },
   }),
 };

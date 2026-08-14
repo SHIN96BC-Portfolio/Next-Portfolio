@@ -3,8 +3,8 @@ import { SiteGnb } from '@FsdEntities/site/model/client/gnb';
 import { I18N_DICTIONARY_NAMESPACE, Locale } from '@FsdShared/config/i18n';
 import { DictionaryHome } from '@FsdShared/config/i18n/auto-gen/types/home';
 import getI18nTranslator from '@FsdShared/config/i18n/utils/get-i18n-translator';
-import { ThemeType } from '@FsdShared/config/theme/model/type';
-import getThemeCookie from '@FsdShared/config/theme/server-action/getThemeCookie';
+import { ThemeType } from '@FsdShared/config/theme/model/theme';
+import getThemeCookie from '@FsdShared/config/theme/server-action/get-theme-cookie';
 import fetchGnbSSR from '@NextApp/_actions/fetchGnbSSR';
 
 export interface PortfolioLayoutProps {

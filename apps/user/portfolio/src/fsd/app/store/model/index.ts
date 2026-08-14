@@ -1,1 +1,1 @@
-export type { AppStore } from './types';
+export type { AppDispatch, AppStore, RootState } from './types';

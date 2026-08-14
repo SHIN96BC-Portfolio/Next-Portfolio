@@ -116,7 +116,11 @@
   },
   "overrides": [
     {
-      "includes": ["apps/**/src/fsd/shared/**", "!apps/**/src/fsd/shared/config/**"],
+      "includes": [
+        "apps/**/src/fsd/shared/**",
+        "!apps/**/src/fsd/shared/config/service/**",
+        "!apps/**/src/fsd/shared/config/mock/handlers/**"
+      ],
       "linter": {
         "rules": {
           "style": {

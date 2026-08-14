@@ -1,7 +1,7 @@
 'use client';
 
-import I18nContext from '@FsdApp/i18n/contexts/I18nContext';
 import { Locale } from '@FsdShared/config/i18n/client';
+import I18nContext from '@FsdShared/config/i18n/contexts/I18nContext';
 import { DictionaryNamespaceMap } from '@FsdShared/config/i18n/i18n.type';
 
 interface Props {

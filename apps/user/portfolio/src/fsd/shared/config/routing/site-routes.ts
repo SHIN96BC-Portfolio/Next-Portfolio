@@ -1,4 +1,4 @@
-import { PAGE_KEY, PageKey } from '@FsdEntities/content/model/types';
+import { PAGE_KEY, PageKey } from '@FsdShared/config/routing/page-key';
 
 /** 페이지 shell 종류 — LANDING(홈 GNB+섹션 nav), DOCUMENT(단순 헤더) */
 export const SITE_LAYOUT = {

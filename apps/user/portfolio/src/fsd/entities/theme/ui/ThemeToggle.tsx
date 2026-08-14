@@ -7,8 +7,8 @@ import {
   THEME_DOM_CLASS,
   THEME_TYPE,
   ThemeType,
-} from '@FsdShared/config/theme/model/type';
-import setThemeCookie from '@FsdShared/config/theme/server-action/setThemeCookie';
+} from '@FsdShared/config/theme/model/theme';
+import setThemeCookie from '@FsdShared/config/theme/server-action/set-theme-cookie';
 import { startTransition, useEffect, useState } from 'react';
 
 interface Props {

@@ -83,13 +83,28 @@
 
 [FSD 공식문서](https://feature-sliced.github.io/documentation/docs/get-started/overview)
 
-### FSD 폴더 기본 구조
-- app: FE 앱 초기화/Provider/라우터 등 전역 진입점
-- pages: FE 페이지 라우팅 엔트리 (Next.js의 page 단위 화면)
-- widgets: FE 페이지를 구성하는 큰 단위의 조각 (여러 feature/entities 묶음)
-- features: 특정 FE 시나리오 단위
-- entities: BE Domain 단위(“데이터 단위 컴포넌트”이기 때문에 FE 관점과 BE 관점이 섞이면 복잡해지기 때문에 BE Domain 기준으로 나눈다)
-- shared: 범용(나눌 수 있는 최소한의 단위로 구분)
+### FSD 계층 (Layers)
+
+앱 코드는 `apps/<app>/src/fsd/` 아래에 둔다. **상위 레이어는 하위 레이어만 import** 한다 (Biome로 강제).
+
+| Layer | 역할 |
+|-------|------|
+| `app` | FE 앱 초기화 / Provider / 전역 layout / auth·i18n·store·react-query 진입 |
+| `pages` | Next.js `page` 단위 화면 조립 (라우트 엔트리의 FSD 대응) |
+| `widgets` | 페이지를 구성하는 큰 UI 조각 (여러 feature/entities 조합) |
+| `features` | 사용자 시나리오 단위 (login, scroll-reveal 등) |
+| `entities` | **BE Domain 기준** 슬라이스 (site, content, product …) |
+| `shared` | 앱 전역 재사용 (UI kit facade, validations, utils, **composition config**) |
+
+```
+apps/<app>/src/fsd/
+├── app/
+├── pages/
+├── widgets/
+├── features/
+├── entities/
+└── shared/
+```
 
 ### 왜 FSD 패턴(Feature-Sliced Design)을 선택했는가
 - FSD 패턴은 각 기능이나 도메인별로 관련된 파일들을 모아놓는 방식입니다.
@@ -100,23 +115,296 @@
 - 확장성 측면: 새로운 기능이 추가 되더라도 기존 폴더 구조를 수정할 필요 없이 새로운 폴더를 추가하기만 하면 되기 때문에 확장에 좀 더 유연하게 대처할 수 있습니다.
 - 협업 측면: 팀원들끼리 기능 단위로 작업을 나눠서 진행할 때 팀원들이 기능별로 독립적으로 작업할 수 있어 협업에 유리합니다.
 
+### FSD 슬라이스 · 세그먼트 폴더 규칙
+
+FSD는 **Layer → Slice → Segment** 3단이다.
+
+```
+entities/content/          ← Slice (도메인/기능 이름, kebab-case)
+├── api/                   ← Segment
+├── model/
+├── ui/
+├── lib/                   ← 선택
+├── config/                ← 선택
+└── index.ts               ← 공개 API (필요 시)
+```
+
+#### 허용 세그먼트 (이 저장소 표준)
+
+| Segment | 넣는 것 | 넣지 않는 것 |
+|---------|---------|--------------|
+| `ui/` | React 컴포넌트, 스타일에 가까운 프레젠테이션 | API 호출, 비즈니스 규칙 |
+| `model/` | type / constants / schema / mapper / mock / client·server DTO | JSX, HTTP 클라이언트 구현 |
+| `api/` | Service 인터페이스·구현, queries, mutations, RQ hooks | UI, 순수 도메인 상수 덤프 |
+| `lib/` | 이 슬라이스 전용 헬퍼 (날짜 포맷, 파서 등) | 다른 슬라이스에서도 쓰는 범용 유틸 → `shared` |
+| `config/` | 이 슬라이스 전용 설정 상수·플래그 | 앱 전역 DI/proxy/i18n → `shared/config` |
+| `hooks/` | 슬라이스 전용 훅 (ui/api에 넣기 애매할 때) | 전역 훅 → `shared` 또는 `features` |
+
+세그먼트는 **필요할 때만** 만든다. 빈 폴더를 미리 만들지 않는다.
+
+#### `model/` 내부 분할 기준 (types.ts 한방 금지)
+
+관심사가 섞이면 `model/types.ts` 하나에 때려넣지 않는다. **개념(concept) 단위**로 나눈다.
+
+| 상황 | 구조 |
+|------|------|
+| 타입/상수가 **1개 개념·소량** | `model/types.ts`, `model/constants.ts` 단일 파일 OK |
+| 타입/상수가 **여러 개념** 또는 ~100줄 초과 | `model/types/<concept>.ts`, `model/constants/<concept>.ts` |
+| API wire format과 UI 모델이 다름 | `model/server/`, `model/client/`, `model/mapper/` |
+| MSW·로컬 더미 | `model/mock/` |
+| zod 스키마 | `model/schema/` (또는 feature면 `features/<name>/model/`) |
+
+**예시 — entities/content (목표 구조)**
+
+```
+entities/content/
+├── api/
+│   ├── ContentService.ts
+│   ├── ContentServiceImpl.ts
+│   ├── queries.ts
+│   ├── mutations.ts          # mutation 없으면 생략 가능
+│   ├── useContentService.ts
+│   └── index.ts
+├── model/
+│   ├── constants/
+│   │   └── section-type.ts   # SECTION_TYPE
+│   ├── types/
+│   │   ├── content-lang.ts   # ContentLang + resolve helpers
+│   │   ├── content-mode.ts
+│   │   └── section-config.ts # SectionConfig 및 하위 config
+│   ├── server/
+│   │   └── home-section.ts   # wire DTO (HomeSectionGetRes)
+│   ├── client/
+│   │   └── home-section.ts   # UI 모델 (HomeSection)
+│   ├── mapper/
+│   │   └── map-server-home-section-to-client.ts
+│   ├── mock/
+│   └── index.ts              # 공개 re-export만
+└── ui/                       # 있을 때만
+```
+
+`PAGE_KEY`처럼 라우팅·여러 도메인이 공유하는 값은 `shared/config/routing/page-key.ts`에 둔다 (content 전용 상수가 아님).
+
+**예시 — entities/site (server/client 분리)**
+
+```
+entities/site/
+├── api/
+│   ├── SiteService.ts
+│   ├── SiteServiceImpl.ts
+│   ├── queries.ts
+│   ├── useSiteService.ts
+│   └── index.ts
+└── model/
+    ├── server/gnb.ts
+    ├── client/gnb.ts
+    ├── mapper/map-server-gnb-to-client.ts
+    └── mock/
+```
+
+#### `shared/` 슬라이스 규칙
+
+`shared`는 도메인 슬라이스가 아니라 **기술/UI 단위 슬라이스**다.
+
+```
+shared/
+├── config/          ← 앱 composition root (아래 예외 참고)
+│   ├── service/     # serviceContainer bind
+│   ├── proxy/
+│   ├── i18n/
+│   ├── cookie/
+│   ├── mock/
+│   └── …
+├── button/ui/
+├── validations/
+│   ├── model/
+│   └── utils/
+└── utils/
+    └── date/
+```
+
+- UI kit이 `@core/bc-ui`에 있으면 `shared/<kit>/ui`는 **re-export facade**만 둔다.
+- 범용 유틸은 `shared/utils/<topic>/kebab-case.ts`.
+- **Biome:** `shared/**` 에는 상위 레이어 import 금지. 예외는 composition만:
+  - `shared/config/service/**` — typed `AppServiceMap` + Impl bind
+  - `shared/config/mock/handlers/**` — MSW 도메인 handler (entities mock 조립)
+- cookie / theme / i18n / proxy / routing 등 나머지 config는 상위 import 없이 유지한다.
+- 상세: [`core/libs/service-container/README.md`](core/libs/service-container/README.md)
+
+#### 폴더 vs 파일 — 언제 폴더를 만드나
+
+| 기준 | 선택 |
+|------|------|
+| 같은 역할 파일이 **1개** | 세그먼트 바로 아래 단일 파일 (`model/constants.ts`) |
+| 같은 역할 파일이 **2개 이상**이거나 계속 늘 예정 | 하위 폴더 (`model/constants/…`) |
+| 역할이 다르면 | **파일명 suffix로 구분하지 말고** 폴더(세그먼트/하위 폴더)로 구분 |
+| Next.js 라우트 | `src/app/` 만 사용. FSD `pages/`는 화면 조립 컴포넌트 |
+
+---
+
+## Folder & File Name Pattern
+
+폴더가 역할을 말하고, 파일명은 **그 안에서의 개념**을 말한다.
+
+### 파일명 규칙
+
+| 역할 / 타입 | 권장 명명 | 예시 | 비고 |
+|-------------|-----------|------|------|
+| **React Component** | `PascalCase` | `LoginModal.tsx`, `UserCard.tsx` | JSX/TSX 컴포넌트 |
+| **Next.js app router** | `lowercase` | `page.tsx`, `layout.tsx`, `route.ts` | `src/app/` 전용 |
+| **유틸 / 헬퍼 / mapper** | `kebab-case` | `format-date.ts`, `map-server-gnb-to-client.ts` | |
+| **커스텀 훅** | `use` + `camelCase` | `useAuth.ts`, `useFindGnbQuery.ts` | |
+| **타입 (단일·소량)** | `types.ts` 또는 `kebab-case` | `model/types.ts`, `gnb.ts` | 폴더가 역할을 대체하면 prefix 생략 |
+| **타입 (다개념)** | `kebab-case` | `model/types/home-section.ts` | **concept 이름**, `types` 반복 금지 |
+| **상수 (단일·소량)** | `constants.ts` | `model/constants.ts`, `config/.../constants.ts` | |
+| **상수 (다개념)** | `kebab-case` | `model/constants/page-key.ts` | `*-constants.ts` suffix 불필요 (폴더가 역할) |
+| **enum 전용** | `kebab-case` + `.enum` | `status.enum.ts` | const object면 일반 constants로 |
+| **zod 스키마** | `kebab-case` + `-schema` | `login-schema.ts`, `auth-schema.ts` | |
+| **REST Service** | `PascalCase` | `SiteService.ts`, `SiteServiceImpl.ts` | Interface / Impl |
+| **RQ query·mutation 모듈** | `queries.ts` / `mutations.ts` | 세그먼트 `api/` 고정 파일명 | |
+| **설정 / 초기화** | `*.setup.ts` 또는 tool 관례 | `service.setup.ts`, `jest.setup.ts`, `next.config.ts` | 앱/툴 부트스트랩 |
+| **공개 배럴** | `index.ts` | 슬라이스·세그먼트 public API | deep import 남발 방지용 |
+
+### 네이밍 안티패턴
+
+| Bad | Good | 이유 |
+|-----|------|------|
+| `model/types.ts`에 lang·section·DTO·helper 전부 | `types/`, `constants/`로 분리 | 관심사 혼합 |
+| `auth-constants.ts`를 `ui/` 옆에 방치 | `model/constants.ts` 또는 `config/` | 역할 폴더 없음 |
+| `getThemeCookie.ts` (util인데 camelCase) | `get-theme-cookie.ts` | 유틸은 kebab-case |
+| `schema.ts` | `login-schema.ts` | 슬라이스 밖 re-export 시 충돌·모호 |
+
+---
+
+## Core Libraries (`@core/*`)
+
+공통 인프라는 앱 `services/`가 아니라 모노레포 `core/` 패키지로 둔다.
+
+```
+core/
+├── libs/
+│   ├── service-container/   # @core/service-container — Base / Binding / Container / CommonRes
+│   ├── proxy-container/     # @core/proxy-container
+│   ├── cookie/              # @core/cookie
+│   ├── crypto/              # @core/crypto
+│   ├── storage/             # @core/storage
+│   └── utils/               # @core/utils
+└── bc-ui/                   # @core/bc-ui — accordion, modal, sheet, print, utils
+```
+
+| 규칙 | 내용 |
+|------|------|
+| import | `@core/<package>` **루트 엔트리만** (패키지 내부 deep import 금지) |
+| 앱 → core | `workspace:*` |
+| core → 앱 | **금지** (`@Fsd*`, `@NextApp`, `@Src` import 불가) |
+| UI | 공통 컴포넌트는 `@core/bc-ui` → 앱 `shared/*/ui` facade |
+
+### `@core/service-container` 내부 구조
+
+앱이 아니라 **core 패키지**가 소유한다.
+
+| 경로 (패키지 내부) | 역할 |
+|--------------------|------|
+| `base/(BaseName)/` | `(BaseName)ServiceBase.ts` + `…Impl.ts` — HTTP/token 등 공통 Base |
+| `binding/` | `Binding.ts` / `BindingImpl.ts`, `BaseBinding*` |
+| `container/` | `ServiceContainer.ts` / `ServiceContainerImpl.ts` |
+| `service-model.ts` | 공통 `CommonRes` 등 |
+| `service-constants.ts` | `SERVICE_BASE_NAME`, `BINDING_SCOPE` (도메인 키는 **앱** `SERVICE_KEY` / `AppServiceMap`) |
+| `service.type.ts` | 컨테이너 공통 타입 |
+
+---
+
+## REST Services (FSD `entities/<domain>/api`)
+
+- **DIP:** 호출부는 구현체(`*Impl`)가 아니라 **Interface**에만 의존한다.
+- Domain Service에 Base가 필요하면 **생성자 주입** + 싱글톤 (`service.setup`에서 bind).
+- HTTP Base / Container / Binding 구현은 `@core/service-container`를 쓰고, 앱은 **도메인 서비스 + bind**만 가진다.
+
+### 앱 쪽 배치
+
+```
+# 도메인 서비스 (FSD)
+src/fsd/entities/<domain>/api/
+  <Domain>Service.ts              # Interface
+  <Domain>ServiceImpl.ts          # Class (Interface 구현, Base 주입)
+  queries.ts                      # queryKey + queryFn (find*)
+  mutations.ts                    # mutationKey + mutationFn (register*|edit*|remove*) — 없으면 생략
+  use<Domain>Service.ts           # use*Query / use*Mutation 훅 모음
+  index.ts
+
+# API DTO · 도메인 모델 (FSD model 세그먼트)
+src/fsd/entities/<domain>/model/
+  … (Folder & File Name Pattern의 model/ 규칙)
+
+# Composition root (앱 조립 — entities가 import 가능해야 하므로 shared)
+src/fsd/shared/config/service/
+  service-map.ts              # SERVICE_KEY + AppServiceMap (Interface만)
+  service.setup.ts            # createTypedServiceContainer + Impl bind
+  index.ts
+```
+
+- **wire → client:** API 응답(`model/server`)을 페이지·위젯에 그대로 쓰지 않는다. `mapper`로 client 타입으로 변환한 뒤 사용한다 (site GNB 패턴).
+
+### REST Service Naming Rules
+
+#### `<Domain>Service` / `<Domain>ServiceImpl`
+
+- Method명: Service 관심사는 HTTP → `(HTTP Method)` + `(Api Url 마지막 path)`  
+  - 예: `getSearchGNB`, `getGnb`, `getHomeSections`
+- Arg명:
+  - Get, Delete → `params` (예: `getSearchGNB(params: SearchGNBGetReq)`)
+  - Post, Patch, Put → `data`
+  - Head, Options → 없음
+
+#### Request / Response Model (`model/`)
+
+- API에 직접 쓰이는 Req/Res → **`interface`**
+- 그 안에서만 쓰는 공통 형태 → **`type`**
+- Request: `(LastPath)(HttpMethod)Req` → `SearchGNBGetReq`, `GnbGetReq`
+- Response: `(LastPath)(HttpMethod)Res` → `SearchGNBGetRes`, `HomeSectionRes`
+- wire(server)와 UI(client)가 다르면 `model/server`, `model/client` + `mapper`로 분리 (한 파일에 섞지 않음)
+
+#### `queries.ts` / `mutations.ts`
+
+HTTP 동사가 아니라 **하는 일** 기준으로 이름 붙인다.
+
+| 행위 | prefix | 예 |
+|------|--------|----|
+| 등록 | `register` + LastPath | `registerProduct` |
+| 조회 | `find` + LastPath | `findGnb`, `findHomeSections` |
+| 수정 | `edit` + LastPath | `editProduct` |
+| 삭제 | `remove` + LastPath | `removeProduct` |
+| 기타 | 동작명 (+ LastPath, 명확하면 path 생략) | `login`, `fileUpload` |
+
+#### `use<Domain>Service.ts`
+
+- Query: `use(하는일)(LastPath)Query` → `useFindGnbQuery`, `useFindHomeSectionsQuery`
+- Mutation: `use(하는일)(LastPath)Mutation` → `useRegisterProductMutation`
+
+### GraphQL (Admin 등)
+
+- 스키마/문서: `entities/<domain>/model/gql/` 또는 앱의 graphql 관례 경로
+- codegen: `pnpm run gen:graphql` / `pnpm --filter @apps/admin-master-admin run gen:graphql:check`
+- REST와 동일하게 **entities 슬라이스**에 두고, 공통 클라이언트 인프라는 core/shared config에 둔다.
+
+---
+
 ## Internationalization(국제화)
 - Dynamic routes 를 사용하여 페이지 언어 설정
 - 각 언어별 문구는 json 으로 정리
 - 정리된 json 을 가지고 type model 을 생성하여 type 추론
   ```bash
-    # json 파일 기준으로 type 자동 생성
-    npm run gen:i18n-types
-  
-    # 계속 json 파일을 주시하며 json 파일이 저장되면 그 순간 자동으로 type 생성
-    npm run watch:i18n-types
-  ``` 
-- 정리된 json 파일명들을 기준으로 namespace 상수 자동 생성
-  ```bash
-    npm run gen:i18n-namespaces
+    # 저장소 루트 — portfolio i18n 일괄 생성
+    pnpm run gen:i18n
+
+    # 또는 portfolio 앱에서 개별 실행
+    pnpm --filter @apps/user-portfolio run gen:i18n-types
+    pnpm --filter @apps/user-portfolio run watch:i18n-types
+    pnpm --filter @apps/user-portfolio run gen:i18n-namespaces
   ```
-- Server Component 에서는 getI18nTranslator() 함수 사용
-- Client Component 에서는 
+- Server Component 에서는 `getI18nTranslator()` 함수 사용
+- Client Component 에서는 `useI18n(namespace)` 훅 사용  
+  - 서버에서 dictionary를 preload 한 뒤 `I18nProvider`에 `dictionaries` prop으로 전달해야 한다
 
 ## API Server
 - REST & GraphQL 혼합형 구조
@@ -128,88 +416,18 @@
 - Client 가 자주 바뀌거나, 검색, 리스트, 필터링, 정렬 등 복잡한 조건이 붙거나, 비즈니스 중요도가 낮은 비정형/유동적인 응답 구조에는 Client 주도형 쿼리 구조가 유리하기 때문에 GraphQL 사용
 - graphql-codegen 으로 type 과 hook 을 자동 생성
   ```bash
-  npm run gen:graphql
+  pnpm run gen:graphql
   ```
 - graphql 스키마 유효성 검사
   ```bash
-  gen:graphql:check
+  pnpm --filter @apps/admin-master-admin run gen:graphql:check
   ```
-  
+
 ### MSW
 - mockServiceWorker 생성
   ```bash
   npx msw init ./public --save
   ```
-
-
-## File Name Pattern
-| 역할 / 타입               | 권장 명명 규칙             | 예시 파일명                                   | 비고                               |
-| --------------------- | -------------------- |------------------------------------------| -------------------------------- |
-| **React Component**   | `PascalCase`         | `LoginModal.tsx`, `UserCard.tsx`         | **무조건 PascalCase**. JSX/TSX 컴포넌트 |
-| **Next.js 페이지**       | `lowercase`          | `page.tsx`, `layout.tsx`, `route.ts`     | Next 13+ app dir 기준              |
-| **유틸 함수 / 헬퍼**        | `kebab-case`         | `format-date.ts`, `parse-url.ts`         | 일반 함수/로직 파일은 kebab-case          |
-| **커스텀 훅**             | `camelCase` 시작       | `useAuth.ts`, `useScroll.ts`             | `use` prefix 유지, camelCase       |
-| **타입/모델 정의**          | `kebab-case`         | `user-model.ts`, `auth.types.ts`         | 도메인 기준으로 prefix 붙임               |
-| **enum 정의**           | `kebab-case + .enum` | `status.enum.ts`                         | enum만 따로 관리할 경우                  |
-| **상수 파일 (도메인)**       | `kebab-case`         | `auth-constants.ts`, `user-constants.ts` | 도메인 기준 prefix                    |
-| **상수 파일 (글로벌)**       | `constants.ts`       | `constants.ts`                           | 작은 프로젝트 or 전역 상수                 |
-| **API 핸들러 (Next.js)** | `route.ts`           | `route.ts`                               | Next 13 app router 표준            |
-| **설정 / 초기화**          | `dot.case`           | `jest.setup.ts`, `next.config.js`        | Node, Tool 설정계층 파일               |
-| **스키마 (zod 등)**       | `kebab-case`         | `user-schema.ts`, `env.schema.ts`        | 주로 zod/yup 스키마에서 사용              |
-| **DTO / Entity**      | `kebab-case`         | `user.dto.ts`, `product.entity.ts`       | 백엔드 스타일일 땐 suffix 구분             |
-
-
-## REST Services Folder And File Rules
-- *DIP 원칙을 지켜서 해당 Service 객체들을 사용하는 곳에서는 반드시 구현체가 아닌 인터페이스에만 의존할 것) (Domain Service에서 Base가 필요한 경우 생성자 주입 방식으로 주입하여 싱글톤으로 사용
-- /services/base/(Base Name):
-  - (Base Name)ServiceBase.ts: 서비스의 기본이 되는 HTTP 통신, token 관리 등의 메서드들을 가진 Interface 정의
-  - (Base Name)ServiceBaseImpl.ts: Service Base Interface를 구현한 Class
-- /services/binding:
-  - Binding.ts: Container에 Bind할 때 사용하는 Class의 인터페이스 정의
-  - BindingImpl.ts: Binding 인터페이스를 구현한 Class 정의
-- /services/container:
-  - ServiceContainer.ts: Service 객체들을 등록하고 관리하는 Container Class의 Interface 정의
-  - ServiceContainerImpl.ts: ServiceContainer Interface를 구현한 Class 정의
-- /services/domain/(Domain Name):
-  - (Domain Name)Service.ts: 각 도메인 별 서비스의 Interface 정의
-  - (Domain Name)ServiceImpl.ts: Service Interface를 구현한 Class 정의
-  - model.ts: Api Request, Response Model 정의
-  - queries.ts: useQuery 에 사용될 query Key, query function 정의
-  - mutations.ts: useMutation 에 사용될 mutation key, mutation function 정의
-  - use(Domain Name)Service.ts: Api Call Custom Hooks 정의
-- /services/model.ts: 공통 Request, Response Model 정의
-- /services/service-constants.ts: Service에서 공통으로 사용되는 상수 값들 정의
-- /services/service.types.ts: Service에서 공통으로 사용되는 type 정의
-
-## REST Service Naming Rules
-- /service/domain/(Domain Name):
-  - (Domain Name)Service.ts & (Domain Name)ServiceImpl.ts:
-    - Method명:
-      - Service의 관심사는 HTTP 통신이기 때문에 HTTP와 관련된 명칭으로 작성
-      - (HTTP Method 유형) + (Api Url의 마지막 path) -> ex: getSearchGNB
-    - Arg명:
-      - Get, Delete: params -> ex: getSearchGNB(params: SearchGNBGetReq)
-      - Post, Patch, Put: data -> ex: postSearchLocalTour(data: SearchLocalTourPostReq)
-      - Head, Options -> 없음
-  - model.ts:
-    - Api 통신에 직접적으로 사용되는 Request, Response Model은 interface 로 정의
-    - 그외 Request, Response 안에서 공통으로 쓰이는 것들은 등은 type 으로 정의
-    - Request Model명: (Api Url의 마지막 path) + (HTTP Method 유형) + Req -> ex: SearchGNBGetReq
-    - Response Model명: (Api Url의 마지막 path) + (HTTP Method 유형) + Res -> ex: SearchGNBGetRes
-  - queries.ts & mutations.ts:
-    - queries 와 mutations 의 관심사는 HTTP 통신이 아니고, 어떤 데이터를 등록하거나, 찾거나 하는 부분까지가 관심사이기 때문에 좀 더 직관적이고 해당 function이 하는일에 가까운 명칭으로 작성
-    - 등록 서비스: register + (Api Url의 마지막 path)
-    - 조회 서비스: find + (Api Url의 마지막 path)
-    - 수정 서비스: edit + (Api Url의 마지막 path)
-    - 삭제 서비스: remove + (Api Url의 마지막 path)
-    - 그외 서비스: (해당 서비스가 하는 일에 대한 명칭) + (Api Url의 마지막 path) -> 다만 하는일에 대한 명칭만으로 어떤일을 하는지 명확하게 알 수 있는 경우 (Api Url의 마지막 path)는 생략 가능(ex: login, fileUpload 등)
-  - use(Domain Name)Service.ts:
-    - Hook 명칭은 직관적으로 어떤 API를 호출하는지와 Query이지 mutation인지를 구분할 수 있도록 함
-    - useQuery를 사용하는 경우: use(하는 일)(Api Url의 마지막 path)Query.ts
-      - ex: useFindTestQuery
-    - useMutation를 사용하는 경우: use(하는 일)(Api Url의 마지막 path)Mutation.ts
-      - ex: useRegisterTestMutation
-
 
 ## Commit & Branch Pattern
 ### type

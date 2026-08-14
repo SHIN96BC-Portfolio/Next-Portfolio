@@ -26,6 +26,7 @@ export default function PrintPageToolbar({ homeDict }: Props) {
 
         <button
           type="button"
+          // 전용 인쇄 페이지 전체 출력 — DirectPrint(DOM clone)이 아닌 window.print
           onClick={() => window.print()}
           className="rounded-full border border-border bg-background px-3 py-1.5 text-sm font-medium text-foreground transition-colors hover:bg-accent"
         >

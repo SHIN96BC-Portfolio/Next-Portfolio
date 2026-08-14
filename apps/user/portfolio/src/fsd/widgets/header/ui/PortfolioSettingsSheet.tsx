@@ -3,7 +3,7 @@
 import LangSegmentToggle from '@FsdEntities/lang/ui/LangSegmentToggle';
 import ThemeToggle from '@FsdEntities/theme/ui/ThemeToggle';
 import { DictionaryHome } from '@FsdShared/config/i18n/auto-gen/types/home';
-import { ThemeType } from '@FsdShared/config/theme/model/type';
+import { ThemeType } from '@FsdShared/config/theme/model/theme';
 import PortfolioPrintButton from '@FsdShared/print/ui/PortfolioPrintButton';
 import { BottomSheet } from '@FsdShared/sheet/ui';
 import { type ReactNode } from 'react';

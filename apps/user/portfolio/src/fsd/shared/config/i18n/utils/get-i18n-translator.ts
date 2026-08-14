@@ -3,6 +3,7 @@
  *
  * - `server-only`이므로 Client Component에서 import하면 빌드 에러가 납니다.
  * - Server Component에서 `@FsdShared/config/i18n/utils/get-i18n-translator`로 직접 import하세요.
+ * - Client `useI18n`용 전체 preload는 `get-i18n-dictionaries`를 사용하세요.
  */
 import 'server-only';
 import { DictionaryNamespaceMap } from '@FsdShared/config/i18n/i18n.type';
@@ -14,7 +15,7 @@ import type { Namespace } from '../auto-gen/constants/i18n-namespaces';
  * 주어진 locale에 맞는 번역 사전을 불러옵니다.
  *
  * - `server-only` 모듈이므로 Server Component에서만 사용하세요.
- * - Client Component에서는 `I18nProvider`에 서버에서 미리 로드한 dict를 넘깁니다.
+ * - Client Component에서는 layout에서 `getI18nDictionaries`로 preload한 뒤 `I18nProvider`에 넘깁니다.
  *
  * @param locale 언어 코드 (예: `ko`, `en`, `ja`)
  * @param namespace 사전 namespace (예: `home`, `common`)

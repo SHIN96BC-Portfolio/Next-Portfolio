@@ -2,7 +2,7 @@
 
 import { createCustomPublicNextServerCookie } from '@FsdShared/config/cookie/cookie-public.setup';
 import { COOKIE_DEFAULT_AGE, COOKIE_THEME_NAME } from '@FsdShared/config/cookie/model';
-import { ThemeType } from '@FsdShared/config/theme/model/type';
+import { ThemeType } from '@FsdShared/config/theme/model/theme';
 import { revalidatePath } from 'next/cache';
 
 /**

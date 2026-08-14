@@ -1,5 +1,5 @@
-import I18nContext from '@FsdApp/i18n/contexts/I18nContext';
 import { Namespace } from '@FsdShared/config/i18n/client';
+import I18nContext from '@FsdShared/config/i18n/contexts/I18nContext';
 import { DictionaryNamespaceMap } from '@FsdShared/config/i18n/i18n.type';
 import { useContext } from 'react';
 
@@ -14,7 +14,7 @@ const useI18nContext = () => {
 /**
  * 서버에서 미리 로드한 dictionary를 I18nContext에서 읽는 훅.
  * 클라이언트에서 JSON을 직접 import하지 않도록 dictionaries.ts는 server-only입니다.
- * 사용 전 I18nProvider에 dictionaries를 넘겨주세요.
+ * 사용 전 layout에서 `getI18nDictionaries`로 preload한 뒤 `I18nProvider`에 넘겨주세요.
  */
 const useI18n = <N extends Namespace>(namespace: N): { dict: DictionaryNamespaceMap[N] } => {
   const { dictionaries } = useI18nContext();
@@ -22,7 +22,7 @@ const useI18n = <N extends Namespace>(namespace: N): { dict: DictionaryNamespace
 
   if (!dict) {
     throw new Error(
-      `Dictionary for namespace '${namespace}' is not preloaded. Load it on the server with getI18nTranslator and pass it to I18nProvider.`
+      `Dictionary for namespace '${namespace}' is not preloaded. Load it on the server with getI18nDictionaries and pass it to I18nProvider.`
     );
   }
 
