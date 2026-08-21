@@ -1,9 +1,10 @@
 // import ModalOverlay from '@FsdShared/modal/ui/ModalOverlay';
-import { RadialMenuType } from '@FsdFeatures/radial-menu/model';
-import { dataRadialMenu } from '@FsdFeatures/radial-menu/radial-menu.setup';
+
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useEffect, useRef, useState } from 'react';
+import { RadialMenuType } from '../model';
+import { dataRadialMenu } from '../radial-menu.setup';
 
 // 3개 이하로는 깨짐
 type MenuCountStr = '4' | '5' | '6' | '7' | '8';

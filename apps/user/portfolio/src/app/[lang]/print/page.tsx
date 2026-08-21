@@ -1,5 +1,5 @@
-import { resolveContentLang } from '@FsdEntities/content/model/types';
 import PortfolioHomePage from '@FsdPages/portfolio-home/PortfolioHomePage';
+import { resolveLocale } from '@FsdShared/config/i18n/constants/resolve-locale';
 import type { Metadata } from 'next';
 
 interface Props {
@@ -13,5 +13,5 @@ export const metadata: Metadata = {
 export default async function HomePrintPage({ params }: Props) {
   const { lang } = await params;
 
-  return <PortfolioHomePage lang={resolveContentLang(lang)} displayVariant="print" />;
+  return <PortfolioHomePage lang={resolveLocale(lang)} displayVariant="print" />;
 }

@@ -1,8 +1,5 @@
 import type ContentService from '@FsdEntities/content/api/ContentService';
-import type { HomeSectionGetRes } from '@FsdEntities/content/model/server/home-section';
-import type { ContentLang } from '@FsdEntities/content/model/types/content-lang';
-import type { ContentMode } from '@FsdEntities/content/model/types/content-mode';
-import type { PageKey } from '@FsdShared/config/routing/page-key';
+import type { HomeSectionGetReq, HomeSectionGetRes } from '@FsdEntities/content/model/server/home-section';
 import { CommonRes, CommonServiceBase } from '@core/service-container';
 
 class ContentServiceImpl implements ContentService {
@@ -12,11 +9,8 @@ class ContentServiceImpl implements ContentService {
     this.base = base;
   }
 
-  getHomeSections(
-    pageKey: PageKey,
-    lang: ContentLang,
-    mode: ContentMode = 'published'
-  ): Promise<CommonRes<HomeSectionGetRes[]>> {
+  getHomeSections(params: HomeSectionGetReq): Promise<CommonRes<HomeSectionGetRes[]>> {
+    const { pageKey, lang, mode = 'published' } = params;
     return this.base.http.get<CommonRes<HomeSectionGetRes[]>>(
       `/site/pages/${pageKey}/sections?mode=${mode}&lang=${lang}`
     );

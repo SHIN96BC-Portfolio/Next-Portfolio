@@ -1,6 +1,7 @@
-import { CONTENT_LANG, HomeSectionGetRes, PAGE_KEY, SECTION_TYPE } from '@FsdEntities/content/model';
+import { HomeSectionGetRes, PAGE_KEY, SECTION_TYPE } from '@FsdEntities/content/model';
 import { getPortfolioProjectsMock } from '@FsdEntities/content/model/mock/portfolio-projects.mock';
 import { portfolioSkillsMock } from '@FsdEntities/content/model/mock/portfolio-skills.mock';
+import { I18N_LOCALE } from '@FsdShared/config/i18n/auto-gen/constants/i18n-locales';
 
 export const portfolioHomeSectionsKo: HomeSectionGetRes[] = [
   {
@@ -95,7 +96,7 @@ AI 시대에는 코드를 얼마나 많이 작성했는지보다, **문제를 �
     displayOrder: 3,
     isActive: true,
     config: {
-      companies: getPortfolioProjectsMock(CONTENT_LANG.KO),
+      companies: getPortfolioProjectsMock(I18N_LOCALE.KO),
     },
   },
   {

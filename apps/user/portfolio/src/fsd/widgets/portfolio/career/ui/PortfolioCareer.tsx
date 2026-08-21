@@ -1,7 +1,8 @@
 'use client';
 
-import { ContentLang, TimelineConfig } from '@FsdEntities/content/model/types';
+import { TimelineConfig } from '@FsdEntities/content/model/types';
 import ScrollReveal from '@FsdFeatures/scroll-reveal/ui/ScrollReveal';
+import type { Locale } from '@FsdShared/config/i18n/auto-gen/constants/i18n-locales';
 import { buildPortfolioPath } from '@FsdShared/config/routing/site-routes';
 import { DisplayVariant, isPrintVariant } from '@FsdShared/display/model/display-variant';
 import { SectionHeader } from '@FsdShared/section-header/ui';
@@ -11,7 +12,7 @@ import Link from 'next/link';
 interface Props {
   title: string;
   config: TimelineConfig;
-  lang: ContentLang;
+  lang: Locale;
   resumeLinkLabel: string;
   displayVariant?: DisplayVariant;
 }

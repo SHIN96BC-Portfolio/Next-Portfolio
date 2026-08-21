@@ -1,6 +1,7 @@
-import { CONTENT_LANG, HomeSectionGetRes, PAGE_KEY, SECTION_TYPE } from '@FsdEntities/content/model';
+import { HomeSectionGetRes, PAGE_KEY, SECTION_TYPE } from '@FsdEntities/content/model';
 import { getPortfolioProjectsMock } from '@FsdEntities/content/model/mock/portfolio-projects.mock';
 import { portfolioSkillsMock } from '@FsdEntities/content/model/mock/portfolio-skills.mock';
+import { I18N_LOCALE } from '@FsdShared/config/i18n/auto-gen/constants/i18n-locales';
 
 export const portfolioHomeSectionsJa: HomeSectionGetRes[] = [
   {
@@ -95,7 +96,7 @@ AI 時代には、どれだけコードを書いたかより、**問題をどれ
     displayOrder: 3,
     isActive: true,
     config: {
-      companies: getPortfolioProjectsMock(CONTENT_LANG.JA),
+      companies: getPortfolioProjectsMock(I18N_LOCALE.JA),
     },
   },
   {

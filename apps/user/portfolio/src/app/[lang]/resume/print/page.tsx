@@ -1,5 +1,5 @@
-import { resolveContentLang } from '@FsdEntities/content/model/types';
 import PortfolioResumePage from '@FsdPages/portfolio-resume/PortfolioResumePage';
+import { resolveLocale } from '@FsdShared/config/i18n/constants/resolve-locale';
 import type { Metadata } from 'next';
 
 interface Props {
@@ -13,5 +13,5 @@ export const metadata: Metadata = {
 export default async function ResumePrintPage({ params }: Props) {
   const { lang } = await params;
 
-  return <PortfolioResumePage lang={resolveContentLang(lang)} displayVariant="print" />;
+  return <PortfolioResumePage lang={resolveLocale(lang)} displayVariant="print" />;
 }

@@ -1,4 +1,4 @@
-import { RadialMenuType } from '@FsdFeatures/radial-menu/model';
+import { RadialMenuType } from './model';
 
 export const dataRadialMenu: RadialMenuType[] = [
   {

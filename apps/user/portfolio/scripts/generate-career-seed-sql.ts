@@ -1,5 +1,5 @@
 import { portfolioCareerSectionsKo } from '@FsdEntities/content/model/mock/portfolio-career-sections.ko';
-import { CONTENT_LANG } from '@FsdEntities/content/model/types';
+import { I18N_LOCALE } from '@FsdShared/config/i18n/auto-gen/constants/i18n-locales';
 
 const lines = ['-- CAREER page seed (ko). Mirrors FE portfolio-career-sections.ko.ts mock.'];
 
@@ -13,7 +13,7 @@ for (const section of portfolioCareerSectionsKo) {
     published_title, published_config, published_config_schema_version,
     version, published_at, display_order, is_active
 ) VALUES (
-    '${section.id}'::uuid, '${section.pageKey}', '${section.sectionKey}', '${section.sectionType}', '${CONTENT_LANG.KO}',
+    '${section.id}'::uuid, '${section.pageKey}', '${section.sectionKey}', '${section.sectionType}', '${I18N_LOCALE.KO}',
     ${title ? `'${title}'` : 'NULL'}, '${configJson}'::jsonb, ${section.configSchemaVersion},
     ${title ? `'${title}'` : 'NULL'}, '${configJson}'::jsonb, ${section.configSchemaVersion},
     1, NOW(), ${section.displayOrder}, TRUE

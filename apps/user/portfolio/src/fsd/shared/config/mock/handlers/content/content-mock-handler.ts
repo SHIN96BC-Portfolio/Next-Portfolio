@@ -1,8 +1,9 @@
 import { getPortfolioCareerSectionsMock } from '@FsdEntities/content/model/mock/portfolio-career-sections';
 import { getPortfolioHomeSectionsMock } from '@FsdEntities/content/model/mock/portfolio-home-sections';
-import { PAGE_KEY, resolveContentLang } from '@FsdEntities/content/model/types';
+import { resolveLocale } from '@FsdShared/config/i18n/constants/resolve-locale';
 import { addDelay } from '@FsdShared/config/mock/handlers';
 import { host } from '@FsdShared/config/mock/mock.config';
+import { PAGE_KEY } from '@FsdShared/config/routing/page-key';
 import { HttpResponse, http } from 'msw';
 
 const contentMockHandler = [
@@ -10,7 +11,7 @@ const contentMockHandler = [
     const { pageKey } = params;
     const url = new URL(request.url);
     const mode = url.searchParams.get('mode') ?? 'published';
-    const lang = resolveContentLang(url.searchParams.get('lang'));
+    const lang = resolveLocale(url.searchParams.get('lang'));
 
     console.info(`msw get /site/pages/${pageKey}/sections?mode=${mode}&lang=${lang}`);
 

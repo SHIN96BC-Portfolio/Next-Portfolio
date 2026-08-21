@@ -1,9 +1,8 @@
-import { ContentLang } from '@FsdEntities/content/model/types';
-import { GnbGetRes } from '@FsdEntities/site/model/server';
-import { PortfolioGetRes } from '@FsdEntities/site/model/server/portfolio';
 import { CommonRes } from '@core/service-container';
+import { GnbGetReq, GnbGetRes } from '../model/server';
+import { PortfolioGetRes } from '../model/server/portfolio';
 
 export default interface SiteService {
-  getGnb(lang?: ContentLang): Promise<CommonRes<GnbGetRes[]>>;
+  getGnb(params?: GnbGetReq): Promise<CommonRes<GnbGetRes[]>>;
   getPortfolio(): Promise<CommonRes<PortfolioGetRes[]>>;
 }

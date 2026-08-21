@@ -1,8 +1,9 @@
 'use client';
 
-import { ContentLang, ProjectGridConfig } from '@FsdEntities/content/model/types';
+import { ProjectGridConfig } from '@FsdEntities/content/model/types';
 import ScrollReveal from '@FsdFeatures/scroll-reveal/ui/ScrollReveal';
 import { AccordionItem } from '@FsdShared/accordion/ui';
+import type { Locale } from '@FsdShared/config/i18n/auto-gen/constants/i18n-locales';
 import { DisplayVariant, isPrintVariant } from '@FsdShared/display/model/display-variant';
 import { SectionHeader } from '@FsdShared/section-header/ui';
 import formatEmploymentPeriod from '@FsdShared/utils/date/format-employment-period';
@@ -12,7 +13,7 @@ import HighlightListItem from './HighlightListItem';
 interface Props {
   title: string;
   config: ProjectGridConfig;
-  lang: ContentLang;
+  lang: Locale;
   displayVariant?: DisplayVariant;
 }
 

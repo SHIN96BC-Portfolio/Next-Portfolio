@@ -53,10 +53,16 @@ apps/<app>/src/fsd/
 | From | 금지 |
 |------|------|
 | `shared` | 다른 FSD 레이어 전부 (**예외 아래**) |
-| `entities` | features, widgets, pages, app |
-| `features` | widgets, pages, app |
-| `widgets` | pages, app |
+| `entities` | features, widgets, pages, app · **다른 entities 슬라이스** |
+| `features` | widgets, pages, app · **다른 features 슬라이스** |
+| `widgets` | pages, app · **다른 widgets 슬라이스** |
 | `pages` | app |
+
+**동일 레이어 cross-slice:** widgets↔widgets, features↔features, entities↔entities (**서로 다른 슬라이스만**) 금지. 한 entities 도메인 안 api/model/ui 상호 import는 정상. 조합은 pages/layout, 도메인 간 공유 타입은 shared.
+
+**`ui/` 8+ TSX:** **같은 폴더의 형제 `.tsx`** 기준(슬라이스 합계 아님). 8+면 `_parts/`/역할 폴더로 분할. 그 폴더도 8+면 같은 규칙을 **재적용** (역할 폴더로; `_parts/_parts` 금지). 8 미만이 된 부모는 유지. `index.ts` = public만. `_parts`는 상대경로; alias `@Fsd*/**/_parts/**` 금지.
+
+**Biome cross-slice:** `widgets/**`·`features/**`에서 `@FsdWidgets/**`·`@FsdFeatures/**` alias 금지 (same-slice는 상대경로). `entities/**`에 `@FsdEntities/**` 금지는 **없음** — same-slice alias를 깨지 않기 위함(api/model 통신 금지가 아님). `_parts` alias는 앱 src 전역에서 차단.
 
 **Biome `shared` 예외 (composition만):**
 
@@ -164,7 +170,7 @@ StoreProvider (Redux + redux-persist)
 | Next.js app router | lowercase | `page.tsx`, `layout.tsx` |
 | Utility / mapper | kebab-case | `format-date.ts`, `map-server-home-section-to-client.ts` |
 | Custom hook | `use` + camelCase | `useAuth.ts`, `useFindGnbQuery.ts` |
-| Types / constants (다개념) | kebab-case under `model/types|constants/` | `content-lang.ts`, `section-type.ts` |
+| Types / constants (다개념) | kebab-case under `model/types|constants/` | `section-config.ts`, `section-type.ts` |
 | Enum file | kebab-case + `.enum` | `status.enum.ts` |
 | Schema (zod) | kebab-case + `-schema` | `login-schema.ts` |
 | REST Service | PascalCase | `SiteService.ts`, `SiteServiceImpl.ts` |

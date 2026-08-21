@@ -142,6 +142,79 @@ entities/content/          ← Slice (도메인/기능 이름, kebab-case)
 
 세그먼트는 **필요할 때만** 만든다. 빈 폴더를 미리 만들지 않는다.
 
+#### `ui/` 내부 구조 (역할별 하위 폴더)
+
+**세는 단위는 슬라이스 전체 TSX가 아니라, 같은 폴더 안의 형제 `.tsx` 개수다.** `index.ts`는 카운트하지 않는다.
+
+그 폴더에 형제 `.tsx`가 **8개 이상**이면 `_parts/` 또는 역할 폴더로 나눈다. 분할 **후** 부모 폴더가 8 미만이 되면 그 부모는 그대로 둔다.
+
+| 그 폴더의 형제 `.tsx` | 구조 |
+|----------------------|------|
+| **~7개 이하** | 그 폴더에 flat OK |
+| **8개 이상** | `_parts/` 또는 `drawers/` · `sheets/` · `nav/` 등으로 분리 |
+
+**재귀:** 옮긴 뒤 `_parts/`(또는 역할 폴더)에도 형제 `.tsx`가 8개 이상이면 **같은 규칙을 그 폴더에 다시** 적용한다. `drawers/` · `sheets/` · `nav/`처럼 역할 폴더로 나눈다. **`_parts/_parts`처럼 `_parts`를 중첩하지 않는다.**
+
+**하위 폴더 예시**
+
+| 폴더 | 용도 |
+|------|------|
+| `_parts/` | 슬라이스 **내부 전용** (private) 컴포넌트 |
+| `drawers/` | drawer UI 묶음 |
+| `sheets/` | bottom sheet / settings sheet 묶음 |
+| `nav/` | 내비·링크 묶음 |
+| `<screen-unit>/` | 화면 단위 조각 (필요 시) |
+
+**공개 vs private**
+
+- `ui/index.ts` — **public API만** re-export (pages·다른 슬라이스는 여기서만 import)
+- `_parts/` — 슬라이스 내부 전용. **alias deep import 금지** (`@FsdWidgets/header/ui/_parts/...` 등). 같은 슬라이스는 `./_parts/...` · `../_parts/...` 상대경로만
+- 역할 폴더도 슬라이스 내부용이면 public `index.ts`에서 re-export하지 않는다
+- widgets/features 같은 슬라이스 내부는 alias 대신 **상대경로** (Biome이 해당 레이어 alias를 막음)
+
+**예시 — widgets/header (`ui/` 형제 8+ → `_parts/`로 분할, 부모는 8 미만으로 유지)**
+
+```
+widgets/header/ui/
+├── index.ts                    # PortfolioHeader, PortfolioDocumentHeader, …
+├── PortfolioHeader.tsx         # public
+├── PortfolioDocumentHeader.tsx
+├── HomeSectionNav.tsx
+├── SiteNavLinks.tsx
+└── _parts/                     # private — 여기도 형제 8+면 drawers/sheets/nav 로 재분할 (_parts/_parts 금지)
+    ├── PortfolioHeaderBar.tsx
+    ├── PortfolioNavDrawer.tsx
+    ├── PortfolioSettingsSheet.tsx
+    └── HeaderIconButton.tsx
+```
+
+#### 동일 레이어 슬라이스 간 import 금지
+
+FSD에서 **같은 레이어의 서로 다른 슬라이스**는 import 하지 않는다. **한 슬라이스 안의 세그먼트끼리**(api ↔ model ↔ ui) import는 정상이다.
+
+entities는 **1단 도메인**으로 나눈다 (`site`, `content`, `theme`, `lang`, …). `entities/content/api`가 `@FsdEntities/content/model/...`를 쓰는 것은 **same-slice**이며 레이어 위반이 아니다. 상대경로는 스타일 선택이지, 세그먼트 간 통신 금지가 아니다.
+
+| From → To | 허용 |
+|-----------|------|
+| `widgets/A` → `widgets/B` (A≠B) | ❌ |
+| `features/A` → `features/B` (A≠B) | ❌ |
+| `entities/site` → `entities/content` (A≠B, **cross-slice**) | ❌ |
+| `entities/content/api` ↔ `entities/content/model` ↔ `ui` (**same-slice**) | ✅ alias 또는 상대경로 |
+| 상위 → 하위 레이어 | ✅ (FSD 계층 규칙) |
+
+**위반 시 해결 패턴**
+
+- 사용자 시나리오 UI → `features/<name>`으로 이동 (예: share 다이얼로그)
+- 여러 widget/feature 조합 → `pages/` 또는 `app/layouts/`에서 composition
+- widget끼리 결합 필요 → props / slots / render props로 page·layout에서 주입
+- entities **cross-slice** 공유 타입 → 각 슬라이스 자체 server/API 타입으로 분리. 진짜 공용이면 `shared/`의 **API·server 지향** 타입만. UI locale과 API lang 세트가 같으면 auto-gen `Locale` / `I18N_LOCALE`(`@FsdShared/config/i18n/auto-gen/constants/i18n-locales`)과 `resolveLocale`(`…/i18n/constants/resolve-locale`)을 쓰고, **세트가 갈라질 때만** 슬라이스 전용 lang 타입을 둔다. `@FsdShared/config/i18n/client`를 entities `api/`에 넣지 말 것
+
+**Biome 강제 (동일 레이어 cross-slice · `_parts`)**
+
+- `widgets/**`, `features/**` 파일에서 해당 레이어 alias (`@FsdWidgets/**`, `@FsdFeatures/**`) import **전면 금지** → 같은 슬라이스는 상대경로만. alias로 **다른** 슬라이스를 끌어올 수 없음
+- `entities/**`에는 `@FsdEntities/**` 전면 금지를 **넣지 않는다**. Biome이 `content` vs `site`를 동적으로 구분하지 못해, 넣으면 **valid same-slice** (`@FsdEntities/content/...` inside `entities/content`)까지 깨진다. **cross-slice**(`site` → `content`)는 리뷰로 지킨다
+- **`_parts` alias deep import** (`@FsdWidgets/**/_parts/**` 등)는 pages/app/다른 레이어 포함 **앱 전역**에서 금지. 슬라이스 내부 `./_parts/...` · `../_parts/...`는 허용
+
 #### `model/` 내부 분할 기준 (types.ts 한방 금지)
 
 관심사가 섞이면 `model/types.ts` 하나에 때려넣지 않는다. **개념(concept) 단위**로 나눈다.
@@ -169,11 +242,10 @@ entities/content/
 │   ├── constants/
 │   │   └── section-type.ts   # SECTION_TYPE
 │   ├── types/
-│   │   ├── content-lang.ts   # ContentLang + resolve helpers
 │   │   ├── content-mode.ts
 │   │   └── section-config.ts # SectionConfig 및 하위 config
 │   ├── server/
-│   │   └── home-section.ts   # wire DTO (HomeSectionGetRes)
+│   │   └── home-section.ts   # wire DTO (HomeSectionGetReq / HomeSectionGetRes)
 │   ├── client/
 │   │   └── home-section.ts   # UI 모델 (HomeSection)
 │   ├── mapper/
@@ -196,7 +268,7 @@ entities/site/
 │   ├── useSiteService.ts
 │   └── index.ts
 └── model/
-    ├── server/gnb.ts
+    ├── server/gnb.ts         # wire DTO (GnbGetReq / GnbGetRes; lang?: Locale)
     ├── client/gnb.ts
     ├── mapper/map-server-gnb-to-client.ts
     └── mock/

@@ -1,5 +1,5 @@
 import { MarkdownConfig } from '@FsdEntities/content/model/types';
-import { ResumeMarkdown } from '@FsdWidgets/resume/ui/ResumeProse';
+import { ResumeMarkdown } from './ResumeProse';
 
 interface Props {
   title: string | null;

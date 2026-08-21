@@ -3,19 +3,19 @@
 import LangToggle from '@FsdEntities/lang/ui/LangToggle';
 import { SiteGnb } from '@FsdEntities/site/model/client/gnb';
 import ThemeToggle from '@FsdEntities/theme/ui/ThemeToggle';
+import { PortfolioShareDialog } from '@FsdFeatures/share/ui';
 import { DictionaryHome } from '@FsdShared/config/i18n/auto-gen/types/home';
 import { resolveLocale } from '@FsdShared/config/i18n/client';
 import { buildPortfolioPath } from '@FsdShared/config/routing/site-routes';
 import { ThemeType } from '@FsdShared/config/theme/model/theme';
 import PortfolioPrintButton from '@FsdShared/print/ui/PortfolioPrintButton';
-import HeaderIconButton from '@FsdWidgets/header/ui/HeaderIconButton';
-import PortfolioNavDrawer from '@FsdWidgets/header/ui/PortfolioNavDrawer';
-import PortfolioSettingsSheet from '@FsdWidgets/header/ui/PortfolioSettingsSheet';
-import SiteNavLinks from '@FsdWidgets/header/ui/SiteNavLinks';
-import PortfolioShareDialog from '@FsdWidgets/share/ui/PortfolioShareDialog';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { useState } from 'react';
+import SiteNavLinks from '../SiteNavLinks';
+import HeaderIconButton from './HeaderIconButton';
+import PortfolioNavDrawer from './PortfolioNavDrawer';
+import PortfolioSettingsSheet from './PortfolioSettingsSheet';
 
 interface Props {
   homeDict: DictionaryHome;
