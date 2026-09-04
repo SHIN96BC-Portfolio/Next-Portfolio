@@ -1,4 +1,4 @@
-import { SiteGnb } from '@FsdEntities/site/model/client/gnb';
+import { SiteGnb } from '../client/gnb';
 
 /** CMS navigation_menu(ko) 와 동일한 구조 — API 미연동 시 fallback */
 export const portfolioNavigationKo: SiteGnb[] = [

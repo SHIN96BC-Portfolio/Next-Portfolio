@@ -1,6 +1,6 @@
-import type ContentService from '@FsdEntities/content/api/ContentService';
-import type { HomeSectionGetReq, HomeSectionGetRes } from '@FsdEntities/content/model/server/home-section';
 import { CommonRes, CommonServiceBase } from '@core/service-container';
+import type { HomeSectionGetReq, HomeSectionGetRes } from '../model/server/home-section';
+import type ContentService from './ContentService';
 
 class ContentServiceImpl implements ContentService {
   private readonly base: CommonServiceBase;

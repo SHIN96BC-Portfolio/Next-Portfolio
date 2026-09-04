@@ -1,5 +1,5 @@
-import { SiteGnb } from '@FsdEntities/site/model/client/gnb';
-import { GnbGetRes } from '@FsdEntities/site/model/server';
+import { SiteGnb } from '../client/gnb';
+import { GnbGetRes } from '../server';
 
 export default function mapServerGnbToClient(gnbList: GnbGetRes[]): SiteGnb[] {
   if (!gnbList || !Array.isArray(gnbList)) {

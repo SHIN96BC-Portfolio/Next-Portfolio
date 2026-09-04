@@ -142,51 +142,82 @@ entities/content/          ← Slice (도메인/기능 이름, kebab-case)
 
 세그먼트는 **필요할 때만** 만든다. 빈 폴더를 미리 만들지 않는다.
 
-#### `ui/` 내부 구조 (역할별 하위 폴더)
+#### `ui/` 내부 구조 (widgets · features · entities 공통)
 
 **세는 단위는 슬라이스 전체 TSX가 아니라, 같은 폴더 안의 형제 `.tsx` 개수다.** `index.ts`는 카운트하지 않는다.
 
-그 폴더에 형제 `.tsx`가 **8개 이상**이면 `_parts/` 또는 역할 폴더로 나눈다. 분할 **후** 부모 폴더가 8 미만이 되면 그 부모는 그대로 둔다.
+그 폴더에 형제 `.tsx`가 **8개 이상**이면 **PascalCase component-folder** 또는 `drawers/` · `sheets/` · `nav/` 등 **역할 폴더**로 나눈다. 분할 **후** 부모 폴더가 8 미만이 되면 그 부모는 그대로 둔다.
 
 | 그 폴더의 형제 `.tsx` | 구조 |
 |----------------------|------|
 | **~7개 이하** | 그 폴더에 flat OK |
-| **8개 이상** | `_parts/` 또는 `drawers/` · `sheets/` · `nav/` 등으로 분리 |
+| **8개 이상** | component-folder 또는 역할 폴더로 분리 |
 
-**재귀:** 옮긴 뒤 `_parts/`(또는 역할 폴더)에도 형제 `.tsx`가 8개 이상이면 **같은 규칙을 그 폴더에 다시** 적용한다. `drawers/` · `sheets/` · `nav/`처럼 역할 폴더로 나눈다. **`_parts/_parts`처럼 `_parts`를 중첩하지 않는다.**
+**재귀:** 분할한 폴더에도 형제 `.tsx`가 8개 이상이면 **같은 규칙을 그 폴더에 다시** 적용한다.
 
-**하위 폴더 예시**
+| 폴더 | 레이어 | 용도 |
+|------|--------|------|
+| `_parts/` | **widgets만** | public widget 1개 전용 private 조립 |
+| `drawers/` · `sheets/` · `nav/` | widgets `_parts` 안 | private 역할 분리 (**`_parts/_parts` 금지**) |
+| `<PascalCase>/` | widgets/features ui | public component-folder |
 
-| 폴더 | 용도 |
-|------|------|
-| `_parts/` | 슬라이스 **내부 전용** (private) 컴포넌트 |
-| `drawers/` | drawer UI 묶음 |
-| `sheets/` | bottom sheet / settings sheet 묶음 |
-| `nav/` | 내비·링크 묶음 |
-| `<screen-unit>/` | 화면 단위 조각 (필요 시) |
+#### `_parts` — widgets 전용 · component-root
 
-**공개 vs private**
+**`_parts`는 `widgets/**/ui` 에만 둔다.** shared · entities · features · pages · app 에 `_parts` 금지. (features ui가 커지면 feature 슬라이스를 나눈다.)
 
-- `ui/index.ts` — **public API만** re-export (pages·다른 슬라이스는 여기서만 import)
-- `_parts/` — 슬라이스 내부 전용. **alias deep import 금지** (`@FsdWidgets/header/ui/_parts/...` 등). 같은 슬라이스는 `./_parts/...` · `../_parts/...` 상대경로만
-- 역할 폴더도 슬라이스 내부용이면 public `index.ts`에서 re-export하지 않는다
-- widgets/features 같은 슬라이스 내부는 alias 대신 **상대경로** (Biome이 해당 레이어 alias를 막음)
+**폴더 위치 (component-root — 신규 필수)**
 
-**예시 — widgets/header (`ui/` 형제 8+ → `_parts/`로 분할, 부모는 8 미만으로 유지)**
+`_parts`는 **`ui/` 직하위 공용 통이 아니라**, public component-folder **바로 아래**에만 둔다.
 
 ```
 widgets/header/ui/
-├── index.ts                    # PortfolioHeader, PortfolioDocumentHeader, …
-├── PortfolioHeader.tsx         # public
-├── PortfolioDocumentHeader.tsx
-├── HomeSectionNav.tsx
-├── SiteNavLinks.tsx
-└── _parts/                     # private — 여기도 형제 8+면 drawers/sheets/nav 로 재분할 (_parts/_parts 금지)
-    ├── PortfolioHeaderBar.tsx
-    ├── PortfolioNavDrawer.tsx
-    ├── PortfolioSettingsSheet.tsx
-    └── HeaderIconButton.tsx
+├── index.ts
+├── PortfolioHeader/                    # public component-root
+│   ├── PortfolioHeader.tsx             # import './_parts/...' 또는 './_parts/drawers/...'
+│   └── _parts/                         # 이 public 전용 private
+│       ├── PortfolioHeaderBar.tsx      # 얇은 orchestrator
+│       ├── drawers/
+│       │   └── PortfolioNavDrawer.tsx
+│       └── sheets/
+│           └── PortfolioSettingsSheet.tsx
+├── PortfolioDocumentHeader/
+│   ├── PortfolioDocumentHeader.tsx
+│   └── _parts/
+├── HomeSectionNav.tsx                  # private 없으면 flat public
+└── SiteNavLinks.tsx
 ```
+
+**왜 `ui/_parts/` 공용 통을 쓰지 않나**
+
+`widgets/header/ui/_parts` 는 “header 전체 private”처럼 보여 **어느 public 소속인지** 경로만으로 알기 어렵다. public이 여러 개면 **`PortfolioHeader/_parts` · `PortfolioDocumentHeader/_parts`** 로 소유권을 분리한다.
+
+| 상황 | 할 일 |
+|------|--------|
+| public 1개에 private 추가 | `PublicName/_parts/` 생성 |
+| `ui/` 형제 public `.tsx` 8+ | public마다 component-folder + 각자 `_parts` |
+| `_parts` 형제 `.tsx` 8+ | **`_parts/_parts` 금지** → `_parts/drawers/` · `_parts/sheets/` · `_parts/nav/` |
+| `_parts`에 시나리오급 UI (설정·공유·로그인…) | **`features/<scenario>`** 로 올림 |
+| 범용 kit (icon button 등) | **`shared/`** |
+| 도메인 UI (theme/lang toggle) | **`entities/`** (이미 있으면 재사용) |
+
+**`_parts` vs 하위 레이어 — 배치 기준**
+
+```
+다른 widget·page에서도 쓰나?     → shared 또는 entities
+독립 사용자 시나리오/액션인가?   → features
+이 public widget 조립·레이아웃만? → widgets …/_parts (얇게)
+_parts가 4~5개+ 시나리오 이름?   → features로 올리거나 widget 슬라이스 분리
+```
+
+**import · public API**
+
+- `ui/index.ts` — **public만** re-export (pages·다른 슬라이스는 여기서만)
+- `_parts` import — **`./_parts/**`만** (Biome). alias · `../_parts` · cross-slice 금지
+- `_parts`는 index에 re-export **하지 않음**
+
+**레거시 예외 (마이그레이션 대상)**
+
+`widgets/header/ui/_parts/` 처럼 **`ui/` 직하위 공용 `_parts`** 는 기존 코드만 허용. **신규 추가·분할 시 component-root로 이전.** lint가 legacy 경로 외 `ui/_parts` 생성을 막는다.
 
 #### 동일 레이어 슬라이스 간 import 금지
 
@@ -209,11 +240,16 @@ entities는 **1단 도메인**으로 나눈다 (`site`, `content`, `theme`, `lan
 - widget끼리 결합 필요 → props / slots / render props로 page·layout에서 주입
 - entities **cross-slice** 공유 타입 → 각 슬라이스 자체 server/API 타입으로 분리. 진짜 공용이면 `shared/`의 **API·server 지향** 타입만. UI locale과 API lang 세트가 같으면 auto-gen `Locale` / `I18N_LOCALE`(`@FsdShared/config/i18n/auto-gen/constants/i18n-locales`)과 `resolveLocale`(`…/i18n/constants/resolve-locale`)을 쓰고, **세트가 갈라질 때만** 슬라이스 전용 lang 타입을 둔다. `@FsdShared/config/i18n/client`를 entities `api/`에 넣지 말 것
 
-**Biome 강제 (동일 레이어 cross-slice · `_parts`)**
+**Biome · lint 강제 (cross-slice · `_parts`)**
 
-- `widgets/**`, `features/**` 파일에서 해당 레이어 alias (`@FsdWidgets/**`, `@FsdFeatures/**`) import **전면 금지** → 같은 슬라이스는 상대경로만. alias로 **다른** 슬라이스를 끌어올 수 없음
-- `entities/**`에는 `@FsdEntities/**` 전면 금지를 **넣지 않는다**. Biome이 `content` vs `site`를 동적으로 구분하지 못해, 넣으면 **valid same-slice** (`@FsdEntities/content/...` inside `entities/content`)까지 깨진다. **cross-slice**(`site` → `content`)는 리뷰로 지킨다
-- **`_parts` alias deep import** (`@FsdWidgets/**/_parts/**` 등)는 pages/app/다른 레이어 포함 **앱 전역**에서 금지. 슬라이스 내부 `./_parts/...` · `../_parts/...`는 허용
+- `widgets/**`, `features/**` — 해당 레이어 alias import **전면 금지** (same-slice 상대경로만)
+- `entities/**` — `@FsdEntities/**` 전면 금지 **없음** (same-slice alias 유지). cross-slice는 리뷰
+- **`_parts` import (앱 전역):** `_parts` 포함 import 금지, 예외 **`./_parts/**`만**. 외부 레이어는 widget public `ui/index.ts`
+- **`_parts` 폴더:**
+  - **`widgets/**/ui` 만** `_parts` 허용. features/entities/pages/shared/app 에 `_parts` 폴더 **금지**
+  - **`ui/<PublicComponent>/_parts/`** (component-root)만 허용. **`ui/_parts/`** 직하위 공용 통 **금지** (legacy `widgets/header/ui/_parts` 만 예외)
+  - `_parts` 안 역할 분리는 `drawers|sheets|nav` — **`_parts/_parts` 금지**
+- **Folder structure (`pnpm lint:fsd` → `scripts/lint-fsd-folder-structure.mjs`):** 규칙은 스크립트 상단 **`RULES` object**. layer/slice/group에 소스 파일 금지, `ui` 형제 `.tsx` 상한·layer 기준 max depth, `_parts` 위치. `pnpm lint:fsd:dry`로 리포트만. `pnpm biome`에 포함. 세부 수치는 `RULES`를 같이 수정.
 
 #### `model/` 내부 분할 기준 (types.ts 한방 금지)
 

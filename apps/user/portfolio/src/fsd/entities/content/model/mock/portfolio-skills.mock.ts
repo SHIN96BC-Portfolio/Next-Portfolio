@@ -1,4 +1,4 @@
-import { SkillsConfig } from '@FsdEntities/content/model/types';
+import { SkillsConfig } from '../types';
 
 export const portfolioSkillsMock: SkillsConfig = {
   groups: [

@@ -1,4 +1,4 @@
-import { SiteGnb } from '@FsdEntities/site/model/client/gnb';
+import { SiteGnb } from '../client/gnb';
 
 export const portfolioNavigationEn: SiteGnb[] = [
   {

@@ -1,8 +1,8 @@
-import type { SectionType } from '@FsdEntities/content/model/constants/section-type';
-import type { ContentMode } from '@FsdEntities/content/model/types/content-mode';
-import type { SectionConfig } from '@FsdEntities/content/model/types/section-config';
 import type { Locale } from '@FsdShared/config/i18n/auto-gen/constants/i18n-locales';
 import type { PageKey } from '@FsdShared/config/routing/page-key';
+import type { SectionType } from '../constants/section-type';
+import type { ContentMode } from '../types/content-mode';
+import type { SectionConfig } from '../types/section-config';
 
 /** API wire — `GET .../sections` query */
 export interface HomeSectionGetReq {

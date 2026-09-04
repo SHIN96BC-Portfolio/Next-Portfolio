@@ -1,8 +1,8 @@
-import { portfolioProjectsEn } from '@FsdEntities/content/model/mock/portfolio-projects.en';
-import { portfolioProjectsJa } from '@FsdEntities/content/model/mock/portfolio-projects.ja';
-import { portfolioProjectsKo } from '@FsdEntities/content/model/mock/portfolio-projects.ko';
-import type { ProjectCompany } from '@FsdEntities/content/model/types/section-config';
 import { I18N_LOCALE, type Locale } from '@FsdShared/config/i18n/auto-gen/constants/i18n-locales';
+import type { ProjectCompany } from '../types/section-config';
+import { portfolioProjectsEn } from './portfolio-projects.en';
+import { portfolioProjectsJa } from './portfolio-projects.ja';
+import { portfolioProjectsKo } from './portfolio-projects.ko';
 
 const portfolioProjectsByLang: Record<Locale, ProjectCompany[]> = {
   [I18N_LOCALE.KO]: portfolioProjectsKo,

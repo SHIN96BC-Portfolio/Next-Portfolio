@@ -1,5 +1,5 @@
-import { portfolioCareerProjectsEn } from '@FsdEntities/content/model/mock/portfolio-career-projects.en';
-import { createPortfolioCareerSections } from '@FsdEntities/content/model/mock/portfolio-career-sections.factory';
+import { portfolioCareerProjectsEn } from './portfolio-career-projects.en';
+import { createPortfolioCareerSections } from './portfolio-career-sections.factory';
 
 const CAREER_INTRO_BODY =
   'Frontend developer with 5 years of experience, having delivered both next-generation rebuilds of legacy services and end-to-end greenfield development. Skilled in large-scale refactoring, performance optimization, and full-stack delivery. Below is a summary of representative projects organized around **problem → solution → outcome**.';

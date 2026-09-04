@@ -1,4 +1,4 @@
-import { ProjectCompany } from '@FsdEntities/content/model/types';
+import { ProjectCompany } from '../types';
 
 export const portfolioProjectsJa: ProjectCompany[] = [
   {

@@ -1,5 +1,5 @@
-import type { HomeSection } from '@FsdEntities/content/model/client/home-section';
-import type { HomeSectionGetRes } from '@FsdEntities/content/model/server/home-section';
+import type { HomeSection } from '../client/home-section';
+import type { HomeSectionGetRes } from '../server/home-section';
 
 export default function mapServerHomeSectionToClient(sections: HomeSectionGetRes[]): HomeSection[] {
   if (!sections || !Array.isArray(sections)) {

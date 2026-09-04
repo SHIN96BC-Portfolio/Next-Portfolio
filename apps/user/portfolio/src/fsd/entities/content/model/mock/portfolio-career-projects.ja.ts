@@ -1,4 +1,4 @@
-import { ResumeProjectConfig } from '@FsdEntities/content/model/types';
+import { ResumeProjectConfig } from '../types';
 
 export const portfolioCareerProjectsJa: ResumeProjectConfig[] = [
   {

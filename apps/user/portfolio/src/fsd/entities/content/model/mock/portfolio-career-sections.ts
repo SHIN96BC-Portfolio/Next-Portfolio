@@ -1,8 +1,8 @@
-import { HomeSectionGetRes } from '@FsdEntities/content/model';
-import { portfolioCareerSectionsEn } from '@FsdEntities/content/model/mock/portfolio-career-sections.en';
-import { portfolioCareerSectionsJa } from '@FsdEntities/content/model/mock/portfolio-career-sections.ja';
-import { portfolioCareerSectionsKo } from '@FsdEntities/content/model/mock/portfolio-career-sections.ko';
 import { I18N_LOCALE, type Locale } from '@FsdShared/config/i18n/auto-gen/constants/i18n-locales';
+import { HomeSectionGetRes } from '..';
+import { portfolioCareerSectionsEn } from './portfolio-career-sections.en';
+import { portfolioCareerSectionsJa } from './portfolio-career-sections.ja';
+import { portfolioCareerSectionsKo } from './portfolio-career-sections.ko';
 
 const portfolioCareerSectionsByLang: Record<Locale, HomeSectionGetRes[]> = {
   [I18N_LOCALE.KO]: portfolioCareerSectionsKo,

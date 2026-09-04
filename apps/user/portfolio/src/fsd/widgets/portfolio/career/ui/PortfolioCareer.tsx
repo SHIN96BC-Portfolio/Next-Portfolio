@@ -7,6 +7,7 @@ import { buildPortfolioPath } from '@FsdShared/config/routing/site-routes';
 import { DisplayVariant, isPrintVariant } from '@FsdShared/display/model/display-variant';
 import { SectionHeader } from '@FsdShared/section-header/ui';
 import formatEmploymentPeriod, { formatTotalEmploymentPeriod } from '@FsdShared/utils/date/format-employment-period';
+
 import Link from 'next/link';
 
 interface Props {

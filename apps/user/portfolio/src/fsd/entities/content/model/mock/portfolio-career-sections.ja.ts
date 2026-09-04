@@ -1,5 +1,5 @@
-import { portfolioCareerProjectsJa } from '@FsdEntities/content/model/mock/portfolio-career-projects.ja';
-import { createPortfolioCareerSections } from '@FsdEntities/content/model/mock/portfolio-career-sections.factory';
+import { portfolioCareerProjectsJa } from './portfolio-career-projects.ja';
+import { createPortfolioCareerSections } from './portfolio-career-sections.factory';
 
 const CAREER_INTRO_BODY =
   '5年目のフロントエンド開発者として、レガシーサービスの次世代再構築からEnd-to-Endの新規開発まで幅広く経験しています。大規模リファクタリング・パフォーマンス最適化・フルスタック対応に強みがあり、以下は代表プロジェクトを**課題 → 解決 → 成果**の観点でまとめた内容です。';

@@ -1,9 +1,9 @@
-import queryOptions from '@FsdEntities/content/api/queries';
-import type { ContentMode } from '@FsdEntities/content/model/types/content-mode';
 import type { Locale } from '@FsdShared/config/i18n/auto-gen/constants/i18n-locales';
 import type { PageKey } from '@FsdShared/config/routing/page-key';
 import { PAGE_KEY } from '@FsdShared/config/routing/page-key';
 import { useQuery } from '@tanstack/react-query';
+import type { ContentMode } from '../model/types/content-mode';
+import queryOptions from './queries';
 
 /**
  * Find home/page sections

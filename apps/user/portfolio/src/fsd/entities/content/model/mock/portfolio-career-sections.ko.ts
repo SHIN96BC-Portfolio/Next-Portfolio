@@ -1,5 +1,5 @@
-import { portfolioCareerProjectsKo } from '@FsdEntities/content/model/mock/portfolio-career-projects.ko';
-import { createPortfolioCareerSections } from '@FsdEntities/content/model/mock/portfolio-career-sections.factory';
+import { portfolioCareerProjectsKo } from './portfolio-career-projects.ko';
+import { createPortfolioCareerSections } from './portfolio-career-sections.factory';
 
 const CAREER_INTRO_BODY =
   '5년차 프론트엔드 개발자로, 레거시 서비스의 차세대 재구축과 End-to-End 신규 개발을 모두 수행해왔습니다. 대규모 리팩터링·성능 최적화·풀스택 대응에 강점이 있으며, 아래는 대표 프로젝트를 **문제 → 해결 → 성과** 관점으로 정리한 내용입니다.';

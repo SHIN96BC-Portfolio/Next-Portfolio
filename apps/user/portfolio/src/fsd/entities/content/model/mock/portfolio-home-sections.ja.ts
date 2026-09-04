@@ -1,7 +1,7 @@
-import { HomeSectionGetRes, PAGE_KEY, SECTION_TYPE } from '@FsdEntities/content/model';
-import { getPortfolioProjectsMock } from '@FsdEntities/content/model/mock/portfolio-projects.mock';
-import { portfolioSkillsMock } from '@FsdEntities/content/model/mock/portfolio-skills.mock';
 import { I18N_LOCALE } from '@FsdShared/config/i18n/auto-gen/constants/i18n-locales';
+import { HomeSectionGetRes, PAGE_KEY, SECTION_TYPE } from '..';
+import { getPortfolioProjectsMock } from './portfolio-projects.mock';
+import { portfolioSkillsMock } from './portfolio-skills.mock';
 
 export const portfolioHomeSectionsJa: HomeSectionGetRes[] = [
   {

@@ -1,11 +1,11 @@
-import type { HomeSection } from '@FsdEntities/content/model/client/home-section';
-import mapServerHomeSectionToClient from '@FsdEntities/content/model/mapper/map-server-home-section-to-client';
-import type { ContentMode } from '@FsdEntities/content/model/types/content-mode';
 import type { Locale } from '@FsdShared/config/i18n/auto-gen/constants/i18n-locales';
 import { PAGE_KEY, type PageKey } from '@FsdShared/config/routing/page-key';
 import { serviceContainer } from '@FsdShared/config/service/service.setup';
 import { SERVICE_KEY } from '@FsdShared/config/service/service-map';
 import type { CommonRes } from '@core/service-container';
+import type { HomeSection } from '../model/client/home-section';
+import mapServerHomeSectionToClient from '../model/mapper/map-server-home-section-to-client';
+import type { ContentMode } from '../model/types/content-mode';
 
 const queryKeys = {
   findHomeSections: (pageKey: PageKey, lang: Locale, mode: ContentMode) =>

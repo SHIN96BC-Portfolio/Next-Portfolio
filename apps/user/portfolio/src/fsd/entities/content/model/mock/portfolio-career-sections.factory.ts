@@ -1,4 +1,4 @@
-import { HomeSectionGetRes, PAGE_KEY, ResumeProjectConfig, SECTION_TYPE } from '@FsdEntities/content/model';
+import { HomeSectionGetRes, PAGE_KEY, ResumeProjectConfig, SECTION_TYPE } from '..';
 
 export const CAREER_PROJECT_IDS = [
   'a1000001-0000-4000-8000-000000000002',

@@ -16,7 +16,9 @@ pnpm build                                            # turbo build
 pnpm build:libs                                       # @core/* 빌드
 pnpm lint                                             # turbo lint
 pnpm typecheck                                        # turbo typecheck
-pnpm biome                                            # biome check .
+pnpm biome                                            # biome + FSD folder lints
+pnpm lint:fsd                                         # FSD folder-structure (RULES object)
+pnpm lint:fsd:dry                                     # same, report only
 pnpm lint:fix                                        # biome check --write .
 pnpm test                                             # turbo test
 pnpm run gen:i18n                                     # portfolio i18n 일괄 생성
@@ -60,9 +62,11 @@ apps/<app>/src/fsd/
 
 **동일 레이어 cross-slice:** widgets↔widgets, features↔features, entities↔entities (**서로 다른 슬라이스만**) 금지. 한 entities 도메인 안 api/model/ui 상호 import는 정상. 조합은 pages/layout, 도메인 간 공유 타입은 shared.
 
-**`ui/` 8+ TSX:** **같은 폴더의 형제 `.tsx`** 기준(슬라이스 합계 아님). 8+면 `_parts/`/역할 폴더로 분할. 그 폴더도 8+면 같은 규칙을 **재적용** (역할 폴더로; `_parts/_parts` 금지). 8 미만이 된 부모는 유지. `index.ts` = public만. `_parts`는 상대경로; alias `@Fsd*/**/_parts/**` 금지.
+**`_parts` (widgets 전용):** `widgets/**/ui/<PublicComponent>/_parts/` (component-root)만. **`ui/_parts/` 공용 통 금지** (legacy `header` 예외). `_parts` 안 분할은 `drawers|sheets|nav` — `_parts/_parts` 금지. import `./_parts/**`만 (Biome). 시나리오 UI → features, kit → shared.
 
-**Biome cross-slice:** `widgets/**`·`features/**`에서 `@FsdWidgets/**`·`@FsdFeatures/**` alias 금지 (same-slice는 상대경로). `entities/**`에 `@FsdEntities/**` 금지는 **없음** — same-slice alias를 깨지 않기 위함(api/model 통신 금지가 아님). `_parts` alias는 앱 src 전역에서 차단.
+**Folder structure lint:** `pnpm lint:fsd` (`scripts/lint-fsd-folder-structure.mjs`). 규칙은 파일 상단 `RULES` object — layer/slice에 파일 금지, `ui` 형제 tsx 상한, layer 기준 max depth, `_parts` 위치. `pnpm lint:fsd:dry` = 리포트만. `pnpm biome`에 포함.
+
+**Biome cross-slice:** `widgets/**`·`features/**` alias 금지. `entities/**` `@FsdEntities/**` 전면 금지 **없음**.
 
 **Biome `shared` 예외 (composition만):**
 

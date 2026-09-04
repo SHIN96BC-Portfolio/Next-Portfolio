@@ -1,5 +1,5 @@
-import queryOptions from '@FsdEntities/site/api/queries';
 import { useQuery } from '@tanstack/react-query';
+import queryOptions from './queries';
 
 /**
  * Find Gnb
