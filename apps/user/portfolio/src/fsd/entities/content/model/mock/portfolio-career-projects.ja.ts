@@ -5,7 +5,7 @@ export const portfolioCareerProjectsJa: ResumeProjectConfig[] = [
     projectId: 'modetour-nextgen',
     orderLabel: '1',
     title: 'モドゥツアー B2C/B2B 旅行プラットフォーム次世代再構築',
-    company: 'YRISM',
+    company: '(주) YRISM',
     period: '2024.08 – 在職中',
     role: 'フロントエンド開発',
     links: [
@@ -100,7 +100,7 @@ export const portfolioCareerProjectsJa: ResumeProjectConfig[] = [
     projectId: 'uteas',
     orderLabel: '2',
     title: '微細粒子状物質排出量 照会・可視化サービス（UTEAS）',
-    company: 'ER Solution',
+    company: '(주) ER Solution',
     period: '2023.06 – 2023.07',
     role: 'フルスタック開発（FE・BE・DB 単独）',
     links: [],
@@ -118,7 +118,7 @@ export const portfolioCareerProjectsJa: ResumeProjectConfig[] = [
       },
     ],
     outcomes: [
-      '**1.4億件の照会を4〜6分→5秒以内（約50倍以上の改善）**',
+      '**1.4億件の照会を4〜6分→5秒以内（複雑 join 時は10秒以内、約50倍以上の改善）**',
       'フロント・バック・インフラを単独で完成し、End-to-End 開発力を実証',
     ],
     techStack: ['React(Vite)', 'Nest.js', 'TypeScript', 'MariaDB', 'TanStack Query', 'Docker', 'AWS EC2'],
@@ -126,9 +126,9 @@ export const portfolioCareerProjectsJa: ResumeProjectConfig[] = [
   {
     projectId: 'lhat',
     orderLabel: '3',
-    title: 'フィリピン Lhat プラットフォーム バックオフィス・Webアプリ構築',
-    company: 'Pinetechsoft',
-    period: '2023.11 – 2024.05',
+    title: 'フィリピン Lahat プラットフォーム バックオフィス・Webアプリ構築',
+    company: '(주) Pinetechsoft',
+    period: '2023.10 – 2024.05',
     role: 'フロントエンド開発',
     links: [],
     problem:
@@ -137,8 +137,8 @@ export const portfolioCareerProjectsJa: ResumeProjectConfig[] = [
       {
         title: '主要プロジェクト',
         items: [
-          '**Lhat Mall Admin** — 商品販売機能追加に伴う管理者バックオフィスを構造設計から API 連携まで単独構築。Firebase 認証、商品・オプション・カテゴリ・イベント・注文・レビュー管理、無限スクロールイベント商品選択、i18n 適用',
-          '**Lhat Food / Store Admin** — 基本・距離別配送料ポリシー機能を新規追加、react-hook-form + Zod フォーム検証、店主/顧客負担比率設定 UI を実装',
+          '**Lahat Mall Admin** — 商品販売機能追加に伴う管理者バックオフィスを構造設計から API 連携まで単独構築。Firebase 認証、商品・オプション・カテゴリ・イベント・注文・レビュー管理、無限スクロールイベント商品選択、i18n 適用',
+          '**Lahat Food / Store Admin** — 基本・距離別配送料ポリシー機能を新規追加、react-hook-form + Zod フォーム検証、店主/顧客負担比率設定 UI を実装',
           '**Zootopia（動物病院）** — 予約管理 Admin + オンライン予約 Web アプリを構築。予約作成・照会・キャンセル、ペット最大10匹管理、Email・SNS 統合ログイン（NextAuth）、FCM プッシュ通知連携、紹介サイトまで構築',
         ],
       },
@@ -163,7 +163,7 @@ export const portfolioCareerProjectsJa: ResumeProjectConfig[] = [
     projectId: 'er-platform',
     orderLabel: '4',
     title: '多様なプラットフォーム・公共サービス開発',
-    company: 'ER Solution',
+    company: '(주) ER Solution',
     period: '2022.07 – 2023.09',
     role: 'フルスタック開発研究員',
     links: [],
@@ -172,7 +172,7 @@ export const portfolioCareerProjectsJa: ResumeProjectConfig[] = [
       {
         title: '主要プロジェクト',
         items: [
-          '**DdaPick / DdaPlace** — B2B・B2C 流通管理 Web アプリおよび B2C ショッピングモールを新規開発。企画段階から参画、フロントエンドを単独構築、Editor.js 商品エディタ・無限スクロール・Atomic Design パターンを導入',
+          '**Dada Pick / Dada Place** — B2B・B2C 流通管理 Web アプリおよび B2C ショッピングモールを新規開発。企画段階から参画、フロントエンドを単独構築、Editor.js 商品エディタ・無限スクロール・Atomic Design パターンを導入',
           '**全州経済運転 CMS** — 市内バス経済運転指標管理システム。権限管理、Chart.js 運行指標の可視化、Spring + eGovFrame API・MariaDB 設計・AWS デプロイ（フルスタック）',
           '**ユジンレミコン入庫管理** — キオスク伝票撮影 Android アプリ。外部カメラ連携、キオスク UX、React レンダリング最適化',
           '**ペットパトロール** — リアルタイム散歩機能 iOS ネイティブアプリ（Swift/SwiftUI）、Naver Map ベースのリアルタイム経路・距離表示',

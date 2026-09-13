@@ -432,14 +432,14 @@ export const portfolioProjectsKo: ProjectCompany[] = [
           '모의해킹 결과에 따른 보안 취약점 패치·강화',
           'JSP·Spring 기반 레거시 페이지 구조 파악 및 개선',
         ],
-        techStack: ['JSP', 'jQuery', 'Java', 'Spring (Maven)', 'eGovFrame', 'Git'],
+        techStack: ['JSP', 'jQuery', 'Java', 'Spring (Maven)', 'eGovFrame', 'Oracle', 'Git'],
       },
       {
         id: 'solugate',
         name: 'Solugate',
         period: '2022.07 – 2022.09',
         role: '풀스택 개발자',
-        summary: '입사 후 역량 검증용 풀스택 테스트 프로젝트. 사용자 사이트(JSP)와 관리자 CMS(React)를 동시에 구축.',
+        summary: '사용자 사이트(JSP)·관리자 CMS(React) 신규 구축.',
         highlights: [
           'DB 설계, 프로젝트 구조 설계, API·화면 개발',
           '사용자 사이트 Q&A 게시판 (JSP, MVC 패턴)',

@@ -459,15 +459,14 @@ export const portfolioProjectsJa: ProjectCompany[] = [
           '模擬ハッキング結果に基づくセキュリティ脆弱性のパッチ・強化',
           'JSP・Spring ベースのレガシーページ構造の把握と改善',
         ],
-        techStack: ['JSP', 'jQuery', 'Java', 'Spring (Maven)', 'eGovFrame', 'Git'],
+        techStack: ['JSP', 'jQuery', 'Java', 'Spring (Maven)', 'eGovFrame', 'Oracle', 'Git'],
       },
       {
         id: 'solugate',
         name: 'Solugate',
         period: '2022.07 – 2022.09',
         role: 'フルスタック開発者',
-        summary:
-          '入社後の能力検証用フルスタックテストプロジェクト。ユーザーサイト（JSP）と管理者 CMS（React）を同時に構築。',
+        summary: 'ユーザーサイト（JSP）・管理者 CMS（React）の新規構築。',
         highlights: [
           'DB 設計、プロジェクト構造設計、API・画面開発',
           'ユーザーサイト Q&A 掲示板（JSP、MVC パターン）',

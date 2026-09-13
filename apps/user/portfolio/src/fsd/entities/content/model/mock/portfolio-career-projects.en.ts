@@ -5,7 +5,7 @@ export const portfolioCareerProjectsEn: ResumeProjectConfig[] = [
     projectId: 'modetour-nextgen',
     orderLabel: '1',
     title: 'Modetour B2C/B2B Travel Platform Next-Gen Rebuild',
-    company: 'YRISM',
+    company: '(주) YRISM',
     period: '2024.08 – Present',
     role: 'Frontend Development',
     links: [
@@ -100,7 +100,7 @@ export const portfolioCareerProjectsEn: ResumeProjectConfig[] = [
     projectId: 'uteas',
     orderLabel: '2',
     title: 'Fine Dust Emissions Query & Visualization Service (UTEAS)',
-    company: 'ER Solution',
+    company: '(주) ER Solution',
     period: '2023.06 – 2023.07',
     role: 'Full-Stack Development (Solo FE·BE·DB)',
     links: [],
@@ -118,7 +118,7 @@ export const portfolioCareerProjectsEn: ResumeProjectConfig[] = [
       },
     ],
     outcomes: [
-      '**140M-row queries: 4–6 minutes → under 5 seconds (~50× improvement)**',
+      '**140M-row queries: 4–6 minutes → under 5 seconds (under 10 seconds for complex joins, ~50× improvement)**',
       'Delivered frontend, backend, and infrastructure solo, demonstrating end-to-end ownership',
     ],
     techStack: ['React(Vite)', 'Nest.js', 'TypeScript', 'MariaDB', 'TanStack Query', 'Docker', 'AWS EC2'],
@@ -126,9 +126,9 @@ export const portfolioCareerProjectsEn: ResumeProjectConfig[] = [
   {
     projectId: 'lhat',
     orderLabel: '3',
-    title: 'Philippines Lhat Platform Back Office & Web Apps',
-    company: 'Pinetechsoft',
-    period: '2023.11 – 2024.05',
+    title: 'Philippines Lahat Platform Back Office & Web Apps',
+    company: '(주) Pinetechsoft',
+    period: '2023.10 – 2024.05',
     role: 'Frontend Development',
     links: [],
     problem:
@@ -137,8 +137,8 @@ export const portfolioCareerProjectsEn: ResumeProjectConfig[] = [
       {
         title: 'Major Projects',
         items: [
-          '**Lhat Mall Admin** — solo build from architecture through API integration for admin back office supporting new product sales. Firebase auth; product·option·category·event·order·review management; infinite-scroll event product picker; i18n',
-          '**Lhat Food / Store Admin** — added base and distance-based delivery fee policies; react-hook-form + Zod validation; owner/customer cost-share UI',
+          '**Lahat Mall Admin** — solo build from architecture through API integration for admin back office supporting new product sales. Firebase auth; product·option·category·event·order·review management; infinite-scroll event product picker; i18n',
+          '**Lahat Food / Store Admin** — added base and distance-based delivery fee policies; react-hook-form + Zod validation; owner/customer cost-share UI',
           '**Zootopia (Veterinary)** — built reservation admin and online booking web app. Create·view·cancel reservations; manage up to 10 pets; Email·SNS login via NextAuth; FCM push notifications; marketing site',
         ],
       },
@@ -163,7 +163,7 @@ export const portfolioCareerProjectsEn: ResumeProjectConfig[] = [
     projectId: 'er-platform',
     orderLabel: '4',
     title: 'Diverse Platform & Public Sector Projects',
-    company: 'ER Solution',
+    company: '(주) ER Solution',
     period: '2022.07 – 2023.09',
     role: 'Full-Stack Development Engineer',
     links: [],
@@ -172,7 +172,7 @@ export const portfolioCareerProjectsEn: ResumeProjectConfig[] = [
       {
         title: 'Major Projects',
         items: [
-          '**DdaPick / DdaPlace** — greenfield B2B·B2C distribution management web app and B2C mall. Joined from planning; solo frontend build; Editor.js product editor, infinite scroll, Atomic Design',
+          '**Dada Pick / Dada Place** — greenfield B2B·B2C distribution management web app and B2C mall. Joined from planning; solo frontend build; Editor.js product editor, infinite scroll, Atomic Design',
           '**Jeonju Economic Driving CMS** — city bus economic driving metrics admin. Role-based access; Chart.js operations dashboards; Spring + eGovFrame API and MariaDB design with AWS deployment (full-stack)',
           '**Eugene Ready-Mix Receiving** — Android kiosk app for invoice capture. External camera integration, kiosk UX, React rendering optimization',
           '**Pet Patrol** — real-time walk-tracking iOS native app (Swift/SwiftUI) with Naver Map live route and distance display',

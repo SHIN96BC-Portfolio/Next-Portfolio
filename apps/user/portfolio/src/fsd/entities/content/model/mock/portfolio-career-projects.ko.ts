@@ -5,7 +5,7 @@ export const portfolioCareerProjectsKo: ResumeProjectConfig[] = [
     projectId: 'modetour-nextgen',
     orderLabel: '1',
     title: '모두투어 B2C/B2B 여행 플랫폼 차세대 재구축',
-    company: '와이리즘',
+    company: '(주) YRISM',
     period: '2024.08 ~ 재직중',
     role: '프론트엔드 개발',
     links: [
@@ -16,7 +16,7 @@ export const portfolioCareerProjectsKo: ResumeProjectConfig[] = [
       { label: 'homeplus1.modetour.co.kr', url: 'https://homeplus1.modetour.co.kr' },
     ],
     problem:
-      '운영 중인 as-is 서비스를 유지하면서, 동시에 차세대 프론트엔드를 전면 재구축해야 하는 과제. 인수 시점의 서비스는 결제·뒤로가기(라우팅) 등 핵심 기능이 정상 동작하지 않을 만큼 버그가 많고 불안정한 상태였음. 또한 코드 구조상 props 드릴링이 심하고 공통화가 되어 있지 않아, 동일 컴포넌트가 페이지마다 중복 존재해 한 번 수정할 때 여러 파일을 반복 수정해야 했고 디버깅에도 많은 시간이 소요됨. 한정된 인원으로 300개이상의 BP/ONBP 사이트를 효율적으로 운영할 구조도 필요했음.',
+      '운영 중인 as-is 서비스를 유지하면서, 동시에 차세대 프론트엔드를 전면 재구축해야 하는 과제. 인수 시점의 서비스는 결제·뒤로가기(라우팅) 등 핵심 기능이 정상 동작하지 않을 만큼 버그가 많고 불안정한 상태였음. 또한 코드 구조상 props 드릴링이 심하고 공통화가 되어 있지 않아, 동일 컴포넌트가 페이지마다 중복 존재해 한 번 수정할 때 여러 파일을 반복 수정해야 했고 디버깅에도 많은 시간이 소요됨. 한정된 인원으로 300개 이상의 BP/ONBP 사이트를 효율적으로 운영할 구조도 필요했음.',
     workSections: [
       {
         title: '1) 서비스 안정화 (레거시 버그 대응)',
@@ -28,8 +28,8 @@ export const portfolioCareerProjectsKo: ResumeProjectConfig[] = [
       {
         title: '2) 아키텍처·구조 개선',
         items: [
-          '**원소스 멀티사이트 구조 설계** — 도메인별 사이트 정보를 로드하고 API 헤더에 사이트 컨텍스트를 주입해, 단일 코드베이스로 300개이상의 사이트를 운영하는 구조 구현',
-          '**Turborepo 모노레포 전환** — 300개이상의 BP/ONBP 도메인 통합 관리, 도메인별 config 분리, yarn→pnpm 전환, 사이트별 빌드 파이프라인 구성',
+          '**원소스 멀티사이트 구조 설계** — 도메인별 사이트 정보를 로드하고 API 헤더에 사이트 컨텍스트를 주입해, 단일 코드베이스로 300개 이상의 사이트를 운영하는 구조 구현',
+          '**Turborepo 모노레포 전환** — 300개 이상의 BP/ONBP 도메인 통합 관리, 도메인별 config 분리, yarn→pnpm 전환, 사이트별 빌드 파이프라인 구성',
           '**공통 컴포넌트화 + props 드릴링 해소** — 페이지마다 중복되던 컴포넌트를 공통 컴포넌트로 통합. 동일 수정 시 4개 파일 → 1개 파일로 작업 범위를 줄여 유지보수·디버깅 시간을 단축하고 사이드 이펙트와 휴먼 에러 발생 지점 감소',
           '**FSD 아키텍처 도입**, FE Model + Mapper 패턴으로 BE API 변경 영향도 최소화',
         ],
@@ -100,7 +100,7 @@ export const portfolioCareerProjectsKo: ResumeProjectConfig[] = [
     projectId: 'uteas',
     orderLabel: '2',
     title: '미세먼지 배출량 조회·시각화 서비스 (UTEAS)',
-    company: '이알솔루션',
+    company: '(주) ER Solution',
     period: '2023.06 ~ 2023.07',
     role: '풀스택 개발 (FE·BE·DB 단독)',
     links: [],
@@ -118,7 +118,7 @@ export const portfolioCareerProjectsKo: ResumeProjectConfig[] = [
       },
     ],
     outcomes: [
-      '**1.4억 건 조회 4~6분 → 5초 이내 (약 50배 이상 개선)**',
+      '**1.4억 건 조회 4~6분 → 5초 이내 (복잡 join 시 10초 이내, 약 50배 이상 개선)**',
       '프론트·백·인프라를 단독으로 완성해 End-to-End 개발 역량 입증',
     ],
     techStack: ['React(Vite)', 'Nest.js', 'TypeScript', 'MariaDB', 'TanStack Query', 'Docker', 'AWS EC2'],
@@ -126,9 +126,9 @@ export const portfolioCareerProjectsKo: ResumeProjectConfig[] = [
   {
     projectId: 'lhat',
     orderLabel: '3',
-    title: '필리핀 Lhat 플랫폼 백오피스·웹앱 구축',
-    company: '파인테크소프트',
-    period: '2023.11 ~ 2024.05',
+    title: '필리핀 Lahat 플랫폼 백오피스·웹앱 구축',
+    company: '(주) Pinetechsoft',
+    period: '2023.10 ~ 2024.05',
     role: '프론트엔드 개발',
     links: [],
     problem: '여러 도메인(Mall·Food·Store·동물병원)의 백오피스와 사용자 웹앱을 신규 구축·운영했습니다.',
@@ -136,8 +136,8 @@ export const portfolioCareerProjectsKo: ResumeProjectConfig[] = [
       {
         title: '주요 프로젝트',
         items: [
-          '**Lhat Mall Admin** — 상품 판매 기능 추가에 따른 관리자 백오피스를 구조 설계부터 API 연동까지 단독 구축. Firebase 인증, 상품·옵션·카테고리·이벤트·주문·리뷰 관리, 무한스크롤 이벤트 상품 선택, i18n 적용',
-          '**Lhat Food / Store Admin** — 기본·거리별 배달비 정책 기능 신규 추가, react-hook-form + Zod 폼 검증, 점주/고객 부담 비율 설정 UI 구현',
+          '**Lahat Mall Admin** — 상품 판매 기능 추가에 따른 관리자 백오피스를 구조 설계부터 API 연동까지 단독 구축. Firebase 인증, 상품·옵션·카테고리·이벤트·주문·리뷰 관리, 무한스크롤 이벤트 상품 선택, i18n 적용',
+          '**Lahat Food / Store Admin** — 기본·거리별 배달비 정책 기능 신규 추가, react-hook-form + Zod 폼 검증, 점주/고객 부담 비율 설정 UI 구현',
           '**Zootopia (동물병원)** — 예약 관리 Admin + 온라인 예약 웹앱 구축. 예약 생성·조회·취소, 펫 최대 10마리 관리, Email·SNS 통합 로그인(NextAuth), FCM 푸시 알림 연동, 소개 사이트까지 구축',
         ],
       },
@@ -162,7 +162,7 @@ export const portfolioCareerProjectsKo: ResumeProjectConfig[] = [
     projectId: 'er-platform',
     orderLabel: '4',
     title: '다양한 플랫폼·공공 서비스 개발',
-    company: '이알솔루션',
+    company: '(주) ER Solution',
     period: '2022.07 ~ 2023.09',
     role: '풀스택 개발 연구원',
     links: [],
@@ -171,7 +171,7 @@ export const portfolioCareerProjectsKo: ResumeProjectConfig[] = [
       {
         title: '주요 프로젝트',
         items: [
-          '**DdaPick / DdaPlace** — B2B·B2C 유통관리 웹앱 및 B2C 쇼핑몰 신규 개발. 기획 단계 참여, 프론트엔드 단독 구축, Editor.js 상품 에디터·무한스크롤·Atomic Design 패턴 도입',
+          '**Dada Pick / Dada Place** — B2B·B2C 유통관리 웹앱 및 B2C 쇼핑몰 신규 개발. 기획 단계 참여, 프론트엔드 단독 구축, Editor.js 상품 에디터·무한스크롤·Atomic Design 패턴 도입',
           '**전주경제운전 CMS** — 시내버스 경제운전 지표 관리 시스템. 권한 관리, Chart.js 운행 지표 시각화, Spring + eGovFrame API·MariaDB 설계·AWS 배포 (풀스택)',
           '**유진레미콘 입고관리** — 키오스크 송장 촬영 Android 앱. 외부 카메라 연동, 키오스크 UX, React 렌더링 최적화',
           '**반려견 순찰대** — 실시간 산책 기능 iOS 네이티브 앱 (Swift/SwiftUI), Naver Map 기반 실시간 경로·거리 표시',

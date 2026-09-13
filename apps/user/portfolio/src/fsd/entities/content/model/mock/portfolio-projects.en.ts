@@ -461,15 +461,14 @@ export const portfolioProjectsEn: ProjectCompany[] = [
           'Security vulnerability patches and hardening based on penetration test results',
           'Analyzed and improved legacy JSP/Spring page structure',
         ],
-        techStack: ['JSP', 'jQuery', 'Java', 'Spring (Maven)', 'eGovFrame', 'Git'],
+        techStack: ['JSP', 'jQuery', 'Java', 'Spring (Maven)', 'eGovFrame', 'Oracle', 'Git'],
       },
       {
         id: 'solugate',
         name: 'Solugate',
         period: '2022.07 – 2022.09',
         role: 'Full Stack Developer',
-        summary:
-          'Full-stack test project for onboarding skills assessment. Built user site (JSP) and admin CMS (React) simultaneously.',
+        summary: 'Greenfield build of a user-facing site (JSP) and admin CMS (React).',
         highlights: [
           'Database design, project structure design, API and screen development',
           'User site Q&A board (JSP, MVC pattern)',
