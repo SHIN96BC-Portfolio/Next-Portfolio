@@ -7,12 +7,14 @@ const HIGHLIGHT_CATEGORY_STYLES: Record<string, string> = {
   '【리팩토링】': 'bg-muted text-foreground',
   '【UI 시스템】': 'bg-warning/15 text-warning',
   '【인프라·품질】': 'bg-success/15 text-success',
+  '【테스트】': 'bg-violet-500/15 text-violet-700 dark:text-violet-300',
   '[Next-Gen]': 'bg-primary/15 text-primary',
   '[Operations]': 'bg-secondary/15 text-secondary',
   '[Architecture]': 'bg-accent text-accent-foreground',
   '[Refactoring]': 'bg-muted text-foreground',
   '[UI System]': 'bg-warning/15 text-warning',
   '[Infra & Quality]': 'bg-success/15 text-success',
+  '[Testing]': 'bg-violet-500/15 text-violet-700 dark:text-violet-300',
 };
 
 function parseHighlightItem(item: string) {

@@ -73,13 +73,13 @@ In the AI era, I believe what matters more than how much code you write is **how
 
 ## Key Achievements
 
-· **Unified 300+ BP/ONBP sites into a single Turborepo monorepo** — Designed one-source multi-site architecture to operate and deploy 300+ sites from one codebase (yarn→pnpm migration, per-site build pipelines)
+· **Unified 300+ multi-tenant sites into a single monorepo** — Operate and deploy ~150 shared-base BP sites plus ~150 fully custom ONBP sites per agency (still growing) from a single Turborepo codebase
 
 · **Stabilized legacy services plagued by critical payment & routing bugs** — Resolved 300+ issues including payment failures and abnormal routing, significantly improving service reliability
 
 · **140M-row table queries: 4–6 min → under 5 sec (~50×+ improvement)** — Eliminated query bottlenecks with index and statistics table design
 
-· **CI/CD pipeline & K8s infrastructure redesign** — Reorganized multi-service (B2C·BP·ONBP) deployment pipelines by service and environment; contributed to Azure Local ARC migration and DR failover. Build-to-deploy 30+ min → 12–15 min; page load up to 15 sec → 5 sec (SSG/SSR mix, caching, useEffect cleanup)
+· **CI/CD pipeline & K8s infrastructure redesign** — Reorganized multi-service (B2C·BP·ONBP) deployment pipelines by service and environment; contributed to Azure Local ARC migration and DR failover. Build-to-deploy 30+ min → 12–15 min; page load reduced to about one-third (SSG/SSR mix, caching, useEffect cleanup)
 
 · **Led Next.js 12→15 major upgrade** — Incremental migration including App Router and React 19 with zero service interruption
 

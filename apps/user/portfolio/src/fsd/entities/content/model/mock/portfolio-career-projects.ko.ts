@@ -37,7 +37,7 @@ export const portfolioCareerProjectsKo: ResumeProjectConfig[] = [
       {
         title: '3) 성능 최적화',
         items: [
-          '**페이지 로딩 최적화** — SSG/SSR을 상황에 맞게 조합하고 TanStack Query 캐싱으로 불필요한 API 중복 호출·중복 로딩 제거, 불필요하게 반복 실행되던 useEffect 정리. 로딩이 가장 오래 걸리던 페이지 기준 약 15초 → 5초 수준으로 단축',
+          '**페이지 로딩 최적화** — SSG/SSR을 상황에 맞게 조합하고 TanStack Query 캐싱으로 불필요한 API 중복 호출·중복 로딩 제거, 불필요하게 반복 실행되던 useEffect 정리. 로딩이 가장 오래 걸리던 페이지 기준 약 1/3 수준으로 단축',
           '**빌드~배포 시간 단축** — 기존 파이프라인의 비효율을 진단·제거. 설정만 되어 있고 실제로는 동작하지 않고 빌드 시간만 늘어나게 만드는 불필요한 코드들을 제거, 잘못 설정되어 정상적으로 동작하지 않던 캐시 설정을 Turborepo·Next 빌드 캐시를 도입하여 정상 적용하고, 불필요한 체크 스텝과 중복 실행되던 `yarn install`을 제거. 빌드 큐·캐시를 정비해 빌드~배포 30분+ → 12~15분 (약 50~60% 단축)',
         ],
       },
@@ -57,22 +57,16 @@ export const portfolioCareerProjectsKo: ResumeProjectConfig[] = [
       },
     ],
     outcomes: [
-      '결제·라우팅 등 핵심 장애를 해소하고 **300건+ 이슈를 처리**해 불안정하던 레거시를 안정 궤도로 전환',
-      '300개 이상의 사이트를 **단일 코드베이스·단일 모노레포**로 운영·배포하는 체계 확립',
-      '**배포 시간 약 50~60% 단축**, 주요 페이지 로딩 대폭 개선으로 개발 생산성·사용자 경험 동시 향상',
+      '**배포 시간 약 50~60% 단축**, 주요 페이지 로딩을 약 1/3 수준으로 단축해 개발 생산성·사용자 경험 동시 향상',
       '메이저 버전업·상태관리 전환을 **서비스 중단 없이** 완료해 안정성과 최신 기술 스택 동시 확보',
     ],
     extraSections: [
       {
-        title: 'CI/CD·인프라 재설계 (인프라팀과 협업)',
-        body: '차세대 전환에 맞춰 배포 파이프라인과 인프라를 전면 재설계하는 작업에 참여했습니다.',
+        title: 'CI/CD·인프라 재설계',
+        body: 'FE 배포 파이프라인·Helm은 직접 수행하고, CDN·보안·Pod 운영은 인프라팀과 역할을 나눴습니다.',
         items: [
-          '**파이프라인 체계 재설계** — B2C 단일 서비스 기준 8개 파이프라인을, B2C·BP·ONBP × 4환경(dev/stg/prd/stby) 20개+ 체계로 분리. `pipeline-deploys.yml` 오케스트레이터를 통해 원하는 서비스·환경만 선택 배포하는 구조 구성',
-          '**빌드 방식 개선** — Docker 내부 빌드(Yarn workspaces)에서 Turbo prune + 호스트 pnpm/turbo 빌드 + Docker 패키징 분리 구조로 전환, buildx registry 캐시 도입으로 빌드 시간 단축',
-          '**배포 인프라 전환** — Azure AKS에서 Azure Local ARC(Connected K8s) 프록시 방식으로 전환, `kubectl rollout status` 기반 배포 검증 추가로 배포 안정성 확보',
-          '**DR·페일오버 대응** — standby 파이프라인을 신규 구성해 failover(active/standby) 기반 재해 복구 체계 마련',
-          '**Helm 차트 고도화** — topologySpreadConstraints(노드 분산), readinessProbe(`/api/health`), CPU/메모리 기반 HPA 오토스케일 적용',
-          '**배포 전략 전환 판단** — 차세대 구축기의 릴리스 트레인·통합 브랜치 방식에서, 오픈 후 잦은 핫픽스·긴급 배포에 대응하기 위한 유연한 수동 배포 전략으로 전환',
+          '**직접 수행** — FE 배포 파이프라인 설계·구축 (`pipeline-deploys.yml` 오케스트레이터, B2C·BP·ONBP × 4환경 20개+ 체계), Helm 차트 작성 및 고도화(topologySpreadConstraints, readinessProbe, HPA), 배포 검증 로직',
+          '**인프라팀 협업** — Akamai CDN, 인프라 보안, Pod 운영·모니터링, 서버 로그 분석',
         ],
       },
     ],

@@ -37,7 +37,7 @@ export const portfolioCareerProjectsEn: ResumeProjectConfig[] = [
       {
         title: '3) Performance Optimization',
         items: [
-          '**Page load optimization** — combined SSG/SSR as appropriate and used TanStack Query caching to remove redundant API calls and duplicate loading; cleaned up unnecessary useEffect re-runs. Cut load time on the slowest pages from ~15s to ~5s',
+          '**Page load optimization** — combined SSG/SSR as appropriate and used TanStack Query caching to remove redundant API calls and duplicate loading; cleaned up unnecessary useEffect re-runs. Cut load time on the slowest pages to about one-third',
           '**Reduced build-to-deploy time** — diagnosed and removed pipeline inefficiencies, dead config that only increased build time, and misconfigured caches; applied Turborepo and Next.js build caches correctly; removed redundant check steps and duplicate `yarn install` runs. Improved build queues and caching to cut build-to-deploy from 30+ minutes to 12–15 minutes (~50–60% reduction)',
         ],
       },
@@ -57,22 +57,16 @@ export const portfolioCareerProjectsEn: ResumeProjectConfig[] = [
       },
     ],
     outcomes: [
-      'Resolved critical payment and routing failures and **handled 300+ issues**, moving an unstable legacy system onto a stable footing',
-      'Established operations and deployment for **300+ sites** on a **single codebase and monorepo**',
-      '**Cut deployment time by ~50–60%** and significantly improved key page load times, boosting both developer productivity and user experience',
+      '**Cut deployment time by ~50–60%** and reduced key page load times to about one-third, boosting both developer productivity and user experience',
       'Completed major version upgrades and state-management migration **without service downtime**, balancing stability with a modern stack',
     ],
     extraSections: [
       {
-        title: 'CI/CD & Infrastructure Redesign (with Infrastructure Team)',
-        body: 'Contributed to a full redesign of deployment pipelines and infrastructure aligned with the next-gen transition.',
+        title: 'CI/CD & Infrastructure Redesign',
+        body: 'Owned FE deployment pipelines and Helm; partnered with the infrastructure team on CDN, security, and cluster operations.',
         items: [
-          '**Redesigned pipeline structure** — split 8 B2C-only pipelines into 20+ pipelines across B2C·BP·ONBP × 4 environments (dev/stg/prd/stby); built a `pipeline-deploys.yml` orchestrator to deploy selected services and environments on demand',
-          '**Improved build approach** — moved from in-Docker builds (Yarn workspaces) to Turbo prune + host pnpm/turbo build + Docker packaging; introduced buildx registry cache to shorten build times',
-          '**Shifted deployment infrastructure** — migrated from Azure AKS to Azure Local ARC (Connected K8s) proxy model; added `kubectl rollout status`-based deployment verification for reliability',
-          '**DR & failover** — introduced standby pipelines and an active/standby failover model for disaster recovery',
-          '**Enhanced Helm charts** — applied topologySpreadConstraints (node spread), readinessProbe (`/api/health`), and CPU/memory-based HPA autoscaling',
-          '**Deployment strategy decision** — moved from release-train and integration-branch flows during the rebuild to a flexible manual deployment strategy to support frequent hotfixes and urgent releases post-launch',
+          '**Hands-on** — designed and built FE deployment pipelines (`pipeline-deploys.yml` orchestrator, B2C·BP·ONBP × 4 environments, 20+ pipelines), authored and hardened Helm charts (topologySpreadConstraints, readinessProbe, HPA), and deployment verification logic',
+          '**With infrastructure team** — Akamai CDN, infrastructure security, Pod operations and monitoring, server log analysis',
         ],
       },
     ],
