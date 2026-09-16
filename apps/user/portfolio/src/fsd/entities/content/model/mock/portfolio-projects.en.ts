@@ -5,13 +5,13 @@ export const portfolioProjectsEn: ProjectCompany[] = [
     id: 'yrism',
     name: '(주) YRISM',
     period: '2024.08 – Present',
-    role: 'System Operations & Development / System Operations Manager · Frontend Developer',
+    role: 'Web Development Team / System Operations Manager (internal title) · Frontend Developer',
     projects: [
       {
         id: 'modetour',
         name: '모두투어 네트워크',
         period: '2024.08 –',
-        role: 'Frontend Developer',
+        role: 'Frontend Developer · FE team of 3 during the next-gen rebuild, 5 today / stands in for the lead when absent',
         summary:
           'Simultaneously operated the as-is Modetour B2C/B2B travel platform and led a full frontend rebuild for the next-generation service. Redesigned core domains across PC and mobile web (flights, hotels, tour passes, promotions, etc.) and designed and implemented a multi-tenant architecture that operates and deploys approximately 300 BP/ONBP sites from a single Turborepo monorepo.',
         highlights: [
@@ -35,9 +35,17 @@ export const portfolioProjectsEn: ProjectCompany[] = [
           '[UI System] Removed antd and built Modetour UI library — eliminated UI breakage side effects and introduced a playground for component-level validation',
           '[UI System] Replaced react-print with in-house solution — solved multi-second print delays on large pages using iframe-based printing',
           '[UI System] Replaced react-date with react-day-picker — removed bug-prone library and stabilized date selection UX',
+          '[Deployment] Designed and built the FE deployment pipeline — an orchestrator pipeline covering 20+ pipelines across B2C·BP·ONBP × 4 environments, with per-service and per-environment selective deploys',
+          '[Deployment] Authored and advanced Helm charts — topologySpreadConstraints, readinessProbe, HPA autoscaling, and deployment verification via kubectl rollout status',
           '[Infra & Quality] Centralized hardcoded strings, introduced documentation automation, and documented onboarding and deployment rules',
           '[Infra & Quality] Introduced encryption/decryption module — addressed security requirements absent in the legacy as-is system',
-          '[Testing] Unit tests for core domain logic (booking, payments, etc.) and shared-component behavior tests to prevent regressions during consolidation and upgrades; E2E coverage for major flows is in progress (validated in parallel with QA)',
+          '[Testing] Vitest multi-project unit and integration tests — separate test projects per package (the domain package and the B2C/ONBP shared packages). React Testing Library covers the HTTP client, encryption/decryption, payment and booking utilities, and custom hooks, blocking regressions during component consolidation and major version upgrades',
+          '[Testing] Playwright E2E — scenarios run against remotely deployed environments, split by sheet and domain (B2C·BP·ONBP PC/MO) across the production API and the dev-environment FE Server/BFF. Real SSO integration and BFF probes verify actual auth and response paths rather than mocks',
+          '[Testing] Quality gates — Husky pre-commit (Biome + Vitest on changed files) and pre-push (build, typecheck, full test run). Zod generated from the OpenAPI spec links API contracts to runtime validation',
+          '[AI] Standardized agent context — a root AGENTS.md as the single source of truth, with per-tool entry points aligned so Cursor, Claude, Gemini, and Codex follow the same boundaries and conventions. Package-level AGENTS.md files inject the separation between API contracts, the browser adapter, and the HTTP core, plus the B2C ↔ ONBP cross-import ban, scoped to the working path',
+          '[AI] Convention guardrails — human-facing convention docs kept separate from agent-facing Cursor Skills and path-scoped Rules. Named Export, Biome, and event rules are injected only when editing TS/TSX, and bulk legacy refactors are explicitly excluded from scope, preventing agent output from drifting out of the architecture',
+          '[AI] E2E feedback loop — Playwright scenarios carry metadata that auto-generates a registry, enabling CLI and UI execution per sheet and domain. Failure causes, fix options, and re-verification steps are written up so follow-up agent work can pick them up',
+          '[Collaboration] Established FE technical standards — defined and documented FSD architecture, the FE Model + Mapper pattern, component consolidation criteria, and branch/deployment rules together with the PL',
         ],
         issues: [
           'Parallel operation of legacy as-is and next-gen — established and executed a gradual domain/page migration strategy since full cutover was infeasible at project scale',
@@ -45,6 +53,7 @@ export const portfolioProjectsEn: ProjectCompany[] = [
           'Inefficient management of 300 individual sites — dramatically reduced operational cost with Turborepo monorepo, domain configs, and per-site builds',
           'Delayed onboarding due to missing documentation — introduced documentation automation and documented project structure and deployment rules',
           'antd global style conflicts — built an in-house Core UI system to ensure design consistency and eliminate root-cause side effects',
+          'AI agents generating code that crossed monorepo layer boundaries — layered AGENTS.md plus path-scoped Rules inject the boundaries per working path, blocking violations at generation time',
         ],
         techStack: [
           'Next.js 12→15',
@@ -60,6 +69,12 @@ export const portfolioProjectsEn: ProjectCompany[] = [
           'Tailwind CSS',
           'Core UI',
           'react-day-picker',
+          'Vitest',
+          'React Testing Library',
+          'Playwright',
+          'Biome',
+          'Husky',
+          'Zod',
           'Azure',
           'Git',
         ],
@@ -138,7 +153,7 @@ export const portfolioProjectsEn: ProjectCompany[] = [
     id: 'pinetechsoft',
     name: '(주) Pinetechsoft',
     period: '2023.10 – 2024.05',
-    role: 'Dev Team 3 / Frontend Developer',
+    role: 'Dev Team 1 / Frontend Developer',
     projects: [
       {
         id: 'lahat-mall-admin',

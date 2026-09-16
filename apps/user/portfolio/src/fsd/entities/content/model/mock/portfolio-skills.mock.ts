@@ -16,10 +16,23 @@ export const portfolioSkillsMock: SkillsConfig = {
         'MUI',
         'react-hook-form',
         'Zod',
-        'Biome',
         'Vite',
         'Next Auth',
-        'Jest',
+      ],
+    },
+    {
+      title: 'Testing & Quality',
+      items: ['Vitest', 'React Testing Library', 'Playwright', 'Biome', 'Husky', 'OpenAPI', 'MSW'],
+    },
+    {
+      title: 'AI Engineering',
+      items: [
+        'Cursor (Rules / Skills)',
+        'Claude Code',
+        'Codex',
+        'AGENTS.md',
+        'Context Engineering',
+        'Harness Engineering',
       ],
     },
     {
@@ -67,7 +80,6 @@ export const portfolioSkillsMock: SkillsConfig = {
         'Git / GitHub / Git Flow',
         'pnpm',
         'Turborepo',
-        'Husky',
         'VS Code',
         'IntelliJ IDEA',
         'Figma',

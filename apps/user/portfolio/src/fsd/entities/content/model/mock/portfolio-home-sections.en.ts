@@ -38,17 +38,11 @@ export const portfolioHomeSectionsEn: HomeSectionGetRes[] = [
     displayOrder: 1,
     isActive: true,
     config: {
-      body: `I am a web developer with 5 years of experience, specializing in **Next.js-based frontend development**.
+      body: `Frontend developer with 5 years of experience, specializing in **Next.js-based web services**. I have delivered both greenfield builds and legacy-to-next-gen migrations across SI, startups, and travel platforms.
 
-I have built and operated web services across SI, startups, travel/aviation, and B2C/B2B platforms, with hands-on experience in **Java API development**, **AWS/Azure infrastructure design and deployment**, and **CI/CD automation**.
+Currently at Modetour's B2C/B2B platform, running as-is operations alongside a full next-gen rebuild. I designed and implemented the **multi-tenant architecture** that operates ~300 BP/ONBP sites from a single Turborepo monorepo, completed the Next.js 12→15 major upgrade and state management migration with zero downtime, and personally built everything from the **FE deployment pipeline and Helm charts** to the **context system that keeps AI coding agents inside the monorepo's architectural boundaries** — now the team standard.
 
-I have delivered greenfield products from scratch and modernized legacy systems, with full-stack capability to ship products end-to-end.
-
-I believe being a developer is not just about implementing features. True skill means optimizing user experience, anticipating and preventing problems as services grow, and voluntarily tackling work beyond pure development when needed.
-
-I collaborate actively with planning, design, CS, and other roles because I believe better outcomes come from working together.
-
-In the AI era, I believe what matters more than how much code you write is **how accurately you define problems and create value quickly through AI**. Understanding overall service architecture, business flows, and the essence of problems is essential—and I keep building habits of deep analysis, early risk identification, and asking the right questions.`,
+Frontend-first, but equally comfortable with Java/Spring and Nest.js backends, DB design, and AWS/Azure infrastructure, delivering products end-to-end. My strength is **finding and removing structural bottlenecks**, not just shipping features.`,
     },
   },
   {
@@ -67,7 +61,7 @@ In the AI era, I believe what matters more than how much code you write is **how
 
 · **Performance optimization** — Structurally diagnosing large-data query and rendering bottlenecks, improving by orders of magnitude
 
-· **Full-stack & infrastructure** — Frontend-first, spanning Java/Spring·Nest.js backends through CI/CD pipelines and K8s infrastructure redesign across deployment and operations
+· **Full-stack & infrastructure** — Frontend-first, spanning Java/Spring·Nest.js backends through FE deployment pipelines and Helm chart design across deployment and operations
 
 · **End-to-end from planning to deployment** — Planning, architecture, DB design, frontend/backend development, and deployment automation—delivering complete products with small teams
 
@@ -79,11 +73,15 @@ In the AI era, I believe what matters more than how much code you write is **how
 
 · **140M-row table queries: 4–6 min → under 5 sec (~50×+ improvement)** — Eliminated query bottlenecks with index and statistics table design
 
-· **CI/CD pipeline & K8s infrastructure redesign** — Reorganized multi-service (B2C·BP·ONBP) deployment pipelines by service and environment; contributed to Azure Local ARC migration and DR failover. Build-to-deploy 30+ min → 12–15 min; page load reduced to about one-third (SSG/SSR mix, caching, useEffect cleanup)
+· **Designed and built the FE deployment pipeline and Helm charts** — Restructured into 20+ pipelines across multi-service (B2C·BP·ONBP) × 4 environments; advanced Helm configuration (HPA, readinessProbe, node distribution). Azure Local ARC migration and DR failover done in collaboration with the infrastructure team. Build-to-deploy 30+ min → 12–15 min
+
+· **Cut key page load times to about one-third** — SSG/SSR mix, TanStack Query caching, and removal of unnecessary useEffect calls (Lighthouse mobile)
 
 · **Led Next.js 12→15 major upgrade** — Incremental migration including App Router and React 19 with zero service interruption
 
-· **Established AI development workflow as team standard** — Introduced Cursor Agent rules and Claude Code·Gemini CLI guides, documenting shared team practices and onboarding`,
+· **Built the testing and quality system** — Vitest unit and integration tests plus Playwright E2E against remotely deployed environments, with a purpose-built Testbed for execution and reporting. Husky quality gates block regressions during component consolidation and major version upgrades
+
+· **Built a context system for AI coding agents** — Encoded monorepo architectural boundaries (API contract / adapter / HTTP layer separation, B2C↔ONBP isolation) into AGENTS.md and path-scoped Rules so agents cannot cross layers. Standardized as shared context across Cursor, Claude, Gemini, and Codex, with a loop that feeds E2E failures back into follow-up work`,
     },
   },
   {
@@ -115,7 +113,7 @@ In the AI era, I believe what matters more than how much code you write is **how
           company: 'YRISM Inc.',
           period: '2024.08 – Present',
           location: 'South Korea',
-          department: 'Development Team',
+          department: 'Web Development Team',
           position: 'Manager',
           role: 'Frontend Developer',
           description: 'Next-gen Modetour service development and operations',
@@ -126,7 +124,7 @@ In the AI era, I believe what matters more than how much code you write is **how
           company: 'Pinetechsoft Inc.',
           period: '2023.10 – 2024.05',
           location: 'South Korea',
-          department: 'Development Team 3',
+          department: 'Development Team 1',
           position: 'Research Engineer',
           role: 'Frontend Developer',
           description: 'In-house platform services (Lahat, Zootopia) development',

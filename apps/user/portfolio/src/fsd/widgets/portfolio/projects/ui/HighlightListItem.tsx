@@ -8,6 +8,9 @@ const HIGHLIGHT_CATEGORY_STYLES: Record<string, string> = {
   '【UI 시스템】': 'bg-warning/15 text-warning',
   '【인프라·품질】': 'bg-success/15 text-success',
   '【테스트】': 'bg-violet-500/15 text-violet-700 dark:text-violet-300',
+  '【배포】': 'bg-sky-500/15 text-sky-700 dark:text-sky-300',
+  '【AI】': 'bg-fuchsia-500/15 text-fuchsia-700 dark:text-fuchsia-300',
+  '【협업】': 'bg-teal-500/15 text-teal-700 dark:text-teal-300',
   '[Next-Gen]': 'bg-primary/15 text-primary',
   '[Operations]': 'bg-secondary/15 text-secondary',
   '[Architecture]': 'bg-accent text-accent-foreground',
@@ -15,6 +18,9 @@ const HIGHLIGHT_CATEGORY_STYLES: Record<string, string> = {
   '[UI System]': 'bg-warning/15 text-warning',
   '[Infra & Quality]': 'bg-success/15 text-success',
   '[Testing]': 'bg-violet-500/15 text-violet-700 dark:text-violet-300',
+  '[Deployment]': 'bg-sky-500/15 text-sky-700 dark:text-sky-300',
+  '[AI]': 'bg-fuchsia-500/15 text-fuchsia-700 dark:text-fuchsia-300',
+  '[Collaboration]': 'bg-teal-500/15 text-teal-700 dark:text-teal-300',
 };
 
 function parseHighlightItem(item: string) {

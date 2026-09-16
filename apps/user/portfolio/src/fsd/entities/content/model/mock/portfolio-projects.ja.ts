@@ -5,13 +5,13 @@ export const portfolioProjectsJa: ProjectCompany[] = [
     id: 'yrism',
     name: '(주) YRISM',
     period: '2024.08 – 在職中',
-    role: 'システム運用・開発 / システム運用マネージャー · フロントエンド開発者',
+    role: 'Web開発チーム / システム運用マネージャー（社内職級） · フロントエンド開発者',
     projects: [
       {
         id: 'modetour',
         name: 'Modetour Network',
         period: '2024.08 –',
-        role: 'フロントエンド開発者',
+        role: 'フロントエンド開発者 · 次世代再構築は FE 3名、現在は5名 / リード不在時は役割を代行',
         summary:
           'Modetour B2C/B2B 旅行プラットフォームの as-is サービス運用と、次世代フロントエンドの全面再構築を同時に担当。PC・モバイル Web の主要ドメイン（航空・ホテル・ツアーパス・プロモーション等）を刷新し、約300の BP/ONBP サイトを単一 Turborepo モノレポで運用・デプロイするマルチテナント構造を設計・実装。',
         highlights: [
@@ -35,9 +35,17 @@ export const portfolioProjectsJa: ProjectCompany[] = [
           '[UI System] antd 削除とModetour向け UI ライブラリ構築 — UI 崩れの副作用を解消し、playground 導入でコンポーネント単位の検証環境を構築',
           '[UI System] react-print 削除・自社実装 — iframe ベースの印刷で大容量ページにおける印刷画面の遅延（数十秒）問題を解決',
           '[UI System] react-date → react-day-picker 置換 — バグ多発ライブラリを排除し、日付選択 UX を安定化',
+          '[Deployment] FE デプロイパイプラインの設計・構築 — オーケストレーターパイプラインで B2C・BP・ONBP × 4環境の20以上の体系を構成し、サービス・環境を選択してデプロイ',
+          '[Deployment] Helm チャートの作成・高度化 — topologySpreadConstraints、readinessProbe、HPA オートスケールを適用し、kubectl rollout status によるデプロイ検証',
           '[Infra & Quality] ハードコード文字列の定数化、ドキュメント自動化ライブラリ導入、オンボーディング・デプロイルールの文書化',
           '[Infra & Quality] 暗号・復号モジュール新規導入 — 従来の as-is になかったセキュリティ要件に対応',
-          '[Testing] 予約・決済などコアドメインロジックの単体テストと共通コンポーネントの動作テストで共通化・バージョンアップ過程の回帰を防止。主要フローの E2E テスト導入を進行中（QAチームと並行検証）',
+          '[Testing] Vitest マルチプロジェクトの単体・統合テスト — ドメインパッケージと B2C/ONBP 共通パッケージごとにテストプロジェクトを構成。React Testing Library で HTTP クライアント・暗号/復号・決済/予約ユーティリティ・カスタムフックを検証し、共通化やメジャーバージョンアップ時の回帰を遮断',
+          '[Testing] Playwright E2E — 運用環境 API と dev 環境の FE Server/BFF をシート・ドメイン（B2C・BP・ONBP PC/MO）単位に分け、リモートデプロイ環境を対象にシナリオを実行。mock ではなく実 SSO 連携と BFF probe で実際の認証・レスポンス経路まで検証',
+          '[Testing] 品質ゲート — Husky pre-commit（Biome + 変更に関連する Vitest）、pre-push（ビルド・型チェック・全テスト）を適用。OpenAPI 仕様から Zod を生成し、API 契約とランタイム検証を連結',
+          '[AI] エージェントコンテキストの標準化 — ルートの AGENTS.md を単一ソースとし、Cursor・Claude・Gemini・Codex のツール別エントリポイントを統一して同じ境界・規約に従わせる。パッケージ別の AGENTS.md で API 契約・ブラウザアダプター・HTTP 通信本体の役割分離と B2C ↔ ONBP の相互 import 禁止を、作業パス単位で注入',
+          '[AI] コンベンションガードレール — 人間向けの規約ドキュメントと、エージェント向けの Cursor Skill・path-scoped Rule を分離して運用。TS/TSX 編集時のみ Named Export・Biome・イベント規則を注入し、レガシーの一括リファクタは適用範囲から除外して、エージェント成果物のアーキテクチャ逸脱を防止',
+          '[AI] E2E フィードバックループ — Playwright シナリオにメタデータを付与して registry を自動生成し、sheet・domain 単位の CLI/UI 実行に対応。失敗原因・修正オプション・再検証手順をドキュメント化し、後続のエージェント作業へ連結',
+          '[Collaboration] FE 技術標準の策定 — PL とともに FSD アーキテクチャ、FE Model + Mapper パターン、コンポーネント共通化基準、ブランチ・デプロイ規則を定義し文書化',
         ],
         issues: [
           'レガシー as-is と次世代の並行運用 — プロジェクト規模上、一括移行が不可能なため、サービス影響なくドメイン・ページ単位の段階的マイグレーション戦略を策定・実行',
@@ -60,6 +68,12 @@ export const portfolioProjectsJa: ProjectCompany[] = [
           'Tailwind CSS',
           'Core UI',
           'react-day-picker',
+          'Vitest',
+          'React Testing Library',
+          'Playwright',
+          'Biome',
+          'Husky',
+          'Zod',
           'Azure',
           'Git',
         ],
@@ -138,7 +152,7 @@ export const portfolioProjectsJa: ProjectCompany[] = [
     id: 'pinetechsoft',
     name: '(주) Pinetechsoft',
     period: '2023.10 – 2024.05',
-    role: '開発3チーム / フロントエンド開発者',
+    role: '開発1チーム / フロントエンド開発者',
     projects: [
       {
         id: 'lahat-mall-admin',

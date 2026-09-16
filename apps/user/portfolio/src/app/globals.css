@@ -195,6 +195,9 @@ dialog::backdrop {
 .print-section__inner {
   width: 100%;
   box-sizing: border-box;
+  /* 배경색이 있는 섹션(bg-muted/50)에서 본문이 배경 가장자리에 붙지 않도록.
+     화면 레이아웃의 px-6 과 동일한 값. */
+  padding-inline: 1.5rem;
 }
 
 .print-document--home {
@@ -278,6 +281,12 @@ dialog::backdrop {
 
   .print-document--home section.print-section {
     padding-block: 1.25rem 1.75rem !important;
+  }
+
+  /* 인쇄 시 문서 좌우 패딩이 0이 되어 배경색 섹션이 페이지 폭 전체를 채우므로,
+     본문이 배경 가장자리에 붙지 않도록 inner 에서 직접 들여쓴다. */
+  .print-document--home .print-section__inner {
+    padding-inline: 1.75rem !important;
   }
 
   .print-document--home .print-section + .print-section {
