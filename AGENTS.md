@@ -21,18 +21,23 @@ pnpm lint:fsd                                         # FSD folder-structure (RU
 pnpm lint:fsd:dry                                     # same, report only
 pnpm lint:fix                                        # biome check --write .
 pnpm test                                             # turbo test
+pnpm guard:harness                                    # denylist·NEXT_PUBLIC secret 가드
+pnpm verify:portfolio                                 # portfolio 단일 합격 게이트 (typecheck+biome+test+guard+e2e+build)
 pnpm run gen:i18n                                     # portfolio i18n 일괄 생성
 
 # portfolio 앱 필터
 pnpm --filter @apps/user-portfolio run typecheck
 pnpm --filter @apps/user-portfolio run lint
 pnpm --filter @apps/user-portfolio run test
+pnpm --filter @apps/user-portfolio run test:e2e
 pnpm --filter @apps/user-portfolio run gen:i18n-types
 pnpm --filter @apps/user-portfolio run watch:i18n-types
 pnpm --filter @apps/user-portfolio run gen:i18n-namespaces
 ```
 
 앱 로컬 스크립트(`dev` / `dev:https` / `start` 등)는 `apps/user/portfolio/package.json` 참고.
+
+**Harness:** 변경 후 에이전트는 `pnpm verify:portfolio`로 통과를 확인한다. denylist·보안 민감 경로는 [`docs/harness/DENYLIST.md`](docs/harness/DENYLIST.md) · [`docs/harness/README.md`](docs/harness/README.md). Cursor 스킬: `.cursor/skills/verify` · `plan-change` · `safe-edit`.
 
 ## Architecture: Feature-Sliced Design (FSD)
 

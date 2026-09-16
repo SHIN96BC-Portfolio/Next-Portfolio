@@ -537,6 +537,108 @@ HTTP 동사가 아니라 **하는 일** 기준으로 이름 붙인다.
   npx msw init ./public --save
   ```
 
+---
+
+## E2E 테스트 (Playwright)
+
+모노레포에서는 **앱 패키지명**(`@apps/...`) 기준으로 `pnpm --filter` 로 실행한다.  
+Playwright 설정·스펙은 각 앱 폴더(`apps/<group>/<app>/`)에 둔다.
+
+> **현재 e2e가 있는 앱:** `@apps/user-portfolio` 만. 다른 앱은 동일 규격으로 `e2e/` · `playwright.config.ts` · `test:e2e` 스크립트를 추가하면 된다.
+
+### 사전 준비
+
+저장소 **루트**에서 의존성 설치:
+
+```bash
+pnpm install
+```
+
+Playwright가 쓸 Chromium 설치 (앱마다 **최초 1회**):
+
+```bash
+pnpm --filter @apps/<테스트할-패키지명> exec playwright install chromium
+```
+
+예 — portfolio:
+
+```bash
+pnpm --filter @apps/user-portfolio exec playwright install chromium
+```
+
+Windows 등에서 Chromium 다운로드가 TLS 오류로 실패하면, 설치된 Chrome을 쓴다:
+
+```powershell
+$env:PW_CHANNEL='chrome'
+pnpm --filter @apps/user-portfolio run test:e2e
+```
+
+### e2e 실행
+
+별도 `pnpm dev` 없이 실행해도 된다. `playwright.config.ts`의 `webServer`가 해당 앱의 dev 서버를 띄운 뒤 테스트한다.
+
+```bash
+pnpm --filter @apps/<테스트할-패키지명> run test:e2e
+```
+
+예 — portfolio (smoke 2건: `/ko`, `/ko/resume`):
+
+```bash
+pnpm --filter @apps/user-portfolio run test:e2e
+```
+
+앱 디렉터리에서 직접 실행:
+
+```bash
+cd apps/user/portfolio
+pnpm test:e2e
+```
+
+### UI·디버그 (선택)
+
+루트에서 `exec playwright` 로 플래그를 넘긴다:
+
+```bash
+pnpm --filter @apps/<테스트할-패키지명> exec playwright test --headed
+pnpm --filter @apps/<테스트할-패키지명> exec playwright test --ui
+```
+
+예 — portfolio:
+
+```bash
+pnpm --filter @apps/user-portfolio exec playwright test --headed
+pnpm --filter @apps/user-portfolio exec playwright test --ui
+```
+
+앱 폴더에서 직접 실행해도 된다:
+
+```bash
+cd apps/user/portfolio
+pnpm exec playwright test --headed
+pnpm exec playwright test --ui
+```
+
+### portfolio e2e 동작 요약
+
+| 항목 | 값 |
+|------|-----|
+| 설정 | `apps/user/portfolio/playwright.config.ts` |
+| 스펙 | `apps/user/portfolio/e2e/` |
+| dev 포트 | `3010` |
+| locale / timezone | `ko-KR` / `Asia/Seoul` |
+| API | `NEXT_PUBLIC_API_MOCKING=enabled` + MSW (config에서 주입) |
+| env 예시 | `apps/user/portfolio/.env.example` |
+
+로컬에서 portfolio만 **전체 하네스 게이트**(단위 + guard + e2e + build)를 돌릴 때:
+
+```bash
+pnpm verify:portfolio
+```
+
+자세한 denylist·guard·스킬은 [`docs/harness/README.md`](docs/harness/README.md) · [`AGENTS.md`](AGENTS.md) 참고.
+
+---
+
 ## Commit & Branch Pattern
 ### type
 - feat(기능 개발)

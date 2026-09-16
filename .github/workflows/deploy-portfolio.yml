@@ -6,7 +6,7 @@
 #
 # ## 흐름
 #
-#   quality:  lint & typecheck (pnpm install + turbo)
+#   quality:  pnpm verify:portfolio (typecheck + biome + unit + guard + e2e + build)
 #   deploy:   vercel pull → vercel build → vercel deploy --prebuilt
 #
 #   - 빌드는 CI(GitHub Actions)에서 1번만 (vercel build)
@@ -48,7 +48,7 @@
 #
 #   target       preview | production
 #   ref          배포할 branch / tag / SHA
-#   skip_checks  true면 quality job 생략
+#   skip_checks  true면 quality job(verify:portfolio) 생략
 #
 # =============================================================================
 
@@ -101,14 +101,26 @@ env:
 jobs:
   # 1단계: 배포 전 품질 검사 (skip_checks=true면 스킵)
   quality:
-    name: Lint & Typecheck
+    name: Verify portfolio
     if: ${{ inputs.skip_checks == false }}
     runs-on: ubuntu-latest
+    env:
+      NEXT_PUBLIC_API_MOCKING: enabled
+      NEXT_PUBLIC_API_SERVER_URL: http://127.0.0.1:8080
+      NEXT_PUBLIC_API_AUTH_SERVER_URL: http://127.0.0.1:8080
+      NEXTAUTH_URL: http://127.0.0.1:3010
+      NEXTAUTH_SECRET: harness-ci-nextauth-secret
+      NEXT_PUBLIC_COOKIE_SECRET_KEY: harness-ci-cookie-secret-key
+      NEXT_PUBLIC_STORAGE_CRYPTO_SECRET_KEY: harness-ci-storage-secret
+      PRIVATE_COOKIE_SECRET_KEY: harness-ci-private-cookie-secret
+      CI: true
+      NEXT_TURBOPACK_EXPERIMENTAL_USE_SYSTEM_TLS_CERTS: '1'
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           ref: ${{ inputs.ref }}
+          fetch-depth: 0
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
@@ -122,8 +134,14 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Lint & typecheck portfolio app
-        run: pnpm turbo run lint typecheck --filter=@apps/user-portfolio
+      - name: Install Playwright Chromium
+        run: pnpm --filter @apps/user-portfolio exec playwright install chromium --with-deps
+
+      - name: Build core libs (portfolio transpile)
+        run: pnpm build:libs
+
+      - name: Verify portfolio
+        run: pnpm verify:portfolio
 
   # 2단계: prebuilt 배포 (CI에서 빌드, Vercel은 결과물만 호스팅)
   # environment = GitHub Environments(preview / production) — production에 승인 규칙 걸 수 있음
