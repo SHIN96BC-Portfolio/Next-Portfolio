@@ -3,6 +3,10 @@ import type { NextConfig } from 'next';
 const nextConfig: NextConfig = {
   transpilePackages: ['@core/bc-ui'],
   reactStrictMode: false,
+  // 사내 TLS/프록시 환경에서 next/font Google Fonts fetch 실패 완화
+  experimental: {
+    turbopackUseSystemTlsCerts: true,
+  },
   async headers() {
     return [
       {

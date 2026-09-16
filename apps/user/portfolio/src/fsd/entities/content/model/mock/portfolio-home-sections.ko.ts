@@ -1,6 +1,7 @@
-import { CONTENT_LANG, HomeSectionGetRes, PAGE_KEY, SECTION_TYPE } from '@FsdEntities/content/model';
-import { getPortfolioProjectsMock } from '@FsdEntities/content/model/mock/portfolio-projects.mock';
-import { portfolioSkillsMock } from '@FsdEntities/content/model/mock/portfolio-skills.mock';
+import { I18N_LOCALE } from '@FsdShared/config/i18n/auto-gen/constants/i18n-locales';
+import { HomeSectionGetRes, PAGE_KEY, SECTION_TYPE } from '..';
+import { getPortfolioProjectsMock } from './portfolio-projects.mock';
+import { portfolioSkillsMock } from './portfolio-skills.mock';
 
 export const portfolioHomeSectionsKo: HomeSectionGetRes[] = [
   {
@@ -37,17 +38,11 @@ export const portfolioHomeSectionsKo: HomeSectionGetRes[] = [
     displayOrder: 1,
     isActive: true,
     config: {
-      body: `5년차 웹 개발자로, **Next.js 기반 프론트엔드 개발**을 전문으로 하고 있습니다.
+      body: `5년차 프론트엔드 개발자입니다. **Next.js 기반 웹 서비스**를 전문으로 하며, SI·스타트업·여행 플랫폼 등 다양한 환경에서 신규 구축과 레거시 차세대 전환을 모두 수행했습니다.
 
-SI, 스타트업, 여행·항공, B2C/B2B 플랫폼 등 다양한 환경에서 웹 서비스를 구축·운영하며, 프론트엔드뿐 아니라 **Java API 개발**, **AWS·Azure 인프라 설계·배포**, **CI/CD 자동화**까지 경험했습니다.
+현재 모두투어 B2C/B2B 플랫폼에서 as-is 운영과 차세대 재구축을 병행하며, 약 300개 BP/ONBP 사이트를 단일 Turborepo 모노레포로 운영하는 **멀티테넌트 구조**를 설계·구현했습니다. Next.js 12→15 메이저 버전업과 상태관리 전환을 서비스 무중단으로 완료했고, **FE 배포 파이프라인·Helm 차트 설계**부터 **AI 코딩 에이전트가 모노레포 아키텍처 경계를 지키도록 하는 컨텍스트 체계**까지 직접 구축해 팀 표준으로 운영 중입니다.
 
-신규 서비스를 제로베이스부터 개발하거나, 레거시 구조 개선 및 차세대 서비스 구축을 모두 수행했으며, 엔드투엔드 관점에서 제품을 완성하는 풀스택 역량을 갖추고 있습니다.
-
-개발자는 단순히 기능을 만드는 직무가 아니라고 생각합니다. 사용자 경험을 최적화하고, 서비스가 성장할 수 있도록 문제를 예측·차단하며, 필요하다면 개발 외적인 일도 자발적으로 해결하는 것이 진짜 실력이라 믿습니다.
-
-혼자보다 함께할 때 더 큰 성과를 만든다고 생각하여 기획·디자인·CS 등 다양한 직무와 적극적으로 커뮤니케이션하며 일했습니다.
-
-AI 시대에는 코드를 얼마나 많이 작성했는지보다, **문제를 얼마나 정확하게 정의하고 AI를 통해 빠르게 가치를 만들어내는지**가 더 중요하다고 믿습니다. 서비스 전체 구조, 비즈니스 흐름, 문제의 본질을 이해하는 역량이 필수적이며, 저는 문제를 깊게 분석하고 리스크를 사전에 파악하며 정확한 질문을 던지는 습관을 꾸준히 만들어가고 있습니다.`,
+프론트엔드를 주력으로 하되 Java/Spring·Nest.js 백엔드, DB 설계, AWS·Azure 인프라까지 다루며 제품을 End-to-End로 완성해왔습니다. 기능 구현에 그치지 않고 **구조적 병목을 찾아 해결하는 것**을 강점으로 생각합니다.`,
     },
   },
   {
@@ -66,23 +61,27 @@ AI 시대에는 코드를 얼마나 많이 작성했는지보다, **문제를 �
 
 · **성능 최적화** — 대용량 데이터 조회·렌더링 병목을 구조적으로 진단하고 수십 배 단위로 개선
 
-· **풀스택·인프라 대응** — 프론트엔드 주력, Java/Spring·Nest.js 백엔드부터 CI/CD 파이프라인·K8s 인프라 재설계까지 배포·운영 전에 대한 경험
+· **풀스택·인프라 대응** — 프론트엔드 주력, Java/Spring·Nest.js 백엔드부터 FE 배포 파이프라인·Helm 차트 설계까지 배포·운영 전반에 대한 경험
 
 · **기획부터 배포까지 End-to-End** — 기획 참여·구조 설계·DB 설계·프론트/백엔드 개발·배포 자동화까지, 소수 인원으로 제품을 엔드투엔드로 완성한 경험
 
 ## 대표 성과
 
-· **300개 이상 BP/ONBP 사이트를 단일 Turborepo 모노레포로 통합** — 원소스 멀티사이트 구조를 설계해 단일 코드베이스로 300개 이상 사이트를 운영·배포 (yarn→pnpm 전환, 사이트별 빌드 파이프라인 구성)
+· **300개+ 멀티테넌트 사이트를 단일 모노레포로 통합** — 공통 기반 BP 약 150개 + 대리점별 풀커스텀 ONBP 약 150개(지속 증가)를 단일 Turborepo 코드베이스에서 운영·배포
 
 · **결제·라우팅 등 critical 버그로 불안정하던 레거시 서비스를 안정화** — 300건 이상의 이슈를 처리하며 결제 실패·비정상 라우팅 등 핵심 장애를 해소, 서비스 신뢰성 대폭 개선
 
 · **1.4억 건 대용량 테이블 조회 4~6분 → 5초 이내 (약 50배+ 개선)** — 인덱스·통계 테이블 설계로 조회 병목 해소
 
-· **CI/CD 파이프라인·K8s 인프라 재설계 참여** — 멀티서비스(B2C·BP·ONBP) 배포 파이프라인을 서비스·환경별로 세분화하여 재설계, Azure Local ARC 전환·DR 페일오버 구성에 기여. 빌드~배포 30분+ → 12~15분 단축, 페이지 로딩 최대 15초 → 5초 (SSG/SSR 조합·캐싱·useEffect 정리)
+· **FE 배포 파이프라인·Helm 차트 직접 설계·구축** — 멀티서비스(B2C·BP·ONBP) × 4환경 20개+ 파이프라인 체계로 재설계, Helm 고도화(HPA·readinessProbe·노드 분산). Azure Local ARC 전환·DR 페일오버는 인프라팀과 협업. 빌드~배포 30분+ → 12~15분 단축
+
+· **주요 페이지 로딩 약 1/3 수준으로 단축** — SSG/SSR 조합·TanStack Query 캐싱·불필요 useEffect 정리 (Lighthouse 모바일 기준)
 
 · **Next.js 12→15 메이저 버전업 주도** — App Router·React 19 대응을 포함한 점진적 마이그레이션을 서비스 무중단으로 수행
 
-· **AI 개발 워크플로우를 팀 표준으로 정립** — Cursor Agent 규칙, Claude Code·Gemini CLI 가이드를 도입해 팀 공통 작업 방식·온보딩을 문서화`,
+· **테스트·품질 체계 구축** — Vitest 기반 단위·통합 테스트와 원격 배포 환경 대상 Playwright E2E를 구성하고, 실행·리포트용 Testbed를 직접 제작. Husky 품질 게이트로 공통화·메이저 버전업 과정의 회귀 차단
+
+· **AI 코딩 에이전트 컨텍스트 체계 구축** — 모노레포 아키텍처 경계(API 계약·어댑터·HTTP 레이어 분리, B2C↔ONBP 격리)를 AGENTS.md와 path-scoped Rule로 인코딩해 에이전트가 레이어를 침범하지 않도록 가드레일 구성. Cursor·Claude·Gemini·Codex 공통 컨텍스트로 표준화하고 E2E 실패 피드백을 후속 작업에 연결하는 루프 운영`,
     },
   },
   {
@@ -95,7 +94,7 @@ AI 시대에는 코드를 얼마나 많이 작성했는지보다, **문제를 �
     displayOrder: 3,
     isActive: true,
     config: {
-      companies: getPortfolioProjectsMock(CONTENT_LANG.KO),
+      companies: getPortfolioProjectsMock(I18N_LOCALE.KO),
     },
   },
   {
@@ -114,7 +113,7 @@ AI 시대에는 코드를 얼마나 많이 작성했는지보다, **문제를 �
           company: '(주) YRISM',
           period: '2024.08 – 재직중',
           location: '한국',
-          department: '개발팀',
+          department: '웹개발팀',
           position: '매니저',
           role: 'Frontend Developer',
           description: '모두투어 서비스 차세대 개발 및 운영',

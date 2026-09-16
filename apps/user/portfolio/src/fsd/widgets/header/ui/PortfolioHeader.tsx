@@ -6,10 +6,10 @@ import { resolveLocale } from '@FsdShared/config/i18n/client';
 import { ThemeType } from '@FsdShared/config/theme/model/theme';
 import { buildPortfolioPrintPath } from '@FsdShared/print/config/print-targets';
 import mergeClassNames from '@FsdShared/utils/style/merge-class-names';
-import HomeSectionNav from '@FsdWidgets/header/ui/HomeSectionNav';
-import PortfolioHeaderBar from '@FsdWidgets/header/ui/PortfolioHeaderBar';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import PortfolioHeaderBar from './_parts/PortfolioHeaderBar';
+import HomeSectionNav from './HomeSectionNav';
 
 interface Props {
   themeType: ThemeType;

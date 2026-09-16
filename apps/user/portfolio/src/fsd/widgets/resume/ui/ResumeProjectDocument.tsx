@@ -2,7 +2,7 @@
 
 import { ResumeProjectConfig } from '@FsdEntities/content/model/types';
 import { DictionaryHome } from '@FsdShared/config/i18n/auto-gen/types/home';
-import { ResumeMarkdown } from '@FsdWidgets/resume/ui/ResumeProse';
+import { ResumeMarkdown } from './ResumeProse';
 
 interface Props {
   config: ResumeProjectConfig;

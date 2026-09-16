@@ -16,21 +16,28 @@ pnpm build                                            # turbo build
 pnpm build:libs                                       # @core/* 빌드
 pnpm lint                                             # turbo lint
 pnpm typecheck                                        # turbo typecheck
-pnpm biome                                            # biome check .
+pnpm biome                                            # biome + FSD folder lints
+pnpm lint:fsd                                         # FSD folder-structure (RULES object)
+pnpm lint:fsd:dry                                     # same, report only
 pnpm lint:fix                                        # biome check --write .
 pnpm test                                             # turbo test
+pnpm guard:harness                                    # denylist·NEXT_PUBLIC secret 가드
+pnpm verify:portfolio                                 # portfolio 단일 합격 게이트 (typecheck+biome+test+guard+e2e+build)
 pnpm run gen:i18n                                     # portfolio i18n 일괄 생성
 
 # portfolio 앱 필터
 pnpm --filter @apps/user-portfolio run typecheck
 pnpm --filter @apps/user-portfolio run lint
 pnpm --filter @apps/user-portfolio run test
+pnpm --filter @apps/user-portfolio run test:e2e
 pnpm --filter @apps/user-portfolio run gen:i18n-types
 pnpm --filter @apps/user-portfolio run watch:i18n-types
 pnpm --filter @apps/user-portfolio run gen:i18n-namespaces
 ```
 
 앱 로컬 스크립트(`dev` / `dev:https` / `start` 등)는 `apps/user/portfolio/package.json` 참고.
+
+**Harness:** 변경 후 에이전트는 `pnpm verify:portfolio`로 통과를 확인한다. denylist·보안 민감 경로는 [`docs/harness/DENYLIST.md`](docs/harness/DENYLIST.md) · [`docs/harness/README.md`](docs/harness/README.md). Cursor 스킬: `.cursor/skills/verify` · `plan-change` · `safe-edit`.
 
 ## Architecture: Feature-Sliced Design (FSD)
 
@@ -53,10 +60,18 @@ apps/<app>/src/fsd/
 | From | 금지 |
 |------|------|
 | `shared` | 다른 FSD 레이어 전부 (**예외 아래**) |
-| `entities` | features, widgets, pages, app |
-| `features` | widgets, pages, app |
-| `widgets` | pages, app |
+| `entities` | features, widgets, pages, app · **다른 entities 슬라이스** |
+| `features` | widgets, pages, app · **다른 features 슬라이스** |
+| `widgets` | pages, app · **다른 widgets 슬라이스** |
 | `pages` | app |
+
+**동일 레이어 cross-slice:** widgets↔widgets, features↔features, entities↔entities (**서로 다른 슬라이스만**) 금지. 한 entities 도메인 안 api/model/ui 상호 import는 정상. 조합은 pages/layout, 도메인 간 공유 타입은 shared.
+
+**`_parts` (widgets 전용):** `widgets/**/ui/<PublicComponent>/_parts/` (component-root)만. **`ui/_parts/` 공용 통 금지** (legacy `header` 예외). `_parts` 안 분할은 `drawers|sheets|nav` — `_parts/_parts` 금지. import `./_parts/**`만 (Biome). 시나리오 UI → features, kit → shared.
+
+**Folder structure lint:** `pnpm lint:fsd` (`scripts/lint-fsd-folder-structure.mjs`). 규칙은 파일 상단 `RULES` object — layer/slice에 파일 금지, `ui` 형제 tsx 상한, layer 기준 max depth, `_parts` 위치. `pnpm lint:fsd:dry` = 리포트만. `pnpm biome`에 포함.
+
+**Biome cross-slice:** `widgets/**`·`features/**` alias 금지. `entities/**` `@FsdEntities/**` 전면 금지 **없음**.
 
 **Biome `shared` 예외 (composition만):**
 
@@ -164,7 +179,7 @@ StoreProvider (Redux + redux-persist)
 | Next.js app router | lowercase | `page.tsx`, `layout.tsx` |
 | Utility / mapper | kebab-case | `format-date.ts`, `map-server-home-section-to-client.ts` |
 | Custom hook | `use` + camelCase | `useAuth.ts`, `useFindGnbQuery.ts` |
-| Types / constants (다개념) | kebab-case under `model/types|constants/` | `content-lang.ts`, `section-type.ts` |
+| Types / constants (다개념) | kebab-case under `model/types|constants/` | `section-config.ts`, `section-type.ts` |
 | Enum file | kebab-case + `.enum` | `status.enum.ts` |
 | Schema (zod) | kebab-case + `-schema` | `login-schema.ts` |
 | REST Service | PascalCase | `SiteService.ts`, `SiteServiceImpl.ts` |

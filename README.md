@@ -142,6 +142,115 @@ entities/content/          ← Slice (도메인/기능 이름, kebab-case)
 
 세그먼트는 **필요할 때만** 만든다. 빈 폴더를 미리 만들지 않는다.
 
+#### `ui/` 내부 구조 (widgets · features · entities 공통)
+
+**세는 단위는 슬라이스 전체 TSX가 아니라, 같은 폴더 안의 형제 `.tsx` 개수다.** `index.ts`는 카운트하지 않는다.
+
+그 폴더에 형제 `.tsx`가 **8개 이상**이면 **PascalCase component-folder** 또는 `drawers/` · `sheets/` · `nav/` 등 **역할 폴더**로 나눈다. 분할 **후** 부모 폴더가 8 미만이 되면 그 부모는 그대로 둔다.
+
+| 그 폴더의 형제 `.tsx` | 구조 |
+|----------------------|------|
+| **~7개 이하** | 그 폴더에 flat OK |
+| **8개 이상** | component-folder 또는 역할 폴더로 분리 |
+
+**재귀:** 분할한 폴더에도 형제 `.tsx`가 8개 이상이면 **같은 규칙을 그 폴더에 다시** 적용한다.
+
+| 폴더 | 레이어 | 용도 |
+|------|--------|------|
+| `_parts/` | **widgets만** | public widget 1개 전용 private 조립 |
+| `drawers/` · `sheets/` · `nav/` | widgets `_parts` 안 | private 역할 분리 (**`_parts/_parts` 금지**) |
+| `<PascalCase>/` | widgets/features ui | public component-folder |
+
+#### `_parts` — widgets 전용 · component-root
+
+**`_parts`는 `widgets/**/ui` 에만 둔다.** shared · entities · features · pages · app 에 `_parts` 금지. (features ui가 커지면 feature 슬라이스를 나눈다.)
+
+**폴더 위치 (component-root — 신규 필수)**
+
+`_parts`는 **`ui/` 직하위 공용 통이 아니라**, public component-folder **바로 아래**에만 둔다.
+
+```
+widgets/header/ui/
+├── index.ts
+├── PortfolioHeader/                    # public component-root
+│   ├── PortfolioHeader.tsx             # import './_parts/...' 또는 './_parts/drawers/...'
+│   └── _parts/                         # 이 public 전용 private
+│       ├── PortfolioHeaderBar.tsx      # 얇은 orchestrator
+│       ├── drawers/
+│       │   └── PortfolioNavDrawer.tsx
+│       └── sheets/
+│           └── PortfolioSettingsSheet.tsx
+├── PortfolioDocumentHeader/
+│   ├── PortfolioDocumentHeader.tsx
+│   └── _parts/
+├── HomeSectionNav.tsx                  # private 없으면 flat public
+└── SiteNavLinks.tsx
+```
+
+**왜 `ui/_parts/` 공용 통을 쓰지 않나**
+
+`widgets/header/ui/_parts` 는 “header 전체 private”처럼 보여 **어느 public 소속인지** 경로만으로 알기 어렵다. public이 여러 개면 **`PortfolioHeader/_parts` · `PortfolioDocumentHeader/_parts`** 로 소유권을 분리한다.
+
+| 상황 | 할 일 |
+|------|--------|
+| public 1개에 private 추가 | `PublicName/_parts/` 생성 |
+| `ui/` 형제 public `.tsx` 8+ | public마다 component-folder + 각자 `_parts` |
+| `_parts` 형제 `.tsx` 8+ | **`_parts/_parts` 금지** → `_parts/drawers/` · `_parts/sheets/` · `_parts/nav/` |
+| `_parts`에 시나리오급 UI (설정·공유·로그인…) | **`features/<scenario>`** 로 올림 |
+| 범용 kit (icon button 등) | **`shared/`** |
+| 도메인 UI (theme/lang toggle) | **`entities/`** (이미 있으면 재사용) |
+
+**`_parts` vs 하위 레이어 — 배치 기준**
+
+```
+다른 widget·page에서도 쓰나?     → shared 또는 entities
+독립 사용자 시나리오/액션인가?   → features
+이 public widget 조립·레이아웃만? → widgets …/_parts (얇게)
+_parts가 4~5개+ 시나리오 이름?   → features로 올리거나 widget 슬라이스 분리
+```
+
+**import · public API**
+
+- `ui/index.ts` — **public만** re-export (pages·다른 슬라이스는 여기서만)
+- `_parts` import — **`./_parts/**`만** (Biome). alias · `../_parts` · cross-slice 금지
+- `_parts`는 index에 re-export **하지 않음**
+
+**레거시 예외 (마이그레이션 대상)**
+
+`widgets/header/ui/_parts/` 처럼 **`ui/` 직하위 공용 `_parts`** 는 기존 코드만 허용. **신규 추가·분할 시 component-root로 이전.** lint가 legacy 경로 외 `ui/_parts` 생성을 막는다.
+
+#### 동일 레이어 슬라이스 간 import 금지
+
+FSD에서 **같은 레이어의 서로 다른 슬라이스**는 import 하지 않는다. **한 슬라이스 안의 세그먼트끼리**(api ↔ model ↔ ui) import는 정상이다.
+
+entities는 **1단 도메인**으로 나눈다 (`site`, `content`, `theme`, `lang`, …). `entities/content/api`가 `@FsdEntities/content/model/...`를 쓰는 것은 **same-slice**이며 레이어 위반이 아니다. 상대경로는 스타일 선택이지, 세그먼트 간 통신 금지가 아니다.
+
+| From → To | 허용 |
+|-----------|------|
+| `widgets/A` → `widgets/B` (A≠B) | ❌ |
+| `features/A` → `features/B` (A≠B) | ❌ |
+| `entities/site` → `entities/content` (A≠B, **cross-slice**) | ❌ |
+| `entities/content/api` ↔ `entities/content/model` ↔ `ui` (**same-slice**) | ✅ alias 또는 상대경로 |
+| 상위 → 하위 레이어 | ✅ (FSD 계층 규칙) |
+
+**위반 시 해결 패턴**
+
+- 사용자 시나리오 UI → `features/<name>`으로 이동 (예: share 다이얼로그)
+- 여러 widget/feature 조합 → `pages/` 또는 `app/layouts/`에서 composition
+- widget끼리 결합 필요 → props / slots / render props로 page·layout에서 주입
+- entities **cross-slice** 공유 타입 → 각 슬라이스 자체 server/API 타입으로 분리. 진짜 공용이면 `shared/`의 **API·server 지향** 타입만. UI locale과 API lang 세트가 같으면 auto-gen `Locale` / `I18N_LOCALE`(`@FsdShared/config/i18n/auto-gen/constants/i18n-locales`)과 `resolveLocale`(`…/i18n/constants/resolve-locale`)을 쓰고, **세트가 갈라질 때만** 슬라이스 전용 lang 타입을 둔다. `@FsdShared/config/i18n/client`를 entities `api/`에 넣지 말 것
+
+**Biome · lint 강제 (cross-slice · `_parts`)**
+
+- `widgets/**`, `features/**` — 해당 레이어 alias import **전면 금지** (same-slice 상대경로만)
+- `entities/**` — `@FsdEntities/**` 전면 금지 **없음** (same-slice alias 유지). cross-slice는 리뷰
+- **`_parts` import (앱 전역):** `_parts` 포함 import 금지, 예외 **`./_parts/**`만**. 외부 레이어는 widget public `ui/index.ts`
+- **`_parts` 폴더:**
+  - **`widgets/**/ui` 만** `_parts` 허용. features/entities/pages/shared/app 에 `_parts` 폴더 **금지**
+  - **`ui/<PublicComponent>/_parts/`** (component-root)만 허용. **`ui/_parts/`** 직하위 공용 통 **금지** (legacy `widgets/header/ui/_parts` 만 예외)
+  - `_parts` 안 역할 분리는 `drawers|sheets|nav` — **`_parts/_parts` 금지**
+- **Folder structure (`pnpm lint:fsd` → `scripts/lint-fsd-folder-structure.mjs`):** 규칙은 스크립트 상단 **`RULES` object**. layer/slice/group에 소스 파일 금지, `ui` 형제 `.tsx` 상한·layer 기준 max depth, `_parts` 위치. `pnpm lint:fsd:dry`로 리포트만. `pnpm biome`에 포함. 세부 수치는 `RULES`를 같이 수정.
+
 #### `model/` 내부 분할 기준 (types.ts 한방 금지)
 
 관심사가 섞이면 `model/types.ts` 하나에 때려넣지 않는다. **개념(concept) 단위**로 나눈다.
@@ -169,11 +278,10 @@ entities/content/
 │   ├── constants/
 │   │   └── section-type.ts   # SECTION_TYPE
 │   ├── types/
-│   │   ├── content-lang.ts   # ContentLang + resolve helpers
 │   │   ├── content-mode.ts
 │   │   └── section-config.ts # SectionConfig 및 하위 config
 │   ├── server/
-│   │   └── home-section.ts   # wire DTO (HomeSectionGetRes)
+│   │   └── home-section.ts   # wire DTO (HomeSectionGetReq / HomeSectionGetRes)
 │   ├── client/
 │   │   └── home-section.ts   # UI 모델 (HomeSection)
 │   ├── mapper/
@@ -196,7 +304,7 @@ entities/site/
 │   ├── useSiteService.ts
 │   └── index.ts
 └── model/
-    ├── server/gnb.ts
+    ├── server/gnb.ts         # wire DTO (GnbGetReq / GnbGetRes; lang?: Locale)
     ├── client/gnb.ts
     ├── mapper/map-server-gnb-to-client.ts
     └── mock/
@@ -428,6 +536,108 @@ HTTP 동사가 아니라 **하는 일** 기준으로 이름 붙인다.
   ```bash
   npx msw init ./public --save
   ```
+
+---
+
+## E2E 테스트 (Playwright)
+
+모노레포에서는 **앱 패키지명**(`@apps/...`) 기준으로 `pnpm --filter` 로 실행한다.  
+Playwright 설정·스펙은 각 앱 폴더(`apps/<group>/<app>/`)에 둔다.
+
+> **현재 e2e가 있는 앱:** `@apps/user-portfolio` 만. 다른 앱은 동일 규격으로 `e2e/` · `playwright.config.ts` · `test:e2e` 스크립트를 추가하면 된다.
+
+### 사전 준비
+
+저장소 **루트**에서 의존성 설치:
+
+```bash
+pnpm install
+```
+
+Playwright가 쓸 Chromium 설치 (앱마다 **최초 1회**):
+
+```bash
+pnpm --filter @apps/<테스트할-패키지명> exec playwright install chromium
+```
+
+예 — portfolio:
+
+```bash
+pnpm --filter @apps/user-portfolio exec playwright install chromium
+```
+
+Windows 등에서 Chromium 다운로드가 TLS 오류로 실패하면, 설치된 Chrome을 쓴다:
+
+```powershell
+$env:PW_CHANNEL='chrome'
+pnpm --filter @apps/user-portfolio run test:e2e
+```
+
+### e2e 실행
+
+별도 `pnpm dev` 없이 실행해도 된다. `playwright.config.ts`의 `webServer`가 해당 앱의 dev 서버를 띄운 뒤 테스트한다.
+
+```bash
+pnpm --filter @apps/<테스트할-패키지명> run test:e2e
+```
+
+예 — portfolio (smoke 2건: `/ko`, `/ko/resume`):
+
+```bash
+pnpm --filter @apps/user-portfolio run test:e2e
+```
+
+앱 디렉터리에서 직접 실행:
+
+```bash
+cd apps/user/portfolio
+pnpm test:e2e
+```
+
+### UI·디버그 (선택)
+
+루트에서 `exec playwright` 로 플래그를 넘긴다:
+
+```bash
+pnpm --filter @apps/<테스트할-패키지명> exec playwright test --headed
+pnpm --filter @apps/<테스트할-패키지명> exec playwright test --ui
+```
+
+예 — portfolio:
+
+```bash
+pnpm --filter @apps/user-portfolio exec playwright test --headed
+pnpm --filter @apps/user-portfolio exec playwright test --ui
+```
+
+앱 폴더에서 직접 실행해도 된다:
+
+```bash
+cd apps/user/portfolio
+pnpm exec playwright test --headed
+pnpm exec playwright test --ui
+```
+
+### portfolio e2e 동작 요약
+
+| 항목 | 값 |
+|------|-----|
+| 설정 | `apps/user/portfolio/playwright.config.ts` |
+| 스펙 | `apps/user/portfolio/e2e/` |
+| dev 포트 | `3010` |
+| locale / timezone | `ko-KR` / `Asia/Seoul` |
+| API | `NEXT_PUBLIC_API_MOCKING=enabled` + MSW (config에서 주입) |
+| env 예시 | `apps/user/portfolio/.env.example` |
+
+로컬에서 portfolio만 **전체 하네스 게이트**(단위 + guard + e2e + build)를 돌릴 때:
+
+```bash
+pnpm verify:portfolio
+```
+
+자세한 denylist·guard·스킬은 [`docs/harness/README.md`](docs/harness/README.md) · [`AGENTS.md`](AGENTS.md) 참고.
+
+---
 
 ## Commit & Branch Pattern
 ### type

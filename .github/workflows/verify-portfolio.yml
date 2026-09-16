@@ -1,0 +1,87 @@
+# =============================================================================
+# Portfolio (@apps/user-portfolio) — PR / push verify
+# =============================================================================
+#
+# pull_request · master/main push 시 pnpm verify:portfolio 실행
+# deploy-portfolio.yml 의 quality job과 동일 게이트를 목표로 함
+#
+# =============================================================================
+
+name: Verify Portfolio
+
+on:
+  pull_request:
+    paths:
+      - 'apps/user/portfolio/**'
+      - 'core/**'
+      - 'scripts/**'
+      - 'docs/harness/**'
+      - 'biome.json'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+      - '.github/workflows/verify-portfolio.yml'
+  push:
+    branches: [master, main]
+    paths:
+      - 'apps/user/portfolio/**'
+      - 'core/**'
+      - 'scripts/**'
+      - 'docs/harness/**'
+      - 'biome.json'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+      - '.github/workflows/verify-portfolio.yml'
+
+concurrency:
+  group: verify-portfolio-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  NODE_VERSION: '22'
+  NEXT_PUBLIC_API_MOCKING: enabled
+  NEXT_PUBLIC_API_SERVER_URL: http://127.0.0.1:8080
+  NEXT_PUBLIC_API_AUTH_SERVER_URL: http://127.0.0.1:8080
+  NEXTAUTH_URL: http://127.0.0.1:3010
+  NEXTAUTH_SECRET: harness-ci-nextauth-secret
+  NEXT_PUBLIC_COOKIE_SECRET_KEY: harness-ci-cookie-secret-key
+  NEXT_PUBLIC_STORAGE_CRYPTO_SECRET_KEY: harness-ci-storage-secret
+  PRIVATE_COOKIE_SECRET_KEY: harness-ci-private-cookie-secret
+  HARNESS_BASE_REF: ${{ github.event.pull_request.base.ref || '' }}
+  NEXT_TURBOPACK_EXPERIMENTAL_USE_SYSTEM_TLS_CERTS: '1'
+
+jobs:
+  verify:
+    name: verify:portfolio
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Playwright Chromium
+        run: pnpm --filter @apps/user-portfolio exec playwright install chromium --with-deps
+
+      - name: Build core libs (portfolio transpile)
+        run: pnpm build:libs
+
+      - name: Verify portfolio
+        run: pnpm verify:portfolio
+        env:
+          HARNESS_BASE_REF: ${{ github.event.pull_request.base.ref || '' }}
+          CI: true

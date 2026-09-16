@@ -171,6 +171,10 @@
                       "../features/**"
                     ],
                     "message": "🚫 entities 레이어에서는 app/pages/widgets/features 를 import 할 수 없습니다."
+                  },
+                  {
+                    "group": ["**/_parts", "**/_parts/**", "!./_parts", "!./_parts/**"],
+                    "message": "🚫 _parts는 widgets 전용 private입니다. `./_parts/**`만 허용 (component-root). 외부는 widget ui/index.ts public API를 사용하세요."
                   }
                 ]
               }
@@ -198,6 +202,14 @@
                       "../widgets/**"
                     ],
                     "message": "🚫 features 레이어에서는 app/pages/widgets 를 import 할 수 없습니다."
+                  },
+                  {
+                    "group": ["@FsdFeatures/**"],
+                    "message": "🚫 features 슬라이스 내부에서는 @FsdFeatures/* alias import 금지. 같은 슬라이스는 상대경로, 다른 슬라이스 import 불가."
+                  },
+                  {
+                    "group": ["**/_parts", "**/_parts/**", "!./_parts", "!./_parts/**"],
+                    "message": "🚫 _parts는 widgets 전용 private입니다. `./_parts/**`만 허용 (component-root). 외부는 widget ui/index.ts public API를 사용하세요."
                   }
                 ]
               }
@@ -218,6 +230,14 @@
                   {
                     "group": ["@FsdApp/**", "@FsdPages/**", "../app/**", "../pages/**"],
                     "message": "🚫 widgets 레이어에서는 app/pages 를 import 할 수 없습니다."
+                  },
+                  {
+                    "group": ["@FsdWidgets/**"],
+                    "message": "🚫 widgets 슬라이스 내부에서는 @FsdWidgets/* alias import 금지. 같은 슬라이스는 상대경로, 다른 슬라이스 import 불가."
+                  },
+                  {
+                    "group": ["**/_parts", "**/_parts/**", "!./_parts", "!./_parts/**"],
+                    "message": "🚫 _parts는 widgets 전용 private입니다. `./_parts/**`만 허용 (component-root). 외부는 widget ui/index.ts public API를 사용하세요."
                   }
                 ]
               }
@@ -238,6 +258,10 @@
                   {
                     "group": ["@FsdApp/**", "../app/**"],
                     "message": "🚫 pages 레이어에서는 app 를 import 할 수 없습니다."
+                  },
+                  {
+                    "group": ["**/_parts", "**/_parts/**", "!./_parts", "!./_parts/**"],
+                    "message": "🚫 _parts는 widgets 전용 private입니다. `./_parts/**`만 허용 (component-root). 외부는 widget ui/index.ts public API를 사용하세요."
                   }
                 ]
               }
@@ -296,6 +320,10 @@
                   {
                     "group": ["@core/*/*/**"],
                     "message": "🚫 @core/<pkg> 내부 경로 import 금지. 루트(@core/<pkg>) 또는 package.json exports만 사용하세요."
+                  },
+                  {
+                    "group": ["**/_parts", "**/_parts/**", "!./_parts", "!./_parts/**"],
+                    "message": "🚫 _parts는 widgets 전용 private입니다. `./_parts/**`만 허용 (component-root). 외부는 widget ui/index.ts public API를 사용하세요."
                   }
                 ]
               }

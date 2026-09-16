@@ -1,12 +1,6 @@
-import {
-  ContentLang,
-  HomeSection,
-  MarkdownConfig,
-  PAGE_KEY,
-  ResumeProjectConfig,
-  SECTION_TYPE,
-} from '@FsdEntities/content/model';
+import { HomeSection, MarkdownConfig, PAGE_KEY, ResumeProjectConfig, SECTION_TYPE } from '@FsdEntities/content/model';
 import { I18N_DICTIONARY_NAMESPACE } from '@FsdShared/config/i18n';
+import type { Locale } from '@FsdShared/config/i18n/auto-gen/constants/i18n-locales';
 import { DictionaryHome } from '@FsdShared/config/i18n/auto-gen/types/home';
 import getI18nTranslator from '@FsdShared/config/i18n/utils/get-i18n-translator';
 import { DisplayVariant } from '@FsdShared/display/model/display-variant';
@@ -15,7 +9,7 @@ import ResumeProjectDocument from '@FsdWidgets/resume/ui/ResumeProjectDocument';
 import fetchHomeSectionsSSR from '@NextApp/_actions/fetchHomeSectionsSSR';
 
 type PortfolioResumePageProps = {
-  lang: ContentLang;
+  lang: Locale;
   displayVariant?: DisplayVariant;
 };
 

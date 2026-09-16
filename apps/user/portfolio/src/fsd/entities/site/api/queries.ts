@@ -1,8 +1,8 @@
-import { SiteGnb } from '@FsdEntities/site/model/client/gnb';
-import mapServerGnbToClient from '@FsdEntities/site/model/mapper/map-server-gnb-to-client';
 import { serviceContainer } from '@FsdShared/config/service/service.setup';
 import { SERVICE_KEY } from '@FsdShared/config/service/service-map';
 import { CommonRes } from '@core/service-container';
+import { SiteGnb } from '../model/client/gnb';
+import mapServerGnbToClient from '../model/mapper/map-server-gnb-to-client';
 
 /**
  * React Query Keys Object

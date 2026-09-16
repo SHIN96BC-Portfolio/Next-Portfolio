@@ -1,1 +1,1 @@
-export type { GnbGetRes } from './gnb';
+export type { GnbGetReq, GnbGetRes } from './gnb';

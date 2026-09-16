@@ -1,7 +1,7 @@
 import { getPortfolioLayoutProps } from '@FsdApp/layouts/get-portfolio-layout-props';
 import LandingPageLayout from '@FsdApp/layouts/LandingPageLayout';
-import { resolveContentLang } from '@FsdEntities/content/model/types';
 import PortfolioHomePage from '@FsdPages/portfolio-home/PortfolioHomePage';
+import { resolveLocale } from '@FsdShared/config/i18n/constants/resolve-locale';
 
 type PageProps = {
   params: Promise<{ lang: string }>;
@@ -13,7 +13,7 @@ export default async function Page({ params }: PageProps) {
 
   return (
     <LandingPageLayout {...layoutProps}>
-      <PortfolioHomePage lang={resolveContentLang(lang)} />
+      <PortfolioHomePage lang={resolveLocale(lang)} />
     </LandingPageLayout>
   );
 }

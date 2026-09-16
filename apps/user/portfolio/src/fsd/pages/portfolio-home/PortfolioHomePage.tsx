@@ -1,6 +1,5 @@
 import {
   ContactConfig,
-  ContentLang,
   EducationConfig,
   HeroConfig,
   HomeSection,
@@ -12,6 +11,7 @@ import {
   TimelineConfig,
 } from '@FsdEntities/content/model';
 import { I18N_DICTIONARY_NAMESPACE } from '@FsdShared/config/i18n';
+import type { Locale } from '@FsdShared/config/i18n/auto-gen/constants/i18n-locales';
 import getI18nTranslator from '@FsdShared/config/i18n/utils/get-i18n-translator';
 import { DisplayVariant } from '@FsdShared/display/model/display-variant';
 import PortfolioCareer from '@FsdWidgets/portfolio/career/ui/PortfolioCareer';
@@ -25,7 +25,7 @@ import PortfolioSkills from '@FsdWidgets/portfolio/skills/ui/PortfolioSkills';
 import fetchHomeSectionsSSR from '@NextApp/_actions/fetchHomeSectionsSSR';
 
 type PortfolioHomePageProps = {
-  lang: ContentLang;
+  lang: Locale;
   displayVariant?: DisplayVariant;
 };
 
@@ -60,7 +60,7 @@ function PortfolioSectionRenderer({
   displayVariant,
 }: {
   sections: HomeSection[];
-  lang: ContentLang;
+  lang: Locale;
   resumeLinkLabel: string;
   displayVariant: DisplayVariant;
 }) {
