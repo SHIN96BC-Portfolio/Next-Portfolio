@@ -1,0 +1,219 @@
+# =============================================================================
+# AI Loop — GitHub Actions 오케스트레이터
+# =============================================================================
+#
+# 목적:
+#   이슈(또는 수동 Run) 한 번으로
+#   Claude(설계) → Cursor agent(구현) → pnpm verify+guard → Claude(Pre-PR)
+#   를 VM(또는 셀프 호스티드 PC)에서 돌리고, PASS_TO_HUMAN이면 PR을 연다.
+#   최종 APPROVE/merge는 사람이 한다 (auto-merge 금지).
+#
+# 문서:
+#   docs/loop/GITHUB-ACTIONS.md  — 파이프라인·파싱
+#   docs/loop/RUNNERS.md         — 클라우드 vs 로컬
+#   docs/loop/ACTIONS-SETUP.md   — Secrets·라벨 (사람 작업)
+#   docs/loop/LOOP.md            — 역할·limits 정책
+#
+# 핵심 스크립트: scripts/ai-loop.sh
+# =============================================================================
+
+name: AI Loop
+
+# -----------------------------------------------------------------------------
+# 트리거
+# - issues.labeled : 라벨이 붙을 때 (보통 ai-task)
+# - workflow_dispatch : Actions UI에서 이슈 번호 + cloud|local 선택
+# -----------------------------------------------------------------------------
+on:
+  issues:
+    types: [labeled]
+  workflow_dispatch:
+    inputs:
+      issue_number:
+        description: 'Issue number to process'
+        required: true
+      target:
+        description: 'Runner location'
+        type: choice
+        options: [cloud, local]
+        default: cloud
+
+# -----------------------------------------------------------------------------
+# concurrency
+# local / cloud 큐를 분리한다.
+# → 로컬 잡이 길어도 클라우드 잡을 막지 않음 (반대도 동일).
+# cancel-in-progress: false → 같은 큐에서 새 잡이 와도 기존 잡을 죽이지 않음.
+# 주의: 로컬+클라우드 동시 실행 시 Claude/Cursor 구독 한도는 공유.
+# -----------------------------------------------------------------------------
+concurrency:
+  group: ai-loop-${{ (github.event_name == 'workflow_dispatch' && inputs.target == 'local') || (github.event_name == 'issues' && contains(github.event.issue.labels.*.name, 'run:local')) && 'local' || 'cloud' }}
+  cancel-in-progress: false
+
+# 브랜치 push / PR 생성 / 이슈 코멘트에 필요
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+jobs:
+  run:
+    # -------------------------------------------------------------------------
+    # 실행 조건
+    # - 수동 Run: 항상 허용 (레포 write 권한자만 dispatch 가능)
+    # - 라벨 이벤트: 방금 붙은 라벨이 ai-task 이고, 이슈 작성자가
+    #   OWNER|MEMBER|COLLABORATOR 일 때만 (외부 프롬프트 인젝션 완화)
+    # -------------------------------------------------------------------------
+    if: >
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.label.name == 'ai-task' &&
+       contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.issue.author_association))
+
+    # -------------------------------------------------------------------------
+    # runs-on (실행 위치)
+    # - run:local 라벨 또는 dispatch target=local → self-hosted + ai-local
+    # - 그 외 → ubuntu-latest (GitHub 호스팅 일회용 VM)
+    # 라벨 순서: ai-task가 트리거이므로 로컬 실행은 run:local을 먼저/같이 붙일 것.
+    # -------------------------------------------------------------------------
+    runs-on: ${{ (github.event_name == 'workflow_dispatch' && inputs.target == 'local') || (github.event_name == 'issues' && contains(github.event.issue.labels.*.name, 'run:local')) && fromJSON('["self-hosted","ai-local"]') || 'ubuntu-latest' }}
+    timeout-minutes: 120
+
+    env:
+      NODE_VERSION: '22'
+      # Build↔Review 재시도 상한 (ai-loop.sh 가 사용)
+      MAX_ITER: '3'
+      # 이슈 본문 파싱 전 기본값 (Loop config yaml이 덮어씀)
+      VERIFY_CMD: pnpm verify:portfolio
+      ACTIVE_APP: '@apps/user-portfolio'
+      # PR/이슈 API. AI_BOT_TOKEN이면 이 PR이 다른 CI를 트리거할 수 있음
+      GH_TOKEN: ${{ secrets.AI_BOT_TOKEN || secrets.GITHUB_TOKEN }}
+      # verify:portfolio / e2e 가 기대하는 CI용 더미 env (시크릿 실값 아님)
+      NEXT_PUBLIC_API_MOCKING: enabled
+      NEXT_PUBLIC_API_SERVER_URL: http://127.0.0.1:8080
+      NEXT_PUBLIC_API_AUTH_SERVER_URL: http://127.0.0.1:8080
+      NEXTAUTH_URL: http://127.0.0.1:3010
+      NEXTAUTH_SECRET: harness-ci-nextauth-secret
+      NEXT_PUBLIC_COOKIE_SECRET_KEY: harness-ci-cookie-secret-key
+      NEXT_PUBLIC_STORAGE_CRYPTO_SECRET_KEY: harness-ci-storage-secret
+      PRIVATE_COOKIE_SECRET_KEY: harness-ci-private-cookie-secret
+      NEXT_TURBOPACK_EXPERIMENTAL_USE_SYSTEM_TLS_CERTS: '1'
+      CI: true
+      # ai-loop.sh 가 self-hosted 여부를 알 수 있게
+      AI_LOOP_LOCAL: ${{ runner.environment == 'self-hosted' && '1' || '0' }}
+
+    steps:
+      # fetch-depth: 0 → guard denylist 가 merge-base diff 를 잡을 수 있음
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.AI_BOT_TOKEN || secrets.GITHUB_TOKEN }}
+
+      # issues 이벤트와 dispatch 모두 ISSUE_* / BRANCH 를 GITHUB_ENV 로 통일
+      - name: Load issue
+        env:
+          GH_TOKEN: ${{ secrets.AI_BOT_TOKEN || secrets.GITHUB_TOKEN }}
+        run: |
+          NUM="${{ inputs.issue_number || github.event.issue.number }}"
+          echo "ISSUE_NUMBER=$NUM" >> "$GITHUB_ENV"
+          echo "BRANCH=ai/issue-$NUM" >> "$GITHUB_ENV"
+          TITLE="$(gh issue view "$NUM" --json title -q .title)"
+          echo "ISSUE_TITLE=$TITLE" >> "$GITHUB_ENV"
+          {
+            echo "ISSUE_BODY<<__EOF__"
+            gh issue view "$NUM" --json body -q .body
+            echo "__EOF__"
+          } >> "$GITHUB_ENV"
+
+      # 셀프 호스티드에는 Node/pnpm이 이미 있다고 가정 → 설치 스킵 (시간·네트워크 절약)
+      - name: Setup pnpm
+        if: runner.environment == 'github-hosted'
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        if: runner.environment == 'github-hosted'
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+
+      # 브랜치마다 lockfile이 다를 수 있어 로컬 러너에서도 항상 실행
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # portfolio full gate(e2e)용. 로컬은 미리 playwright install 했다고 가정
+      - name: Install Playwright Chromium
+        if: runner.environment == 'github-hosted'
+        run: pnpm --filter @apps/user-portfolio exec playwright install chromium --with-deps
+
+      # Next 앱이 @core/* 를 transpile/참조하므로 게이트 전에 빌드
+      - name: Build core libs
+        run: pnpm build:libs
+
+      # Claude Code + Cursor agent CLI (구독 토큰은 Secrets)
+      - name: Install AI CLIs
+        if: runner.environment == 'github-hosted'
+        run: |
+          npm install -g @anthropic-ai/claude-code
+          curl https://cursor.com/install -fsS | bash
+          echo "$HOME/.cursor/bin" >> "$GITHUB_PATH"
+
+      # 작업 브랜치 + self-hosted 잔여 .ai 스크래치 제거
+      - name: Prepare branch
+        run: |
+          git config user.name "ai-loop-bot"
+          git config user.email "ai-loop-bot@users.noreply.github.com"
+          rm -rf .ai
+          git checkout -B "$BRANCH"
+
+      # 실제 루프 본체. outputs.result = PASS_TO_HUMAN | REJECT | SKIPPED_* | …
+      - name: Run AI loop
+        id: loop
+        env:
+          CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          CURSOR_API_KEY: ${{ secrets.CURSOR_API_KEY }}
+          # Build 모델 강제 (Claude Pre-PR과 분리용). 비우면 이슈 yaml / 계정 기본
+          CURSOR_BUILD_MODEL_OVERRIDE: ${{ vars.CURSOR_BUILD_MODEL || '' }}
+        run: bash scripts/ai-loop.sh
+
+      # 실패 원인 분석용 (plan/review/verify 로그). .ai 는 gitignore
+      - name: Upload .ai artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ai-loop-${{ env.ISSUE_NUMBER }}
+          path: .ai/
+          if-no-files-found: ignore
+
+      # Claude가 PASS_TO_HUMAN 한 경우에만 PR. merge는 사람이 APPROVE
+      - name: Create PR
+        if: steps.loop.outputs.result == 'PASS_TO_HUMAN'
+        run: |
+          git push -u origin "$BRANCH"
+          BODY_FILE=.ai/pr-body.md
+          if [ ! -f "$BODY_FILE" ]; then
+            echo "Closes #$ISSUE_NUMBER" > "$BODY_FILE"
+          fi
+          gh pr create \
+            --title "[AI] $ISSUE_TITLE" \
+            --body-file "$BODY_FILE" \
+            --base "${{ github.event.repository.default_branch }}" \
+            --head "$BRANCH" || true
+          gh issue comment "$ISSUE_NUMBER" --body "AI loop **PASS_TO_HUMAN** (runner: ${{ runner.environment }}). PR opened for **human APPROVE/merge**. [run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})"
+
+      - name: Comment on non-pass
+        if: always() && steps.loop.outputs.result != 'PASS_TO_HUMAN'
+        run: |
+          {
+            echo "AI loop finished with result: \`${{ steps.loop.outputs.result || 'ERROR' }}\` (runner: ${{ runner.environment }})"
+            echo ""
+            echo "[Actions run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})"
+            if [ -f .ai/review.md ]; then
+              echo ""
+              echo "<details><summary>Last review</summary>"
+              echo ""
+              cat .ai/review.md
+              echo ""
+              echo "</details>"
+            fi
+          } > comment.md
+          gh issue comment "$ISSUE_NUMBER" --body-file comment.md

@@ -6,7 +6,7 @@
 #
 # ## 흐름
 #
-#   quality:  pnpm verify:portfolio (typecheck + biome + unit + guard + e2e + build)
+#   quality:  pnpm verify:portfolio (typecheck + biome + unit + guard + guard:tests + e2e + build)
 #   deploy:   vercel pull → vercel build → vercel deploy --prebuilt
 #
 #   - 빌드는 CI(GitHub Actions)에서 1번만 (vercel build)

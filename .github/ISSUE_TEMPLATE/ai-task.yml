@@ -1,0 +1,129 @@
+# =============================================================================
+# AI Task — GitHub Issue 폼 템플릿
+# =============================================================================
+#
+# 목적:
+#   사람이 “AI가 처리할 작업”을 이슈로 올리면
+#   라벨 `ai-task` 가 붙고 `.github/workflows/ai-loop.yml` 이 트리거된다.
+#   본문의 Loop config / App scope 를 scripts/ai-loop-parse-issue.mjs 가 파싱한다.
+#
+# 사전 조건 (사람):
+#   Secrets, STATE.md loop: running, 브랜치 보호, (로컬) run:local 라벨
+#   → docs/loop/ACTIONS-SETUP.md · docs/loop/RUNNERS.md
+#
+# 라벨:
+#   ai-task     — 루프 실행 (필수 트리거)
+#   run:local   — self-hosted 러너 (ai-task 와 함께; 가능하면 먼저 부착)
+#
+# merge APPROVE 는 사람만. Claude 는 PASS_TO_HUMAN 까지만.
+# =============================================================================
+
+name: AI Task
+description: Trigger the monorepo AI loop (Claude plan → Cursor build → verify → Claude Pre-PR). Label ai-task runs Actions.
+title: "[ai] "
+labels: ["ai-task"]
+body:
+  # --- 안내 (파싱 안 함) ---
+  - type: markdown
+    attributes:
+      value: |
+        사전 조건: Secrets, `docs/loop/STATE.md` → `loop: running`, 브랜치 보호(사람만 merge).
+        클라우드: 라벨 `ai-task`만. 로컬 PC: **`run:local` 먼저** → `ai-task`.
+        **작성법(프롬프트):** `docs/loop/AI-TASK-PROMPT.md`
+        운영·env: `docs/loop/ISSUE-GUIDE.md` · 러너: `docs/loop/RUNNERS.md`
+
+  # --- App scope: 드롭다운 한 줄에서 @apps/… 토큰을 파서가 추출 ---
+  - type: dropdown
+    id: app
+    attributes:
+      label: App scope
+      description: full = portfolio only. Others use lite verify (no e2e yet).
+      options:
+        - "@apps/user-portfolio (verify:portfolio) [full]"
+        - "@apps/user-commerce (verify:commerce) [lite]"
+        - "@apps/user-fashion (verify:fashion) [lite]"
+        - "@apps/user-social (verify:social) [lite]"
+        - "@apps/admin-master-admin (verify:master-admin) [lite]"
+        - "@apps/admin-commerce-admin (verify:commerce-admin) [lite]"
+        - "@apps/admin-fashion-admin (verify:fashion-admin) [lite]"
+        - "@apps/admin-social-admin (verify:social-admin) [lite]"
+    validations:
+      required: true
+
+  # --- Backlog id: docs/loop/BACKLOG.md 항목 (budget 키로도 사용) ---
+  - type: input
+    id: backlog
+    attributes:
+      label: Backlog id
+      description: Optional docs/loop/BACKLOG.md id (e.g. B-003).
+      placeholder: B-003
+    validations:
+      required: false
+
+  # --- Cursor Build 모델: Claude Pre-PR 과 벤더/모델 분리용 (비우면 계정 기본) ---
+  - type: input
+    id: build_model
+    attributes:
+      label: Cursor build model (optional)
+      description: `agent --model` id so Build ≠ Claude review. Empty = account default.
+      placeholder: ""
+    validations:
+      required: false
+
+  # --- Loop config: 기계 파싱 우선 (yaml 펜스). 드롭다운과 충돌 시 여기가 이김 ---
+  - type: textarea
+    id: loop_config
+    attributes:
+      label: Loop config (machine)
+      description: Preferred machine-readable block (overrides dropdown when present).
+      value: |
+        ```yaml
+        app: @apps/user-portfolio
+        verify: pnpm verify:portfolio
+        backlog: 
+        cursor_build_model: 
+        ```
+    validations:
+      required: true
+
+  # --- Goal / AC: Claude Plan · Cursor Build 프롬프트 입력 ---
+  - type: textarea
+    id: goal
+    attributes:
+      label: Goal
+      description: What should change? Be specific.
+    validations:
+      required: true
+
+  - type: textarea
+    id: ac
+    attributes:
+      label: Acceptance criteria (checkable)
+      description: Behavior / test / UI / gate lines (plan-change shape).
+      placeholder: |
+        - [ ] Behavior: …
+        - [ ] Unit: 새/변경 로직에 *.test.ts (guard:tests)
+        - [ ] E2E: 페이지·위젯 변경 시 e2e 갱신 또는 e2e-skip: 사유
+        - [ ] Gate: pnpm verify:<short>
+        - [ ] denylist unchanged
+    validations:
+      required: true
+
+  - type: textarea
+    id: out_of_scope
+    attributes:
+      label: Out of scope
+      placeholder: SECURITY rewrites, denylist paths…
+    validations:
+      required: false
+
+  # --- 사람 확인: merge 권한·시크릿 이슈 본문 금지 ---
+  - type: checkboxes
+    id: confirm
+    attributes:
+      label: Confirm
+      options:
+        - label: I understand merge APPROVE is human-only; Claude only PASS_TO_HUMAN.
+          required: true
+        - label: I will not put secrets in this issue body.
+          required: true

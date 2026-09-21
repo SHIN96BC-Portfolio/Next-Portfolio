@@ -10,15 +10,15 @@ description: >-
 
 ## Instructions
 
-1. Read `docs/harness/DENYLIST.md` before editing.
+1. Read `docs/harness/DENYLIST.md` before editing (모노레포 SoT, 앱별 절).
 2. If the target path matches denylist:
    - Stop and tell the user this is a **human gate**.
    - Do not “just fix” auth/cookie/crypto/env/deploy secrets unless the user explicitly approves that path in this turn.
 3. Never add new `NEXT_PUBLIC_*SECRET*` (or PASSWORD / PRIVATE_KEY / API_KEY) usage. Existing debt is allowlisted only in `scripts/guard-harness.mjs`.
-4. After approved edits, run `pnpm guard:harness` and then `pnpm verify:portfolio`.
+4. After approved edits, run `pnpm guard:harness` and then the app gate (`pnpm verify:<app>`, currently `verify:portfolio`).
 5. Do not commit `.env` / `.env.local` or real secrets.
 
 ## Related
 
 - `docs/harness/README.md`
-- `#31` SECURITY code remediations (separate from harness guards)
+- SECURITY code remediations: BACKLOG B-002 / `SECURITY-NOTES.tmp.md` (separate from harness guards)

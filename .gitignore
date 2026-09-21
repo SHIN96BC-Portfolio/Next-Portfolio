@@ -57,3 +57,10 @@ apps/admin/social-admin/.env
 
 # turbo
 .turbo
+
+# loop engineering (lock / budget)
+.cache/
+
+# AI loop job scratch (GitHub Actions / local ai-loop.sh)
+.ai/
+

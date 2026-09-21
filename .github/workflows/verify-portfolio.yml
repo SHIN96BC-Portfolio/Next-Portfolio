@@ -1,14 +1,20 @@
 # =============================================================================
-# Portfolio (@apps/user-portfolio) — PR / push verify
+# Verify Portfolio — PR/push 품질 게이트 (사람·에이전트 공통 합격 신호)
 # =============================================================================
 #
-# pull_request · master/main push 시 pnpm verify:portfolio 실행
-# deploy-portfolio.yml 의 quality job과 동일 게이트를 목표로 함
+# 목적:
+#   @apps/user-portfolio 변경이 들어올 때 pnpm verify:portfolio 를 CI에서 돌린다.
+#   로컬·AI 루프·deploy quality 와 같은 명령을 쓰도록 맞춘다.
 #
+# 포함 (scripts/verify-app.mjs maturity=full):
+#   typecheck → biome(+fsd) → unit test → guard:harness → e2e → build
+#
+# 문서: docs/harness/README.md
 # =============================================================================
 
 name: Verify Portfolio
 
+# paths 필터: 관련 없는 앱만 고친 PR에서 불필요하게 full gate를 돌리지 않음
 on:
   pull_request:
     paths:
@@ -32,6 +38,7 @@ on:
       - 'pnpm-lock.yaml'
       - '.github/workflows/verify-portfolio.yml'
 
+# 같은 PR에 push가 연속되면 이전 verify 취소 → 분·큐 절약
 concurrency:
   group: verify-portfolio-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
@@ -41,6 +48,7 @@ permissions:
 
 env:
   NODE_VERSION: '22'
+  # e2e/MSW용 더미 (실 시크릿 커밋 금지)
   NEXT_PUBLIC_API_MOCKING: enabled
   NEXT_PUBLIC_API_SERVER_URL: http://127.0.0.1:8080
   NEXT_PUBLIC_API_AUTH_SERVER_URL: http://127.0.0.1:8080
@@ -49,6 +57,7 @@ env:
   NEXT_PUBLIC_COOKIE_SECRET_KEY: harness-ci-cookie-secret-key
   NEXT_PUBLIC_STORAGE_CRYPTO_SECRET_KEY: harness-ci-storage-secret
   PRIVATE_COOKIE_SECRET_KEY: harness-ci-private-cookie-secret
+  # guard denylist: PR base 대비 diff
   HARNESS_BASE_REF: ${{ github.event.pull_request.base.ref || '' }}
   NEXT_TURBOPACK_EXPERIMENTAL_USE_SYSTEM_TLS_CERTS: '1'
 
@@ -85,3 +94,5 @@ jobs:
         env:
           HARNESS_BASE_REF: ${{ github.event.pull_request.base.ref || '' }}
           CI: true
+          # 레포 Variable HARNESS_STRICT_DENYLIST=1 이면 denylist 경로 변경 시 fail
+          HARNESS_STRICT_DENYLIST: ${{ vars.HARNESS_STRICT_DENYLIST || '' }}

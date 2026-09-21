@@ -22,7 +22,15 @@ pnpm lint:fsd:dry                                     # same, report only
 pnpm lint:fix                                        # biome check --write .
 pnpm test                                             # turbo test
 pnpm guard:harness                                    # denylist·NEXT_PUBLIC secret 가드
-pnpm verify:portfolio                                 # portfolio 단일 합격 게이트 (typecheck+biome+test+guard+e2e+build)
+pnpm guard:harness:strict                             # denylist hit → fail
+pnpm guard:tests                                      # 새 로직→Jest / 셸→E2E (docs/harness/TESTING.md)
+pnpm verify:portfolio                                 # full: typecheck+biome+test+guard+guard:tests+e2e+build
+pnpm verify:portfolio:snap                            # full + screenshot (서버 필요할 수 있음)
+pnpm verify:commerce                                  # lite gate (다른 앱도 verify:<short>)
+pnpm verify:app --list                                # 등록된 앱 게이트 목록
+pnpm loop:status                                      # docs/loop STATE kill switch (paused=exit 2)
+pnpm loop:lock / loop:unlock / loop:budget            # 루프 동시성·시도 예산
+pnpm snap -- /ko                                      # L3 스크린샷 (verify 게이트 아님)
 pnpm run gen:i18n                                     # portfolio i18n 일괄 생성
 
 # portfolio 앱 필터
@@ -37,7 +45,12 @@ pnpm --filter @apps/user-portfolio run gen:i18n-namespaces
 
 앱 로컬 스크립트(`dev` / `dev:https` / `start` 등)는 `apps/user/portfolio/package.json` 참고.
 
-**Harness:** 변경 후 에이전트는 `pnpm verify:portfolio`로 통과를 확인한다. denylist·보안 민감 경로는 [`docs/harness/DENYLIST.md`](docs/harness/DENYLIST.md) · [`docs/harness/README.md`](docs/harness/README.md). Cursor 스킬: `.cursor/skills/verify` · `plan-change` · `safe-edit`.
+**Harness:** 모노레포 공통 게이트·denylist는 [`docs/harness/`](docs/harness/README.md). 앱 변경 후 해당 **`pnpm verify:<app>`** 으로 합격 여부를 말한다 (현재 1호: `pnpm verify:portfolio`). Cursor 스킬: `.cursor/skills/verify` · `plan-change` · `safe-edit`.
+
+**Loop:** [`docs/loop/`](docs/loop/) (`DESIGN` / `BACKLOG` / `STATE` / `LOOP`). `loop: paused`면 중단.  
+이슈 TASK 프롬프트 작성: [`docs/loop/AI-TASK-PROMPT.md`](docs/loop/AI-TASK-PROMPT.md).  
+**Cursor = Build** · **Claude = Pre-PR** · **사람 = PR APPROVE/merge**.  
+자동: 이슈 `ai-task` (클라우드) 또는 `run:local`+`ai-task` (셀프 호스티드) → [`ai-loop.yml`](.github/workflows/ai-loop.yml). 셋업: [`ACTIONS-SETUP.md`](docs/loop/ACTIONS-SETUP.md) · [`RUNNERS.md`](docs/loop/RUNNERS.md).
 
 ## Architecture: Feature-Sliced Design (FSD)
 
