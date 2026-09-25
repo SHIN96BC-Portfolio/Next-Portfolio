@@ -4,9 +4,11 @@ import type { Locale } from '@FsdShared/config/i18n/auto-gen/constants/i18n-loca
 import { DictionaryHome } from '@FsdShared/config/i18n/auto-gen/types/home';
 import getI18nTranslator from '@FsdShared/config/i18n/utils/get-i18n-translator';
 import { DisplayVariant } from '@FsdShared/display/model/display-variant';
+import ResumeEmployerHeader from '@FsdWidgets/resume/ui/ResumeEmployerHeader';
 import ResumeMarkdownBlock from '@FsdWidgets/resume/ui/ResumeMarkdownBlock';
 import ResumeProjectDocument from '@FsdWidgets/resume/ui/ResumeProjectDocument';
 import fetchHomeSectionsSSR from '@NextApp/_actions/fetchHomeSectionsSSR';
+import { Fragment } from 'react';
 
 type PortfolioResumePageProps = {
   lang: Locale;
@@ -59,6 +61,9 @@ function PortfolioResumeSectionRenderer({
     .filter((section) => section.isActive)
     .sort((a, b) => a.displayOrder - b.displayOrder);
 
+  // employer 가 있는 프로젝트는 소속 회사가 바뀌는 지점에만 회사 헤더를 한 번 그린다
+  let previousCompany: string | null = null;
+
   return (
     <div className={displayVariant === 'print' ? 'space-y-8' : 'space-y-10'}>
       {activeSections.map((section) => {
@@ -73,10 +78,20 @@ function PortfolioResumeSectionRenderer({
               />
             );
 
-          case SECTION_TYPE.RESUME_PROJECT:
+          case SECTION_TYPE.RESUME_PROJECT: {
+            const config = section.config as ResumeProjectConfig;
+            const showEmployer = Boolean(config.employer) && config.company !== previousCompany;
+            previousCompany = config.company;
+
             return (
-              <ResumeProjectDocument key={section.id} config={section.config as ResumeProjectConfig} labels={labels} />
+              <Fragment key={section.id}>
+                {showEmployer && config.employer ? (
+                  <ResumeEmployerHeader company={config.company} employer={config.employer} />
+                ) : null}
+                <ResumeProjectDocument config={config} labels={labels} />
+              </Fragment>
             );
+          }
 
           default:
             return null;

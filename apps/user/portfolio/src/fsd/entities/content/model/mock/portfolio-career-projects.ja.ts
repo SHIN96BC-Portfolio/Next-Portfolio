@@ -1,99 +1,107 @@
-import { ResumeProjectConfig } from '../types';
+import { ResumeEmployer, ResumeProjectConfig } from '../types';
+
+export const portfolioCareerEmployersJa: Record<string, ResumeEmployer> = {
+  YRISM株式会社: {
+    period: '2024.08 – 在職中',
+    detail: 'Web開発チーム · システム運用マネージャー（社内職級） · フロントエンド開発者',
+  },
+  Pinetechsoft株式会社: {
+    period: '2023.10 – 2024.05',
+    detail: '開発1チーム · 研究員 · フロントエンド開発者',
+  },
+  'ER Solution株式会社': {
+    period: '2022.07 – 2023.09',
+    detail: '開発1チーム · 研究員 · フルスタック開発者',
+  },
+};
 
 export const portfolioCareerProjectsJa: ResumeProjectConfig[] = [
   {
-    projectId: 'modetour-nextgen',
-    orderLabel: '1',
-    title: 'モドゥツアー B2C/B2B 旅行プラットフォーム次世代再構築',
-    company: '(주) YRISM',
+    projectId: 'travel-platform-nextgen',
+    title: 'M社 B2C/B2B 旅行プラットフォーム次世代再構築',
+    company: 'YRISM株式会社',
     period: '2024.08 – 在職中',
     role: 'フロントエンド開発',
-    links: [
-      { label: 'modetour.com', url: 'https://www.modetour.com' },
-      { label: 'elpis.modetour.co.kr', url: 'https://elpis.modetour.co.kr' },
-      { label: 'go.modetour.co.kr', url: 'https://go.modetour.co.kr' },
-      { label: 'gentlemonster.modetour.com', url: 'https://gentlemonster.modetour.com' },
-      { label: 'homeplus1.modetour.co.kr', url: 'https://homeplus1.modetour.co.kr' },
-    ],
-    problem:
-      '稼働中の as-is サービスを維持しながら、次世代フロントエンドを全面再構築する必要がありました。引き継ぎ時点では決済・戻る操作（ルーティング）などのコア機能が正常に動作しないほどバグが多く不安定でした。またコード構造上 props ドリリングが深刻で共通化が進んでおらず、同一コンポーネントがページごとに重複しており、1回の修正で複数ファイルを繰り返し変更し、デバッグにも多くの時間を要していました。運用対象も1種類ではありませんでした。B2C 本サイト、機能基盤は B2C と同じで取扱商品と一部カスタムのみが異なる BP 約150サイト、代理店の要望どおり画面・機能がすべて変わるフルカスタムの ONBP 約150サイト（現在も増加中）— 性格の異なる3種類をすべて PC・MO で併せて管理する必要がありました。APP も WebView ベースのため画面・機能は FE の管理領域である一方、アプリのシェルは外部業者が管理しており、問題が起きるたびに原因が WebView 側かアプリ側かの切り分けから始める必要がありました。限られた人数でこのすべてを同じ方法で運用することは不可能でした。共通コンポーネントの統合とメジャーバージョンアップを並行する状況で、変更がどのサイトに影響するかを確認する手段がないことも課題でした。さらにチームで AI コーディングツールを使い始めたことで、構造を把握しないまま生成されたコードがレイヤー境界を越える事例も増えていました。',
-    workSections: [
+    links: [],
+    scopeTags: ['FE 3名 → 5名', 'PL とアーキテクチャを共同設計'],
+    cases: [
       {
-        title: '1) サービス安定化（レガシーバグ対応）',
-        items: [
-          '追加開発案件と決済失敗・異常ルーティングなどの critical バグを含む **300件以上の課題を処理**し、サービスを正常な軌道に安定化',
-          '正常に動作していなかったコアフローを一つずつ診断・修正し、サービスの信頼性を確保',
-        ],
+        title: 'レガシーサービスの安定化',
+        asIs: '引き継ぎ時点で、決済・戻る操作（ルーティング）などのコアフローが正常に動作しないほど不安定',
+        approach: '正常に動作しないコアフローを一つずつ診断・修正し、追加開発案件と並行して対応',
+        toBe: '`イシュー400件以上` を処理 · 決済失敗・異常ルーティングを解消し、運用可能な状態へ転換',
       },
       {
-        title: '2) アーキテクチャ・構造改善',
-        items: [
-          '**ワンソース・マルチサイト構造の設計** — ドメイン別サイト情報を読み込み、API ヘッダーにサイトコンテキストを注入し、B2C と機能基盤を共有する BP 約150サイトを単一コードベースで運用',
-          '**Turborepo モノレポへの移行** — カスタム範囲が予測できない ONBP 約150サイト（継続増加）を、共通コンポーネント分離 + サイト別ビルドパイプラインで統合管理。ドメイン別 config 分離、yarn→pnpm 移行',
-          '**共通コンポーネント化 + props ドリリング解消** — ページごとに重複していたコンポーネントを共通化。同一修正時の作業範囲を4ファイル→1ファイルに削減し、保守・デバッグ時間を短縮、副作用とヒューマンエラーの発生点を低減',
-          '**FSD アーキテクチャの導入**、FE Model + Mapper パターンで BE API 変更の影響を最小化',
-        ],
+        title: '次世代コアドメインの再構築',
+        asIs: 'as-is の B2C/B2B サービスを運用しながら、PC・MO のコアドメインを全面的に再構築する必要がある状況。as-is になかったセキュリティ要件が存在',
+        approach:
+          '航空（Topas 連携の予約・照会・決済フローを再設計）、ツアーパス（Klook 連携、探索・オプション選択・予約 UX の改善）、ホテル（検索・フィルター・詳細・予約の移行）、プロモーション・割引条件・クーポン（複雑な割引ルールを FE で安定して処理する構造）、B2B 予約・管理画面、認証（ログイン・セッション・権限）を再設計。暗号・復号モジュールを新規導入。移行期間中も as-is B2C PC/MO の運用・追加開発を並行',
+        toBe: 'B2C・B2B の PC/MO コアドメインを次世代へ移行 · 移行期間中も as-is サービスの安定運用を維持',
       },
       {
-        title: '3) パフォーマンス最適化',
-        items: [
-          '**ページ読み込み最適化** — SSG/SSR を状況に応じて組み合わせ、TanStack Query キャッシュで不要な API 重複呼び出し・重複ローディングを排除、不要に繰り返し実行されていた useEffect を整理。最も読み込みに時間がかかっていたページを約1/3に短縮（Lighthouse モバイル基準）',
-          '**ビルド〜デプロイ時間の短縮** — 既存パイプラインの非効率を診断・排除。設定のみで実際には動作せずビルド時間だけを増やしていた不要コードを削除。Next.js 12→15 のバージョンアップ過程で、残っていた Babel 設定が SWC のコンパイル経路を無効化していることを発見して撤去し、ビルドと dev サーバー起動の時間を短縮。誤設定で正常に動作していなかったキャッシュ設定を Turborepo・Next ビルドキャッシュで正常適用、不要なチェックステップと重複実行されていた `yarn install` を削除。ビルドキュー・キャッシュを整備し、ビルド〜デプロイを30分以上→12〜15分（約50〜60%短縮）',
-        ],
+        title: 'マルチテナント運用構造の設計',
+        asIs: 'B2C 本サイト、機能基盤は同じで商品・一部カスタムのみが異なる BP 約150サイト、代理店ごとに画面・機能がすべて異なるフルカスタムの ONBP 約150サイト（増加中）を、すべて PC・MO で限られた人数が運用。APP は WebView ベースのため画面・機能は FE の領域だが、アプリのシェルは外部業者が管理しており、問題のたびに原因が WebView 側かアプリ側かの切り分けから必要',
+        approach:
+          'BP — ドメイン別の init 時にサイト情報を読み込み、API リクエストヘッダーにサイトコンテキストを注入するワンソース・マルチサイト。ONBP — Turborepo モノレポで共通コンポーネントの分離 + サイト別ビルドパイプラインによりカスタム領域と共通領域を隔離、ドメイン別 config でカスタム要素を体系化、yarn→pnpm へ移行',
+        toBe: '`300以上` のサイトを単一コードベースで運用 · サイトが増えてもコードベース・運用コストが比例して増えない構造',
       },
       {
-        title: '4) UI・技術的負債の改善',
-        items: [
-          '**自社 UI ライブラリの構築** — 無理な antd 適用による CSS アニメーションのカクつきを解消するため antd を段階的に除去し、モドゥツアー専用 UI ライブラリを構築。react-print・react-date など問題のあるライブラリを自社実装・置換',
-          '**Next.js 12→15 メジャーバージョンアップ** — App Router・React 19 対応を含む段階的マイグレーションをサービス無停止で実施',
-          'RTK Query→TanStack Query・Redux→Zustand の無停止段階移行、ページ別重複ロジックの共通化、ハードコード定数の外部化',
-        ],
+        title: 'コード構造の改善 — 共通化・FSD・FE Model',
+        asIs: 'props drilling が深刻で同一コンポーネントがページごとに重複し、1回の修正で複数ファイルを繰り返し変更、デバッグも長期化。フィルター・予約・alert・popup のロジックが散在、文字列はハードコード。BE API 仕様の変更に FE が過度に依存',
+        approach:
+          'FSD アーキテクチャを導入。重複コンポーネントを次世代再構築と並行して段階的に共通化、散在ロジックを共通モジュールへ抽出、ハードコードを定数化。FE Model レイヤー + Mapper パターンで BE API Model への直接依存を排除',
+        toBe: '同一修正 `4ファイル → 1ファイル` · BE 仕様変更の影響をドメイン単位に隔離 · 副作用・ヒューマンエラーの発生箇所を削減',
       },
       {
-        title: '5) テスト・品質体系',
-        items: [
-          '**単体・統合** — Vitest 3 のマルチプロジェクト（ドメインパッケージ、B2C/ONBP 共通パッケージ）と React Testing Library で、HTTP クライアント、暗号・復号、決済・予約ユーティリティ、カスタムフックなどビジネスロジックを検証。パッケージ別にテストプロジェクトを分離し、変更の影響範囲だけを選択実行できるよう構成',
-          '**E2E** — 専用のテストワークスペースで Playwright により、運用環境（legacy API）と dev 環境（FE Server/BFF）をシート・ドメイン（B2C・BP・ONBP PC/MO）単位に分け、リモートデプロイ環境を対象にシナリオを実行。mock ではなく実 SSO 連携と BFF probe で実際の認証・レスポンス経路まで検証し、シナリオメタデータに基づく実行・レポート用の Testbed UI を自ら構築してチームで運用',
-          '**品質ゲート** — Husky の pre-commit で Biome + 変更に関連する Vitest、pre-push でビルド・型チェック・全テストを強制',
-          '**API 契約** — OpenAPI 仕様から Zod/TypeBox を生成し、型検証とランタイム検証を同一ソースで連結。BE 仕様変更時に FE の影響箇所をコンパイル時に露出',
-          '次のステップとして、CI テストゲートの導入とページ単位テストの拡大を予定',
-        ],
+        title: 'UI システムの置き換え',
+        asIs: '無理に適用された antd のグローバルスタイル競合により UI 崩れ・CSS アニメーションのカクつきが発生。react-print は大容量ページで印刷画面が数十秒遅延、react-date はバグが多発',
+        approach:
+          'antd を段階的に撤去して専用 UI ライブラリ（Core UI）を構築し、playground でコンポーネント単位の検証環境を用意。iframe ベースの印刷を自前実装し、react-day-picker へ置き換え',
+        toBe: 'デザインの一貫性を確保し、スタイルの副作用を根本から解消 · 印刷遅延（数十秒）を解消 · 日付選択 UX を安定化',
       },
       {
-        title: '6) AI 開発体系 — エージェントコンテキストエンジニアリング',
-        items: [
-          'モノレポの規模が大きくなるにつれ、AI コーディングエージェントがレイヤー境界を越えたり規約を外れたコードを生成する問題が繰り返し発生。ツールを増やすのではなく、**エージェントが読むコンテキスト自体を設計する**方向を選択',
-          '**コンテキストの単一ソース** — ルートの AGENTS.md を単一ソースとし、Cursor・Claude・Gemini・Codex のエントリポイントをこれに合わせ、ツールが異なっても同じ境界・規約に従うよう構成。ツールごとにルール文書が分化し、互いに食い違う問題を遮断',
-          '**パッケージ境界の注入** — パッケージ別の AGENTS.md で API 契約定義・ブラウザアダプター・HTTP 通信本体の役割と、B2C ↔ ONBP の相互 import 禁止を作業パスに合わせて注入。人がレビューで指摘していたアーキテクチャ違反を生成時点で遮断',
-          '**コンベンションガードレール** — 人が読む規約ガイドと、エージェントが読む Cursor Skill・path-scoped Rule を分離。TS/TSX 編集時のみ #region 構成・Named Export・Biome・イベント規則を注入して不要なコンテキスト消費を抑え、レガシーの一括リファクタは適用範囲から明示的に除外して意図しない大規模変更を防止',
-          '**E2E フィードバックループ** — Playwright シナリオにメタデータを付与して registry を自動生成し、sheet（legacy/fe-server）・domain 単位で CLI 実行と Testbed UI 実行の両方に対応。失敗原因・修正オプション・再検証手順をドキュメント化し、後続のエージェントが引き継げるよう連結',
-          '**オンボーディング** — 上記の体系をチーム共通の作業方式として文書化し、新規メンバーがプロジェクト構造を把握する前でも境界を外れずに作業できる環境を構成',
-        ],
+        title: 'Next.js 12→15・状態管理の無停止移行',
+        asIs: 'Next.js 12 + RTK Query・Redux ベース。稼働中の大規模サービスのため一括移行は不可能',
+        approach:
+          'ドメイン・ページ単位で段階的に移行（App Router・React 19 対応）。RTK Query→TanStack Query、Redux→Zustand を並行運用しながら移行。バージョンアップの過程で、残っていた Babel 設定が SWC のコンパイル経路を無効化していることを発見して撤去',
+        toBe: 'サービスを止めずにメジャーバージョンアップ・状態管理移行を完了 · Babel 撤去でビルド・dev サーバー起動時間を短縮',
       },
       {
-        title: '7) チーム生産性・協業',
-        items: [
-          '次世代再構築を FE 3名で開始し現在5名規模となったチームで、PL とともにアーキテクチャと作業基準を設計し、リード不在時はスケジュール調整・課題配分・技術的意思決定を代行',
-          '**技術標準の策定** — FSD アーキテクチャ、FE Model + Mapper パターン、コンポーネント共通化基準、ブランチ・デプロイ規則を定義し文書化',
-          '**デプロイ戦略転換の判断** — 構築期のリリーストレイン・統合ブランチ方式が、オープン後の頻繁なホットフィックス・緊急デプロイに合わないと判断し、柔軟な手動デプロイ戦略への転換を提案・適用',
-        ],
+        title: 'デプロイパイプライン・ビルドの再設計',
+        asIs: 'B2C 単一の8本のパイプライン体系で、ビルド〜デプロイに30分以上。動作せずにビルド時間だけを増やす設定、誤ったキャッシュ設定、不要なチェックステップ・重複した `yarn install`。Docker 内部ビルド（Yarn workspaces）',
+        approach:
+          '*（直接担当）* オーケストレーターパイプラインで B2C・BP・ONBP × 4環境の20本以上の体系に分離して選択デプロイを実現、standby パイプラインを新規構成。Turbo prune + ホスト側 pnpm/turbo ビルド + Docker パッケージングを分離し、buildx registry キャッシュを導入、Turborepo・Next のビルドキャッシュを正常化。Helm チャートの作成・高度化（topologySpreadConstraints、readinessProbe、CPU/メモリ HPA）、`kubectl rollout status` によるデプロイ検証。*（インフラチームと協業）* Azure AKS → Azure Local ARC 移行、active/standby failover による災害復旧、Akamai CDN、インフラセキュリティ、Pod 運用・モニタリング、サーバーログ分析',
+        decision:
+          '構築期のリリーストレイン・統合ブランチ方式が、オープン後の頻繁なホットフィックス・緊急デプロイに合わないと判断し、柔軟な手動デプロイ戦略への転換を提案・適用',
+        toBe: 'ビルド〜デプロイ `30分以上 → 12〜15分`（約50〜60%短縮） · パイプライン `8本 → 20本以上` でサービス・環境単位の選択デプロイ',
       },
-    ],
-    outcomes: [
-      '引き継ぎ時点で決済・ルーティングなどコアフローが動作しなかったサービスを、**300件以上のイシュー対応を経て運用可能な状態へ転換**',
-      'サイト数が300から増え続ける中でも、**サイト増加がコードベース・運用コストの増加に直結しない構造**を確保',
-      '**デプロイ時間を約50〜60%短縮**、主要ページの読み込みを約1/3（Lighthouse モバイル基準）',
-      'メジャーバージョンアップ・状態管理移行を **サービス停止なしで** 完了し、安定性と最新技術スタックを両立',
-    ],
-    extraSections: [
       {
-        title: 'CI/CD・インフラ再設計',
-        body: '次世代移行に合わせてデプロイパイプラインとインフラを再設計しました。FE デプロイパイプライン・Helm は自ら担当し、CDN・セキュリティ・Pod 運用はインフラチームと役割を分けました。',
-        items: [
-          '**直接担当** — FE デプロイパイプラインの設計・構築（オーケストレーターパイプラインで B2C 単一8本 → B2C・BP・ONBP × 4環境 20本以上の体系へ分離し、必要なサービス・環境のみを選択してデプロイ）、Helm チャートの作成および高度化（topologySpreadConstraints、readinessProbe、CPU/メモリベースの HPA）、`kubectl rollout status` によるデプロイ検証、standby パイプラインの新規構成',
-          '**ビルド方式の改善** — Docker 内部ビルド（Yarn workspaces）から、Turbo prune + ホスト側 pnpm/turbo ビルド + Docker パッケージングを分離した構造へ転換し、buildx registry キャッシュを導入',
-          '**インフラチームとの協業** — Azure AKS → Azure Local ARC（Connected K8s）移行、failover（active/standby）による災害復旧体系、Akamai CDN、インフラセキュリティ、Pod 運用・モニタリング、サーバーログ分析',
-        ],
+        title: 'ページ読み込みの最適化',
+        asIs: '不要な API の重複呼び出し・重複ローディング、繰り返し実行される useEffect',
+        approach:
+          'ページの性質に合わせて SSG/SSR を組み合わせ、TanStack Query のキャッシュを導入、不要な useEffect を整理',
+        toBe: '最も遅かったページの読み込みを `約1/3` に短縮（Lighthouse モバイル基準）',
+      },
+      {
+        title: 'テスト・品質体系',
+        asIs: '共通コンポーネントの統合とメジャーバージョンアップを並行する中で、変更がどのサイトに影響するかを確認する手段がない。テスト自動化の専任者がおらず、QA が直接アクセスして手作業で確認する体制',
+        approach:
+          'Vitest 3 のマルチプロジェクト（ドメインパッケージ、B2C/ONBP 共通パッケージ）+ React Testing Library で HTTP クライアント・暗号/復号・決済/予約ユーティリティ・カスタムフックを検証し、パッケージ単位で選択実行。Playwright E2E を運用環境（legacy API）・dev 環境（FE Server/BFF）とシート・ドメイン（B2C・BP・ONBP PC/MO）単位でリモート実行 — 実 SSO 連携・BFF probe で実際の経路を検証し、実行・レポート用の Testbed UI を自作。Husky pre-commit（Biome + 変更に関連する Vitest）・pre-push（ビルド・型チェック・全テスト）。OpenAPI 仕様から Zod/TypeBox を生成',
+        toBe: '共通化・バージョンアップによる回帰をコミット・プッシュ段階で遮断 · BE 仕様変更の FE 影響箇所をコンパイル時に露出',
+      },
+      {
+        title: 'AI エージェントのコンテキスト・ハーネスエンジニアリング',
+        asIs: 'モノレポの規模拡大に伴い、AI エージェントがレイヤー境界を越えたり規約を外れたコードを繰り返し生成 — 人がレビューで指摘する構造',
+        approach:
+          '*（コンテキスト）* ルートの AGENTS.md を単一ソースとし、Cursor・Claude・Gemini・Codex のエントリポイントを統一してツールごとにルール文書が分岐しないよう構成。パッケージ別の AGENTS.md で API 契約・ブラウザアダプター・HTTP 通信本体の役割と B2C↔ONBP の相互 import 禁止を作業パスごとに注入。人向けのガイドと Cursor Skill・path-scoped Rule を分離 — TS/TSX 編集時のみ #region・Named Export・Biome・イベント規則を注入し、レガシーの一括リファクタは対象外。*（検証ハーネス）* エージェントの成果物も人と同じ Husky の品質ゲート（Biome・変更関連の Vitest、ビルド・型チェック・全テスト）を通過しなければ反映されないよう構成。Playwright シナリオのメタデータから registry を自動生成して CLI/Testbed UI で実行し、失敗原因・修正オプション・再検証手順をドキュメント化して後続のエージェント作業へ連結',
+        toBe: '生成時点（コンテキスト）とコミット・プッシュ時点（検証ハーネス）の2段階でアーキテクチャ違反・回帰を遮断 · 新規メンバーも構造を把握する前から境界内で作業',
+      },
+      {
+        title: 'チームの作業基準の策定',
+        asIs: 'ドキュメント・オンボーディングがなく、新規メンバーのプロジェクト把握が遅延',
+        approach:
+          'PL とともに FSD アーキテクチャ・FE Model+Mapper パターン・コンポーネント共通化基準・ブランチ・デプロイ規則を定義し文書化、ドキュメント自動化ツールを導入。PL 不在時はスケジュール調整・課題配分・技術的意思決定を代行',
+        toBe: 'アーキテクチャ・作業基準をチーム共通のドキュメントとして確立 · ドキュメント自動化でプロジェクト構造・デプロイ規則を把握する経路を用意',
       },
     ],
     techStack: [
@@ -119,106 +127,272 @@ export const portfolioCareerProjectsJa: ResumeProjectConfig[] = [
       'Helm',
       'Kubernetes',
       'Docker',
-      'Git',
     ],
   },
   {
-    projectId: 'uteas',
-    orderLabel: '2',
-    title: '微細粒子状物質排出量 照会・可視化サービス（UTEAS）',
-    company: '(주) ER Solution',
-    period: '2023.06 – 2023.07',
-    role: 'フルスタック開発（FE・BE・DB 単独）',
-    links: [],
-    problem:
-      '道路・地域・時間単位で微細粒子状物質の排出量を照会・可視化する環境モニタリングサービスの新規開発。**1.4億件以上の大規模テーブル** の照会に4〜6分かかる深刻なパフォーマンスボトルネックが存在しました。',
-    workSections: [
-      {
-        title: '担当業務',
-        items: [
-          'FE・BE・DB 設計を単独で実施',
-          '**インデックス最適化および集計テーブル設計** で大規模照会のボトルネックを構造的に解消',
-          'Recharts による統計可視化、v-world-map 地図、Excel アップロード機能を実装',
-          'Nest.js API・MariaDB スキーマ設計、AWS EC2 デプロイ',
-        ],
-      },
-    ],
-    outcomes: [
-      '**1.4億件の照会を4〜6分→5秒以内（複雑 join 時は10秒以内、約50倍以上の改善）**',
-      'フロント・バック・インフラを単独で完成し、End-to-End 開発力を実証',
-    ],
-    techStack: ['React(Vite)', 'Nest.js', 'TypeScript', 'MariaDB', 'TanStack Query', 'Docker', 'AWS EC2'],
-  },
-  {
-    projectId: 'lhat',
-    orderLabel: '3',
-    title: 'フィリピン Lahat プラットフォーム バックオフィス・Webアプリ構築',
-    company: '(주) Pinetechsoft',
-    period: '2023.10 – 2024.05',
+    projectId: 'visa-center',
+    title: 'V社 海外ビザセンター Web サービス新規構築',
+    company: 'YRISM株式会社',
+    period: '2025.02 – 2025.03',
     role: 'フロントエンド開発',
     links: [],
-    problem:
-      '複数ドメイン（Mall・Food・Store・動物病院）のバックオフィスとユーザー向け Web アプリを新規構築・運用しました。',
-    workSections: [
+    scopeTags: ['FE 単独'],
+    overview:
+      '中国・青島のビザセンター向けに、ビザ申請・案内の Web サービスを新規構築。Next.js 15 App Router・Zustand・TanStack Query による画面・API 連携、Tailwind CSS 4 のレスポンシブ UI、韓国語ページ構成、Azure へのデプロイ',
+    techStack: ['Next.js 15', 'TypeScript', 'Zustand', 'TanStack Query', 'axios', 'Tailwind CSS 4', 'Azure'],
+  },
+  {
+    projectId: 'commerce-backoffice',
+    title: 'フィリピン コマース・配達プラットフォーム バックオフィス（自社サービス）',
+    company: 'Pinetechsoft株式会社',
+    period: '2024.02 – 2024.05',
+    role: 'フロントエンド開発',
+    links: [],
+    scopeTags: ['Mall Admin 1人開発'],
+    cases: [
       {
-        title: '主要プロジェクト',
-        items: [
-          '**Lahat Mall Admin** — 商品販売機能追加に伴う管理者バックオフィスを構造設計から API 連携まで単独構築。Firebase 認証、商品・オプション・カテゴリ・イベント・注文・レビュー管理、無限スクロールイベント商品選択、i18n 適用',
-          '**Lahat Food / Store Admin** — 基本・距離別配送料ポリシー機能を新規追加、react-hook-form + Zod フォーム検証、店主/顧客負担比率設定 UI を実装',
-          '**Zootopia（動物病院）** — 予約管理 Admin + オンライン予約 Web アプリを構築。予約作成・照会・キャンセル、ペット最大10匹管理、Email・SNS 統合ログイン（NextAuth）、FCM プッシュ通知連携、紹介サイトまで構築',
-        ],
+        title: 'Mall バックオフィスの新規構築',
+        asIs: 'プラットフォームに商品販売（Mall）機能が追加され、管理用バックオフィスが必要',
+        approach:
+          '構造設計・共通コンポーネント・REST API 連携を単独で担当。Firebase Authentication による管理者ログイン、商品 CRUD・オプション自動生成（カンマ入力）・検索・詳細、カテゴリーの Drag & Drop・並び替え、イベント別の商品無限スクロール選択、配達料・レビュー（返信・非表示）・注文検索・処理、i18n',
+        toBe: 'Mall バックオフィスを単独で構築',
       },
-    ],
-    outcomes: [
-      '構造設計からデプロイまで **単独オーナーシップ** で複数サービスを完成',
-      '認証・決済・通知などコアドメインを横断するバックオフィス・Web アプリ開発経験を蓄積',
+      {
+        title: '配達料ポリシーの拡張（Food・Store）',
+        asIs: '稼働中の Food・Store バックオフィスに配達料ポリシー（基本・距離別、店舗・顧客の負担割合）の機能追加要望',
+        approach:
+          '基本・距離別の配達料設定 UI と API 連携、店舗/顧客/一部店舗負担の複合ポリシー UI、react-hook-form + Zod のフォーム検証、既存の JWT デコード・暗号化認証フローとの連携、Food と分離した Store ドメインの要件を反映。Food Admin のバグ修正・機能補完も並行',
+        toBe: 'Food・Store バックオフィスにサービス別の配達料ポリシーを反映',
+      },
     ],
     techStack: [
       'Next.js',
       'TypeScript',
-      'Zustand/Jotai',
+      'Zustand',
+      'Jotai',
       'TanStack Query',
       'MUI',
+      'react-hook-form',
+      'Zod',
       'Firebase',
       'AWS Amplify',
-      'NextAuth',
-      'Zod',
     ],
   },
   {
-    projectId: 'er-platform',
-    orderLabel: '4',
-    title: '(주) ER Solution — その他プラットフォーム・公共サービス開発',
-    company: '(주) ER Solution',
-    period: '2022.07 – 2023.09',
-    role: 'フルスタック開発研究員',
+    projectId: 'vet-reservation',
+    title: 'フィリピン 動物病院予約プラットフォーム（自社サービス）',
+    company: 'Pinetechsoft株式会社',
+    period: '2023.10 – 2024.02',
+    role: 'フロントエンド開発',
     links: [],
-    problem: 'フロントエンドを主軸に、フルスタック・モバイルまで幅広く担当しました。',
-    workSections: [
+    scopeTags: ['1人開発', 'Admin · 予約 Web App · 紹介サイト'],
+    cases: [
       {
-        title: '主要プロジェクト',
-        items: [
-          '**Dada Pick / Dada Place** — B2B・B2C 流通管理 Web アプリおよび B2C ショッピングモールを新規開発。企画段階から参画、フロントエンドを単独構築、Editor.js 商品エディタ・無限スクロール・Atomic Design パターンを導入',
-          '**全州経済運転 CMS** — 市内バス経済運転指標管理システム。権限管理、Chart.js 運行指標の可視化、Spring + eGovFrame API・MariaDB 設計・AWS デプロイ（フルスタック）',
-          '**ユジンレミコン入庫管理** — キオスク伝票撮影 Android アプリ。外部カメラ連携、キオスク UX、React レンダリング最適化',
-          '**ペットパトロール** — リアルタイム散歩機能 iOS ネイティブアプリ（Swift/SwiftUI）、Naver Map ベースのリアルタイム経路・距離表示',
-          '**仁川港保安公社** — 公式サイト保守、ウェブアクセシビリティ（WA）認証審査対応・合格、ペネトレーションテスト脆弱性パッチ',
-        ],
+        title: 'オフライン予約のオンライン化',
+        asIs: 'オフライン中心の動物病院予約',
+        approach:
+          '予約 Web App — 予約の作成・照会・取消、ペット最大10匹の管理、Web/iOS/Android の FCM プッシュ。病院向け Admin — 予約不可日カレンダー、予約確定/取消時のユーザープッシュ、ユーザー照会・検索、登録・退会状況ダッシュボード',
+        toBe: '予約 Web App と病院 Admin を1人で構築し、オンライン予約へ移行',
+      },
+      {
+        title: 'ログインシステムの全面刷新',
+        asIs: 'メール・SNS アカウントの統合で要件が変わり、ログインプロセスの大幅な修正が必要となって副作用が多発',
+        approach:
+          'Firebase を活用し、FE 主導でログインシステムを全面刷新 — Firebase Email + Google/Facebook/Apple/Kakao の統合ログイン（NextAuth）',
+        toBe: 'メール・SNS アカウントの統合ログイン体系へ移行',
+      },
+      {
+        title: 'プッシュ誤送信の防止',
+        asIs: '既存の FCM トークン管理構造では、誤ったユーザーにプッシュが送信され得る問題',
+        approach: 'FCM トークンをデバイス単位で管理する構造へ改善',
+        toBe: '誤ったユーザーへのプッシュ送信を防止',
+      },
+      {
+        title: '紹介サイトのスライダー不具合',
+        asIs: 'Swiper がビューポートのリサイズ時に画像を誤って表示する不具合',
+        approach:
+          'ライブラリを撤去し、fade in/out の切り替えを自前実装。モバイル・タブレット対応のレスポンシブ、Google Map による病院位置、お知らせ一覧・詳細',
+        toBe: 'スライダー不具合を解消 · モバイル中心の紹介サイトを構築',
       },
     ],
-    outcomes: [],
     techStack: [
-      'React',
       'Next.js',
       'TypeScript',
-      'Redux',
-      'Java/Spring',
-      'eGovFrame',
-      'Nest.js',
-      'React Native',
-      'Swift',
-      'MariaDB',
-      'AWS',
+      'Jotai',
+      'MUI',
+      'Firebase',
+      'NextAuth',
+      'react-hook-form',
+      'Yup',
+      'AWS Amplify',
+      'Vercel',
     ],
+  },
+  {
+    projectId: 'patrol-app',
+    title: '犬のパトロール活動 iOS アプリ',
+    company: 'ER Solution株式会社',
+    period: '2023.08',
+    role: 'iOS 開発',
+    links: [],
+    scopeTags: ['1人開発'],
+    overview:
+      '既存のペット管理 Web App にリアルタイムのパトロール（散歩）機能を追加し、iOS ネイティブアプリへ移行。Naver Map によるリアルタイムの移動経路・時間・距離、撮影写真の位置マーカー、終了時の地図キャプチャ（パトロール日誌）',
+    cases: [
+      {
+        title: '強制終了後のパトロール再開',
+        asIs: 'アプリを強制終了してもパトロールを継続できるようにする要件が追加。経過時間はストップウォッチ方式で計算する構造',
+        approach: 'プロジェクト構造を修正し、経過時間を（現在時刻 − 開始時刻 + 累積時間）で計算するよう変更',
+        toBe: 'アプリ強制終了後も前回のパトロールを再開可能',
+      },
+    ],
+    techStack: ['Swift', 'SwiftUI', 'Realm DB'],
+  },
+  {
+    projectId: 'emission-dashboard',
+    title: '大気汚染 排出量照会・可視化システム',
+    company: 'ER Solution株式会社',
+    period: '2023.06 – 2023.07',
+    role: 'フルスタック開発',
+    links: [],
+    scopeTags: ['FE・BE・DB 単独'],
+    overview:
+      '道路・地域・時間単位で微細粒子状物質の排出量を照会・可視化するサービス。Recharts の統計・v-world-map の地図、照会・フィルター、Excel アップロード、Nest.js REST API・MariaDB スキーマ・Swagger、AWS EC2 + Docker + Nginx + PM2 でのデプロイ',
+    cases: [
+      {
+        title: '大容量テーブルの照会性能',
+        asIs: '1.4億件以上のテーブル照会に4〜6分かかる',
+        approach: 'インデックス最適化と統計テーブル設計により、照会のボトルネックを構造的に解消',
+        toBe: '照会 `4〜6分 → 5秒以内`（複雑な join でも10秒以内、`約50倍以上`）',
+      },
+      {
+        title: 'チャートの再レンダリング問題',
+        asIs: 'Recharts の再レンダリング時にアニメーションが繰り返される問題',
+        approach: 'useMemo + React.memo で不要な再レンダリングを遮断',
+        toBe: '再レンダリング時のアニメーション問題を解消',
+      },
+    ],
+    techStack: [
+      'React(Vite)',
+      'Nest.js',
+      'TypeScript',
+      'MariaDB',
+      'TanStack Query',
+      'Recoil',
+      'Docker',
+      'AWS EC2',
+      'Nginx',
+    ],
+  },
+  {
+    projectId: 'kiosk-app',
+    title: 'E社 生コン入庫管理キオスクアプリ',
+    company: 'ER Solution株式会社',
+    period: '2023.05 – 2023.06',
+    role: 'フロントエンド開発',
+    links: [],
+    scopeTags: ['1人開発'],
+    overview:
+      '生コン車両の運転手がキオスクで送り状を撮影すると入庫情報を案内する Android キオスクアプリを新規開発。外部 USB カメラ連携・送り状アップロード、入庫案内画面、一定時間無操作でメイン画面へ自動復帰、自動ログイン',
+    cases: [
+      {
+        title: 'キオスクのレンダリング性能',
+        asIs: 'React の再レンダリングによる性能低下',
+        approach: 'useCallback + React.memo でレンダリングを最適化',
+        toBe: '再レンダリングによる性能低下を解消',
+      },
+    ],
+    techStack: ['React Native', 'TypeScript', 'Redux', 'TanStack Query'],
+  },
+  {
+    projectId: 'eco-driving-cms',
+    title: 'J市 市内バス エコドライブ管理 CMS',
+    company: 'ER Solution株式会社',
+    period: '2023.03 – 2023.04',
+    role: 'フルスタック開発',
+    links: [],
+    scopeTags: ['FE・BE・DB 単独'],
+    cases: [
+      {
+        title: 'エコドライブ指標管理システムの構築',
+        asIs: 'バス運送会社の管理者が、運行データから急加速・急減速などのエコドライブ指標を確認できる CMS が必要',
+        approach:
+          '急加速・急減速・急な車線変更・急旋回の回数を Chart.js で可視化、管理者・運用者のロールベース権限と運送会社別のデータアクセス制御、複数バス・路線のマルチセレクト。Java Spring + eGovFrame REST API、MariaDB 設計、AWS EC2/RDS へのデプロイ',
+        toBe: 'フロントエンド・バックエンド・DB・デプロイを単独で構築',
+      },
+    ],
+    techStack: ['JSP', 'jQuery', 'Java', 'Spring', 'eGovFrame', 'MariaDB', 'Docker', 'AWS EC2/RDS'],
+  },
+  {
+    projectId: 'distribution-platform',
+    title: 'D社 B2B・B2C 流通 SCM・モバイルコマース',
+    company: 'ER Solution株式会社',
+    period: '2022.10 – 2023.06',
+    role: 'フロントエンド開発',
+    links: [],
+    scopeTags: ['FE メイン', 'SCM 100% · コマース 60%'],
+    overview:
+      'サプライヤーが登録した商品を販売者が仕入れ、自社のモバイルコマースやオープンマーケット（スマートストア・Gマーケット・オークション）で販売する B2B・B2C 流通プラットフォーム。サプライヤー・販売者・管理者向けの SCM 管理画面と、販売者参加型モバイルコマース Web App のフロントエンドを開発。Atomic Design・Git Flow を導入',
+    cases: [
+      {
+        title: 'ロール別の流通 SCM 管理画面の構築',
+        asIs: 'サプライヤー・販売者・管理者が、商品・在庫・注文・精算をそれぞれ異なる権限と視点で扱う B2B 流通管理画面が必要',
+        approach:
+          'Coupang の販売者管理画面を参考に画面構成を設計。サプライヤー — 商品登録・在庫管理、特定の販売者にのみ供給する指定販売、割引率と販売者を決めて短期間に集中販売するディール（販売者が申請 → サプライヤーが選択）。販売者 — 販売提案価格・最高/最低価格・評価・年代別購入者比率を確認して仕入れる供給商品マーケット。共通 — 注文/配送・クレーム/精算・会員・商品状況のダッシュボード、売上・決済手段・商品・販売者別の統計と Excel ダウンロード、精算予定・支払履歴の照会。管理者 — 販売商品の強制終了・解除',
+        toBe: '供給 → 仕入れ → 販売 → 精算へとつながる流通の流れを、ロール別の管理画面として実装',
+      },
+      {
+        title: '販売者参加型モバイルコマース Web App',
+        asIs: '一般ユーザーも販売者として参加し、仕入れた商品を宣伝・販売して手数料やリワードを得るモバイル専用コマースを、ネイティブアプリではなく WebView ベースの Web App で提供する必要',
+        approach:
+          'アプリで包む WebView 構成に合わせ、モバイル優先で全画面をパブリッシング — 個人・事業者販売者の登録分岐、ライブ配信タブ（チャット・クーポン・終了間近タイマー UI）、ひとり購入・みんなで購入のディールと共有リンクによる購入者募集ランキング・リワード、販売・動画レビュー・ディールのランキング、カート・注文/決済、キャッシュのチャージ・出金申請、販売者・購入者のマイページ。Editor.js による商品詳細登録、Intersection Observer + React Query の無限スクロール商品一覧',
+        toBe: '販売者の参加 → ライブ販売 → 共同購入ディール → ランキングリワードへとつながるコマースの流れを、モバイル Web App の画面として実装',
+      },
+      {
+        title: 'ネストしたポップアップの UX 改善',
+        asIs: 'ポップアップが4〜5個ネストする企画',
+        approach: 'ポップアップを1〜2個に減らし、詳細はページ遷移に変えるよう提案',
+        toBe: 'ネストしたポップアップ `4〜5個 → 1〜2個`',
+      },
+      {
+        title: '議事録による要件整理',
+        asIs: '会議で合意した変更が企画書に反映されず、会議のたびに前回の議論を確認し直すことが繰り返された',
+        approach:
+          'デザイナー・企画者との会議内容を議事録として要約・共有し、確定していない企画は開発チームが要件を整理しながら企画段階から参加',
+        toBe: '過去の議論を確認し直す時間を削減 · 空白になっていた企画を開発チーム主導で整理',
+      },
+    ],
+    techStack: ['React(CRA)', 'JavaScript', 'Redux Toolkit', 'React Query', 'React Router', 'Nginx'],
+  },
+  {
+    projectId: 'public-site-maintenance',
+    title: 'I公社 公式サイト保守',
+    company: 'ER Solution株式会社',
+    period: '2022.09 – 2023.09',
+    role: '保守',
+    links: [],
+    scopeTags: ['保守担当', '在職期間を通じて並行'],
+    cases: [
+      {
+        title: 'Web アクセシビリティ認証・セキュリティ点検への対応',
+        asIs: '公共機関として Web アクセシビリティ（WA）認証審査とペネトレーションテストへの対応が必要',
+        approach:
+          'Web アクセシビリティ基準への対応、ペネトレーションテスト結果に基づく脆弱性の修正・強化、JSP・Spring のレガシーページ構造の把握・改善。機能追加・修正・障害対応も並行',
+        toBe: '`WA 認証取得` · セキュリティ脆弱性を解消',
+      },
+    ],
+    techStack: ['JSP', 'jQuery', 'Java', 'Spring', 'eGovFrame', 'Oracle'],
+  },
+  {
+    projectId: 'cms-site',
+    title: 'S社 ユーザーサイト・管理者 CMS',
+    company: 'ER Solution株式会社',
+    period: '2022.07 – 2022.09',
+    role: 'フルスタック開発',
+    links: [],
+    scopeTags: ['フルスタック'],
+    overview:
+      'ユーザーサイト（JSP）と管理者 CMS（React）を新規構築。DB・プロジェクト構造の設計、Q&A 掲示板（MVC）、CMS からユーザーサイトのメニューを DB ベースで動的に管理、Container-Presenter パターン・メニュー別の権限管理、Spring Boot REST API・MySQL、AWS EC2/RDS へのデプロイ',
+    techStack: ['React', 'Redux', 'Material UI', 'JSP', 'jQuery', 'Java', 'Spring Boot', 'MySQL', 'AWS'],
   },
 ];

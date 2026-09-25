@@ -1,99 +1,107 @@
-import { ResumeProjectConfig } from '../types';
+import { ResumeEmployer, ResumeProjectConfig } from '../types';
+
+export const portfolioCareerEmployersEn: Record<string, ResumeEmployer> = {
+  'YRISM Inc.': {
+    period: '2024.08 – Present',
+    detail: 'Web Development Team · System Operations Manager (internal title) · Frontend Developer',
+  },
+  'Pinetechsoft Inc.': {
+    period: '2023.10 – 2024.05',
+    detail: 'Development Team 1 · Research Engineer · Frontend Developer',
+  },
+  'ER Solution Inc.': {
+    period: '2022.07 – 2023.09',
+    detail: 'Development Team 1 · Research Engineer · Full Stack Developer',
+  },
+};
 
 export const portfolioCareerProjectsEn: ResumeProjectConfig[] = [
   {
-    projectId: 'modetour-nextgen',
-    orderLabel: '1',
-    title: 'Modetour B2C/B2B Travel Platform Next-Gen Rebuild',
-    company: '(주) YRISM',
+    projectId: 'travel-platform-nextgen',
+    title: 'Company M — B2C/B2B Travel Platform Next-Gen Rebuild',
+    company: 'YRISM Inc.',
     period: '2024.08 – Present',
     role: 'Frontend Development',
-    links: [
-      { label: 'modetour.com', url: 'https://www.modetour.com' },
-      { label: 'elpis.modetour.co.kr', url: 'https://elpis.modetour.co.kr' },
-      { label: 'go.modetour.co.kr', url: 'https://go.modetour.co.kr' },
-      { label: 'gentlemonster.modetour.com', url: 'https://gentlemonster.modetour.com' },
-      { label: 'homeplus1.modetour.co.kr', url: 'https://homeplus1.modetour.co.kr' },
-    ],
-    problem:
-      'Rebuild the next-generation frontend while keeping the live as-is service running. At handover, critical flows such as payment and back-navigation (routing) were unreliable due to severe bugs and instability. The codebase suffered from deep props drilling and poor reuse—identical components were duplicated across pages, forcing repeated edits across multiple files and long debugging cycles. The operating surface was not one kind of site either: the B2C site itself; ~150 BP sites that share the B2C functional base and differ only in products offered and some customization; and ~150 fully custom ONBP sites (still growing) where agencies dictate entirely different screens and features. All three kinds had to be maintained for PC and mobile web alike. The apps are WebView wrappers, so their screens and behavior fall inside the frontend scope while the app shell is managed by an external vendor — every incident started with working out whether the cause sat in the WebView or the shell. Operating all of it the same way with a limited team was not viable. With component consolidation and a major version upgrade running in parallel, there was also no way to tell which sites a given change would affect. And as the team started using AI coding tools, generated code that did not understand the structure increasingly crossed layer boundaries.',
-    workSections: [
+    links: [],
+    scopeTags: ['FE team 3 → 5', 'Architecture co-designed with PL'],
+    cases: [
       {
-        title: '1) Service Stabilization (Legacy Bug Fixes)',
-        items: [
-          'Resolved **300+ issues** including critical bugs (payment failures, abnormal routing) and new feature work, restoring the service to a stable state',
-          'Diagnosed and fixed core flows one by one to restore service reliability',
-        ],
+        title: 'Stabilizing the legacy service',
+        asIs: 'At handover, core flows such as payment and back-navigation (routing) were unreliable enough to break',
+        approach: 'Diagnosed and fixed broken core flows one by one while handling ongoing feature work in parallel',
+        toBe: 'Resolved `400+ issues` · eliminated payment failures and abnormal routing, bringing the service to an operable state',
       },
       {
-        title: '2) Architecture & Structural Improvements',
-        items: [
-          '**Designed a one-source multi-site architecture** — load per-domain site metadata and inject site context into API headers, operating the ~150 BP sites that share a functional base with B2C from a single codebase',
-          '**Migrated to a Turborepo monorepo** — unified management of ~150 ONBP sites (still growing) whose customization scope is unpredictable, via shared-component extraction plus per-site build pipelines, with per-domain config separation and a yarn→pnpm migration',
-          '**Shared components + eliminated props drilling** — consolidated duplicated page-level components into shared modules, reducing change scope from 4 files to 1 per fix, shortening maintenance and debugging time, and reducing side effects and human error',
-          '**Adopted FSD architecture** with FE Model + Mapper pattern to minimize impact from backend API changes',
-        ],
+        title: 'Rebuilding core domains for next-gen',
+        asIs: 'Had to fully rebuild the PC and mobile core domains while keeping the as-is B2C/B2B service running, with security requirements the as-is system never addressed',
+        approach:
+          'Redesigned flights (booking, lookup, and payment flows on the Topas integration), tour passes (Klook integration, discovery, option selection, and booking UX), hotels (migrated search, filters, detail, and booking), promotions, discount conditions, and coupons (a structure that handles complex discount rules reliably on the frontend), B2B booking and management screens, and authentication (login, session, permissions). Introduced a new encryption/decryption module. Ran as-is B2C PC/mobile operations and feature work throughout the transition',
+        toBe: 'Core B2C·B2B PC/mobile domains moved to next-gen · as-is service kept stable throughout the transition',
       },
       {
-        title: '3) Performance Optimization',
-        items: [
-          '**Page load optimization** — combined SSG/SSR as appropriate and used TanStack Query caching to remove redundant API calls and duplicate loading; cleaned up unnecessary useEffect re-runs. Cut load time on the slowest pages to about one-third (Lighthouse mobile)',
-          '**Reduced build-to-deploy time** — diagnosed and removed pipeline inefficiencies and dead config that only increased build time; during the Next.js 12→15 upgrade, found that a leftover Babel config was disabling the SWC compile path and removed it, cutting build and dev server startup time; fixed misconfigured caches; applied Turborepo and Next.js build caches correctly; removed redundant check steps and duplicate `yarn install` runs. Improved build queues and caching to cut build-to-deploy from 30+ minutes to 12–15 minutes (~50–60% reduction)',
-        ],
+        title: 'Designing the multi-tenant operating model',
+        asIs: 'A limited team ran the B2C site, ~150 BP sites (same functional base, differing only in products and some customization), and ~150 fully custom ONBP sites (screens and features dictated per agency, still growing), all on both PC and mobile. The app is a WebView wrapper — screens and behavior are frontend scope, but an external vendor owns the app shell, so every incident began with working out whether the cause sat in the WebView or the shell',
+        approach:
+          'BP — a one-source multi-site setup that loads site metadata per domain at init and injects site context into API request headers. ONBP — a Turborepo monorepo that isolates custom and shared areas through shared-component extraction plus per-site build pipelines, with per-domain configs for custom elements and a yarn→pnpm migration',
+        toBe: '`300+` sites run from a single codebase · site growth no longer drives codebase or operating-cost growth',
       },
       {
-        title: '4) UI & Technical Debt Reduction',
-        items: [
-          '**Built an in-house UI library** — gradually removed antd to fix CSS animation jank and built a Modetour-specific UI library; replaced problematic libraries such as react-print and react-date with custom implementations',
-          '**Next.js 12→15 major upgrade** — performed incremental, zero-downtime migration including App Router and React 19 support',
-          'Zero-downtime migration from RTK Query→TanStack Query and Redux→Zustand; consolidated duplicated page logic; externalized hard-coded constants',
-        ],
+        title: 'Restructuring the code — consolidation, FSD, FE Model',
+        asIs: 'Heavy props drilling and components duplicated across pages meant one fix touched many files and debugging dragged on. Filter, booking, alert, and popup logic was scattered; strings were hard-coded; the frontend was tightly coupled to backend API specs',
+        approach:
+          'Introduced FSD. Consolidated duplicated components gradually alongside the rebuild, extracted scattered logic into shared modules, and replaced hard-coded strings with constants. Removed direct dependency on backend API models with an FE Model layer and Mapper pattern',
+        toBe: 'Same change `4 files → 1 file` · backend spec changes isolated per domain · fewer points for side effects and human error',
       },
       {
-        title: '5) Testing & Quality System',
-        items: [
-          '**Unit & integration** — Vitest 3 multi-project setup (the domain package and the B2C/ONBP shared packages) with React Testing Library covering business logic: the HTTP client, encryption/decryption, payment and booking utilities, and custom hooks. Test projects are split per package so only the affected scope needs to run',
-          '**E2E** — Playwright in a dedicated test workspace runs scenarios against remotely deployed environments, split by sheet and domain (B2C·BP·ONBP PC/MO) across production (legacy API) and the dev environment (FE Server/BFF). Real SSO integration and BFF probes verify actual auth and response paths rather than mocks, and I built a metadata-driven Testbed UI for execution and reporting that the team now uses',
-          '**Quality gates** — Husky enforces Biome plus Vitest on changed files at pre-commit, and build, typecheck, and the full test run at pre-push',
-          '**API contracts** — Zod/TypeBox generated from the OpenAPI spec links type checking and runtime validation to one source, surfacing the frontend impact of backend spec changes at compile time',
-          'Next steps: a CI test gate and broader page-level test coverage',
-        ],
+        title: 'Replacing the UI system',
+        asIs: 'antd, forced into the codebase, caused global style conflicts, broken UI, and janky CSS animations. react-print delayed the print view by tens of seconds on large pages; react-date was riddled with bugs',
+        approach:
+          'Phased out antd and built a dedicated UI library (Core UI), with a playground for component-level validation. Implemented iframe-based printing in-house and replaced react-date with react-day-picker',
+        toBe: 'Consistent design with style side effects removed at the root · print delay (tens of seconds) eliminated · stable date-picking UX',
       },
       {
-        title: '6) AI Development System — Agent Context Engineering',
-        items: [
-          'As the monorepo grew, AI coding agents repeatedly produced code that crossed layer boundaries or ignored conventions. Rather than adding more tools, I chose to **design the context the agents read**',
-          '**Single source of context** — a root AGENTS.md as the single source, with Cursor, Claude, Gemini, and Codex entry points aligned to it so different tools follow the same boundaries and conventions, preventing rule documents from forking per tool and drifting apart',
-          '**Injecting package boundaries** — per-package AGENTS.md files inject the roles of the API contract package (definitions only), the browser adapter, and the HTTP core, plus the B2C ↔ ONBP cross-import ban, scoped to the working path. Architecture violations that people used to catch in review are blocked at generation time',
-          '**Convention guardrails** — human-facing convention guides kept separate from agent-facing Cursor Skills and path-scoped Rules. #region structure, Named Export, Biome, and event rules are injected only when editing TS/TSX to reduce wasted context, and bulk legacy refactors are explicitly excluded to prevent unintended large-scale changes',
-          '**E2E feedback loop** — Metadata on Playwright scenarios auto-generates a registry, supporting both CLI and Testbed UI execution per sheet (legacy/fe-server) and domain. Failure causes, fix options, and re-verification steps are written up so a follow-up agent can pick them up',
-          "**Onboarding** — documented the whole system as the team's shared way of working, so new members can work inside the boundaries before they have learned the project structure",
-        ],
+        title: 'Zero-downtime Next.js 12→15 and state-management migration',
+        asIs: 'Built on Next.js 12 with RTK Query and Redux; a large live service that could not be migrated in one go',
+        approach:
+          'Migrated incrementally by domain and page (including App Router and React 19). Moved RTK Query→TanStack Query and Redux→Zustand while running both side by side. During the upgrade, found that a leftover Babel config was disabling the SWC compile path and removed it',
+        toBe: 'Major upgrade and state-management migration completed without downtime · faster builds and dev server startup after removing Babel',
       },
       {
-        title: '7) Team Productivity & Collaboration',
-        items: [
-          'On a team that started the next-gen rebuild with 3 frontend engineers and now numbers 5, I designed the architecture and working standards together with the PL, and stand in for the lead on scheduling, issue distribution, and technical decisions when they are absent',
-          '**Established technical standards** — defined and documented FSD architecture, the FE Model + Mapper pattern, component consolidation criteria, and branch/deployment rules',
-          '**Judgment call on deployment strategy** — concluded that the build-phase release train and integration-branch model no longer fit the frequent hotfixes and emergency deploys that followed launch, and proposed and applied a more flexible manual deployment strategy',
-        ],
+        title: 'Redesigning the deployment pipeline and build',
+        asIs: 'A single 8-pipeline B2C setup with 30+ minute build-to-deploy. Config that only added build time, misconfigured caches, redundant check steps and duplicate `yarn install` runs. Builds ran inside Docker (Yarn workspaces)',
+        approach:
+          '*(Hands-on)* Split into 20+ pipelines across B2C·BP·ONBP × 4 environments with an orchestrator pipeline and selective deploys, plus a new standby pipeline. Separated Turbo prune + host-side pnpm/turbo builds from Docker packaging, added a buildx registry cache, and fixed Turborepo and Next build caches. Authored and advanced Helm charts (topologySpreadConstraints, readinessProbe, CPU/memory HPA) with deployment verification via `kubectl rollout status`. *(With the infrastructure team)* Azure AKS → Azure Local ARC migration, active/standby failover for disaster recovery, Akamai CDN, infrastructure security, Pod operations and monitoring, server log analysis',
+        decision:
+          'Judged that the build-phase release train and integration-branch model no longer fit the frequent hotfixes and emergency deploys after launch, and proposed and applied a more flexible manual deployment strategy',
+        toBe: 'Build-to-deploy `30+ min → 12–15 min` (~50–60% faster) · pipelines `8 → 20+` with per-service, per-environment deploys',
       },
-    ],
-    outcomes: [
-      'Took a service whose core flows (payment, routing) did not work at handover and **brought it to an operable state after resolving 300+ issues**',
-      'Kept the site count growing past 300 **without that growth translating into a larger codebase or operating cost**',
-      '**Cut deployment time by ~50–60%**; key page load times down to about one-third (Lighthouse mobile)',
-      'Completed major version upgrades and state-management migration **without service downtime**, balancing stability with a modern stack',
-    ],
-    extraSections: [
       {
-        title: 'CI/CD & Infrastructure Redesign',
-        body: 'Redesigned the deployment pipeline and infrastructure alongside the next-gen migration. Owned FE deployment pipelines and Helm; partnered with the infrastructure team on CDN, security, and cluster operations.',
-        items: [
-          '**Hands-on** — designed and built FE deployment pipelines (an orchestrator pipeline splitting a single 8-pipeline B2C setup into 20+ pipelines across B2C·BP·ONBP × 4 environments, with selective per-service and per-environment deploys), authored and hardened Helm charts (topologySpreadConstraints, readinessProbe, CPU/memory-based HPA), deployment verification via `kubectl rollout status`, and a new standby pipeline',
-          '**Build process improvements** — moved from in-Docker builds (Yarn workspaces) to a split structure of Turbo prune + host-side pnpm/turbo build + Docker packaging, and introduced a buildx registry cache',
-          '**With infrastructure team** — Azure AKS → Azure Local ARC (Connected K8s) migration, active/standby failover for disaster recovery, Akamai CDN, infrastructure security, Pod operations and monitoring, server log analysis',
-        ],
+        title: 'Page load optimization',
+        asIs: 'Redundant API calls and duplicate loading, and useEffect hooks re-running unnecessarily',
+        approach:
+          'Combined SSG and SSR to fit each page, added TanStack Query caching, and cleaned up unnecessary useEffect calls',
+        toBe: 'Slowest pages now load in `about one-third` of the time (Lighthouse mobile)',
+      },
+      {
+        title: 'Testing and quality system',
+        asIs: 'Component consolidation and a major version upgrade were running in parallel with no way to tell which sites a change would affect. QA relied on people logging in and checking by hand, with no dedicated test-automation staff',
+        approach:
+          'Vitest 3 multi-project setup (the domain package and B2C/ONBP shared packages) with React Testing Library covering the HTTP client, encryption/decryption, payment and booking utilities, and custom hooks, runnable per package. Playwright E2E runs remotely against production (legacy API) and the dev environment (FE Server/BFF), split by sheet and domain (B2C·BP·ONBP PC/MO) — real SSO and BFF probes verify actual paths, with a purpose-built Testbed UI for execution and reporting. Husky pre-commit (Biome + Vitest on changed files) and pre-push (build, typecheck, full test run). Zod/TypeBox generated from the OpenAPI spec',
+        toBe: 'Regressions from consolidation and upgrades caught at commit and push · frontend impact of backend spec changes surfaced at compile time',
+      },
+      {
+        title: 'Context and harness engineering for AI agents',
+        asIs: 'As the monorepo grew, AI agents repeatedly produced code that crossed layer boundaries or ignored conventions — caught only by people in review',
+        approach:
+          '*(Context)* Made a root AGENTS.md the single source and aligned the Cursor, Claude, Gemini, and Codex entry points to it so tool-specific rule docs never diverge. Per-package AGENTS.md files inject the roles of the API contract, browser adapter, and HTTP core layers plus the B2C↔ONBP cross-import ban, scoped to the working path. Kept human-facing guides separate from Cursor Skills and path-scoped Rules — #region, Named Export, Biome, and event rules are injected only when editing TS/TSX, and bulk legacy refactors are out of scope. *(Verification harness)* Agent output must pass the same Husky quality gates as human code (Biome and Vitest on changed files; build, typecheck, and full tests) before it lands. Playwright scenario metadata auto-generates a registry for CLI and Testbed UI runs, and failure causes, fix options, and re-verification steps are written up for follow-up agent work',
+        toBe: 'Architecture violations and regressions blocked at two points — generation (context) and commit/push (verification harness) · new members work inside the boundaries before they know the structure',
+      },
+      {
+        title: 'Establishing team working standards',
+        asIs: 'No documentation or onboarding, so new members were slow to understand the project',
+        approach:
+          'Defined and documented FSD architecture, the FE Model + Mapper pattern, component consolidation criteria, and branch/deployment rules together with the PL, and introduced a documentation automation tool. Stood in for the PL on scheduling, issue distribution, and technical decisions when absent',
+        toBe: 'Architecture and working standards established as shared team documentation · a clear path to learn the project structure and deployment rules',
       },
     ],
     techStack: [
@@ -119,106 +127,272 @@ export const portfolioCareerProjectsEn: ResumeProjectConfig[] = [
       'Helm',
       'Kubernetes',
       'Docker',
-      'Git',
     ],
   },
   {
-    projectId: 'uteas',
-    orderLabel: '2',
-    title: 'Fine Dust Emissions Query & Visualization Service (UTEAS)',
-    company: '(주) ER Solution',
-    period: '2023.06 – 2023.07',
-    role: 'Full-Stack Development (Solo FE·BE·DB)',
-    links: [],
-    problem:
-      'Greenfield development of an environmental monitoring service to query and visualize fine dust emissions by road, region, and time. **Queries against tables with 140M+ rows** took 4–6 minutes, creating a severe performance bottleneck.',
-    workSections: [
-      {
-        title: 'Key Contributions',
-        items: [
-          'Owned FE·BE·DB design end to end',
-          '**Index optimization and aggregate table design** to structurally resolve large-scale query bottlenecks',
-          'Implemented Recharts analytics, v-world-map visualization, and Excel upload',
-          'Designed Nest.js APIs and MariaDB schema; deployed on AWS EC2',
-        ],
-      },
-    ],
-    outcomes: [
-      '**140M-row queries: 4–6 minutes → under 5 seconds (under 10 seconds for complex joins, ~50× improvement)**',
-      'Delivered frontend, backend, and infrastructure solo, demonstrating end-to-end ownership',
-    ],
-    techStack: ['React(Vite)', 'Nest.js', 'TypeScript', 'MariaDB', 'TanStack Query', 'Docker', 'AWS EC2'],
-  },
-  {
-    projectId: 'lhat',
-    orderLabel: '3',
-    title: 'Philippines Lahat Platform Back Office & Web Apps',
-    company: '(주) Pinetechsoft',
-    period: '2023.10 – 2024.05',
+    projectId: 'visa-center',
+    title: 'Company V — Overseas Visa Center Web Service',
+    company: 'YRISM Inc.',
+    period: '2025.02 – 2025.03',
     role: 'Frontend Development',
     links: [],
-    problem:
-      'Built and operated back offices and consumer web apps across multiple domains (Mall·Food·Store·Veterinary).',
-    workSections: [
+    scopeTags: ['Solo FE'],
+    overview:
+      'Built a new visa application and information web service for a visa center in Qingdao, China. Screens and API integration on Next.js 15 App Router with Zustand and TanStack Query, responsive UI with Tailwind CSS 4, Korean-language pages, deployed on Azure',
+    techStack: ['Next.js 15', 'TypeScript', 'Zustand', 'TanStack Query', 'axios', 'Tailwind CSS 4', 'Azure'],
+  },
+  {
+    projectId: 'commerce-backoffice',
+    title: 'Philippine Commerce & Delivery Platform Back Office (in-house service)',
+    company: 'Pinetechsoft Inc.',
+    period: '2024.02 – 2024.05',
+    role: 'Frontend Development',
+    links: [],
+    scopeTags: ['Mall Admin solo'],
+    cases: [
       {
-        title: 'Major Projects',
-        items: [
-          '**Lahat Mall Admin** — solo build from architecture through API integration for admin back office supporting new product sales. Firebase auth; product·option·category·event·order·review management; infinite-scroll event product picker; i18n',
-          '**Lahat Food / Store Admin** — added base and distance-based delivery fee policies; react-hook-form + Zod validation; owner/customer cost-share UI',
-          '**Zootopia (Veterinary)** — built reservation admin and online booking web app. Create·view·cancel reservations; manage up to 10 pets; Email·SNS login via NextAuth; FCM push notifications; marketing site',
-        ],
+        title: 'Building the Mall back office',
+        asIs: 'Adding product sales (Mall) to the platform required a new management back office',
+        approach:
+          'Owned structure design, shared components, and REST API integration alone. Firebase Authentication admin login, product CRUD, automatic option generation (comma input), search and detail, category drag & drop and reordering, infinite-scroll product selection per event, delivery fees, reviews (replies, hiding), order search and processing, and i18n',
+        toBe: 'Mall back office delivered solo',
       },
-    ],
-    outcomes: [
-      'Completed multiple services with **solo ownership** from design through deployment',
-      'Gained back-office and web app experience across auth, payments, notifications, and other core domains',
+      {
+        title: 'Extending delivery-fee policies (Food·Store)',
+        asIs: 'The live Food and Store back offices needed delivery-fee policies (base and distance-based, owner/customer cost split)',
+        approach:
+          'Base and distance-based fee settings with API integration, UI for combined owner/customer/partial-owner cost policies, react-hook-form + Zod validation, integration with the existing JWT-decoding and encrypted auth flow, and Store-specific requirements kept separate from Food. Fixed bugs and filled gaps in Food Admin alongside',
+        toBe: 'Service-specific delivery-fee policies live in the Food and Store back offices',
+      },
     ],
     techStack: [
       'Next.js',
       'TypeScript',
-      'Zustand/Jotai',
+      'Zustand',
+      'Jotai',
       'TanStack Query',
       'MUI',
+      'react-hook-form',
+      'Zod',
       'Firebase',
       'AWS Amplify',
-      'NextAuth',
-      'Zod',
     ],
   },
   {
-    projectId: 'er-platform',
-    orderLabel: '4',
-    title: 'ER Solution — Other Platform & Public Sector Projects',
-    company: '(주) ER Solution',
-    period: '2022.07 – 2023.09',
-    role: 'Full-Stack Development Engineer',
+    projectId: 'vet-reservation',
+    title: 'Philippine Veterinary Booking Platform (in-house service)',
+    company: 'Pinetechsoft Inc.',
+    period: '2023.10 – 2024.02',
+    role: 'Frontend Development',
     links: [],
-    problem: 'Primarily frontend-focused role spanning full-stack and mobile delivery.',
-    workSections: [
+    scopeTags: ['Solo', 'Admin · Booking Web App · Landing site'],
+    cases: [
       {
-        title: 'Major Projects',
-        items: [
-          '**Dada Pick / Dada Place** — greenfield B2B·B2C distribution management web app and B2C mall. Joined from planning; solo frontend build; Editor.js product editor, infinite scroll, Atomic Design',
-          '**Jeonju Economic Driving CMS** — city bus economic driving metrics admin. Role-based access; Chart.js operations dashboards; Spring + eGovFrame API and MariaDB design with AWS deployment (full-stack)',
-          '**Eugene Ready-Mix Receiving** — Android kiosk app for invoice capture. External camera integration, kiosk UX, React rendering optimization',
-          '**Pet Patrol** — real-time walk-tracking iOS native app (Swift/SwiftUI) with Naver Map live route and distance display',
-          '**Incheon Port Security Corporation** — official site maintenance; web accessibility (WA) certification support and pass; penetration-test vulnerability remediation',
-        ],
+        title: 'Moving offline bookings online',
+        asIs: 'Veterinary bookings were handled mostly offline',
+        approach:
+          'Booking web app — create, view, and cancel bookings, manage up to 10 pets, FCM push on Web/iOS/Android. Clinic admin — unavailable-date calendar, user push on booking confirmation or cancellation, user lookup and search, sign-up and withdrawal dashboard',
+        toBe: 'Booking web app and clinic admin built solo, moving bookings online',
+      },
+      {
+        title: 'Overhauling the login system',
+        asIs: 'Requirements changed to unify email and social accounts, forcing a major rework of the login process with many side effects',
+        approach:
+          'Led a full overhaul of the login system from the frontend using Firebase — Firebase Email + Google/Facebook/Apple/Kakao unified login (NextAuth)',
+        toBe: 'Moved to a unified email and social login system',
+      },
+      {
+        title: 'Preventing misdirected push notifications',
+        asIs: 'The existing FCM token handling could send push notifications to the wrong user',
+        approach: 'Restructured FCM tokens to be managed per device',
+        toBe: 'Push notifications no longer reach the wrong user',
+      },
+      {
+        title: 'Landing-site slider bug',
+        asIs: 'Swiper showed images incorrectly when the viewport was resized',
+        approach:
+          'Removed the library and implemented fade in/out transitions directly. Responsive mobile and tablet layout, clinic location on Google Maps, notice list and detail pages',
+        toBe: 'Slider bug resolved · mobile-first landing site delivered',
       },
     ],
-    outcomes: [],
     techStack: [
-      'React',
       'Next.js',
       'TypeScript',
-      'Redux',
-      'Java/Spring',
-      'eGovFrame',
-      'Nest.js',
-      'React Native',
-      'Swift',
-      'MariaDB',
-      'AWS',
+      'Jotai',
+      'MUI',
+      'Firebase',
+      'NextAuth',
+      'react-hook-form',
+      'Yup',
+      'AWS Amplify',
+      'Vercel',
     ],
+  },
+  {
+    projectId: 'patrol-app',
+    title: 'Dog Patrol Activity iOS App',
+    company: 'ER Solution Inc.',
+    period: '2023.08',
+    role: 'iOS Development',
+    links: [],
+    scopeTags: ['Solo'],
+    overview:
+      'Added real-time patrol (walk) tracking to an existing pet-care web app and moved it to a native iOS app. Real-time route, time, and distance on Naver Maps, map markers for photo locations, and a map capture saved as a patrol log at the end',
+    cases: [
+      {
+        title: 'Resuming a patrol after a force quit',
+        asIs: 'A new requirement: patrols must continue even after the app is force-quit. Elapsed time was calculated stopwatch-style',
+        approach: 'Restructured the project and changed elapsed time to (current time − start time + accumulated time)',
+        toBe: 'Patrols resume after the app is force-quit',
+      },
+    ],
+    techStack: ['Swift', 'SwiftUI', 'Realm DB'],
+  },
+  {
+    projectId: 'emission-dashboard',
+    title: 'Air Pollution Emissions Query & Visualization System',
+    company: 'ER Solution Inc.',
+    period: '2023.06 – 2023.07',
+    role: 'Full Stack Development',
+    links: [],
+    scopeTags: ['FE·BE·DB solo'],
+    overview:
+      'A service for querying and visualizing fine-dust emissions by road, region, and time. Recharts statistics and v-world-map maps, querying and filtering, Excel upload, Nest.js REST API with a MariaDB schema and Swagger, deployed on AWS EC2 with Docker, Nginx, and PM2',
+    cases: [
+      {
+        title: 'Large-table query performance',
+        asIs: 'Queries on a 140M+ row table took 4–6 minutes',
+        approach: 'Removed the bottleneck structurally with index optimization and statistics-table design',
+        toBe: 'Queries `4–6 min → under 5 sec` (under 10 sec for complex joins, `~50×+`)',
+      },
+      {
+        title: 'Chart re-rendering issue',
+        asIs: 'Recharts replayed its animations on every re-render',
+        approach: 'Blocked unnecessary re-renders with useMemo and React.memo',
+        toBe: 'Re-render animation issue resolved',
+      },
+    ],
+    techStack: [
+      'React(Vite)',
+      'Nest.js',
+      'TypeScript',
+      'MariaDB',
+      'TanStack Query',
+      'Recoil',
+      'Docker',
+      'AWS EC2',
+      'Nginx',
+    ],
+  },
+  {
+    projectId: 'kiosk-app',
+    title: 'Company E — Ready-Mix Concrete Intake Kiosk App',
+    company: 'ER Solution Inc.',
+    period: '2023.05 – 2023.06',
+    role: 'Frontend Development',
+    links: [],
+    scopeTags: ['Solo'],
+    overview:
+      'A new Android kiosk app: ready-mix truck drivers photograph their delivery slip at the kiosk and receive intake guidance. External USB camera integration and slip upload, intake guidance screen, automatic return to the home screen after inactivity, and auto-login',
+    cases: [
+      {
+        title: 'Kiosk rendering performance',
+        asIs: 'Performance degraded due to React re-renders',
+        approach: 'Optimized rendering with useCallback and React.memo',
+        toBe: 'Re-render performance issues resolved',
+      },
+    ],
+    techStack: ['React Native', 'TypeScript', 'Redux', 'TanStack Query'],
+  },
+  {
+    projectId: 'eco-driving-cms',
+    title: 'City J — Bus Eco-Driving Management CMS',
+    company: 'ER Solution Inc.',
+    period: '2023.03 – 2023.04',
+    role: 'Full Stack Development',
+    links: [],
+    scopeTags: ['FE·BE·DB solo'],
+    cases: [
+      {
+        title: 'Building the eco-driving metrics system',
+        asIs: 'Bus operators’ administrators needed a CMS to review eco-driving metrics such as rapid acceleration and braking from bus operating data',
+        approach:
+          'Chart.js visualization of rapid acceleration, braking, lane changes, and turns; role-based access for administrators and operators with per-operator data access control; multi-select for buses and routes. Java Spring + eGovFrame REST API, MariaDB design, deployed on AWS EC2/RDS',
+        toBe: 'Frontend, backend, DB, and deployment delivered solo',
+      },
+    ],
+    techStack: ['JSP', 'jQuery', 'Java', 'Spring', 'eGovFrame', 'MariaDB', 'Docker', 'AWS EC2/RDS'],
+  },
+  {
+    projectId: 'distribution-platform',
+    title: 'Company D — B2B·B2C Distribution SCM & Mobile Commerce',
+    company: 'ER Solution Inc.',
+    period: '2022.10 – 2023.06',
+    role: 'Frontend Development',
+    links: [],
+    scopeTags: ['FE lead', 'SCM 100% · Commerce 60%'],
+    overview:
+      'A B2B·B2C distribution platform where sellers source products listed by suppliers and sell them on the platform’s own mobile commerce app and open marketplaces (Smart Store, Gmarket, Auction). Built the frontend of the SCM admin for suppliers, sellers, and administrators and of the seller-participation mobile commerce web app. Adopted Atomic Design and Git Flow',
+    cases: [
+      {
+        title: 'Building a role-based distribution SCM admin',
+        asIs: 'Suppliers, sellers, and administrators needed a B2B distribution admin to handle products, inventory, orders, and settlement with different permissions and perspectives',
+        approach:
+          'Designed the screen structure with Coupang’s seller admin as a reference. Suppliers — product listing and inventory, designated sales that supply only specific sellers, and short-term deals with a set discount and seller (sellers apply → supplier chooses). Sellers — source from a supply marketplace showing proposed price, max/min price, ratings, and buyer age breakdown. Shared — dashboards for orders/shipping, claims/settlement, members, and products; statistics by revenue, payment method, product, and seller with Excel export; expected and paid settlement lookup. Administrators — force-ending and releasing listed products',
+        toBe: 'The supply → sourcing → sales → settlement flow implemented as role-based admin screens',
+      },
+      {
+        title: 'Seller-participation mobile commerce web app',
+        asIs: 'A mobile-only commerce service where ordinary users join as sellers, promote sourced products, and earn commissions and rewards — delivered as a web app wrapped in a native WebView rather than a native app',
+        approach:
+          'Published the full UI mobile-first for the WebView wrapper — individual vs. business seller sign-up, a live-broadcast tab (chat, coupons, closing-soon timer UI), solo and group-buy deals with share-link buyer recruiting and reward rankings, sales, video-review, and deal rankings, cart and checkout, cash top-up and withdrawal requests, and seller and buyer my pages. Product detail registration with Editor.js and infinite-scroll product lists with Intersection Observer + React Query',
+        toBe: 'A commerce flow of seller onboarding → live selling → group-buy deals → ranking rewards delivered as mobile web app screens',
+      },
+      {
+        title: 'Reducing nested popups',
+        asIs: 'The plan called for 4–5 nested popups',
+        approach: 'Proposed cutting popups to 1–2 and moving detail views to page transitions',
+        toBe: 'Nested popups `4–5 → 1–2`',
+      },
+      {
+        title: 'Organizing requirements through meeting notes',
+        asIs: 'Changes agreed in meetings were not reflected in the planning documents, so every meeting started by re-confirming earlier decisions',
+        approach:
+          'Summarized and shared meeting notes with designers and planners, and had the dev team organize requirements for unfinished plans, joining from the planning stage',
+        toBe: 'Less time spent revisiting past discussions · gaps in the plan filled by the dev team',
+      },
+    ],
+    techStack: ['React(CRA)', 'JavaScript', 'Redux Toolkit', 'React Query', 'React Router', 'Nginx'],
+  },
+  {
+    projectId: 'public-site-maintenance',
+    title: 'Public Corporation I — Official Website Maintenance',
+    company: 'ER Solution Inc.',
+    period: '2022.09 – 2023.09',
+    role: 'Maintenance',
+    links: [],
+    scopeTags: ['Maintenance owner', 'Throughout tenure'],
+    cases: [
+      {
+        title: 'Web accessibility certification and security review',
+        asIs: 'The public-sector site had to pass a web accessibility (WA) certification audit and a penetration test',
+        approach:
+          'Met web accessibility standards, patched and hardened vulnerabilities found in the penetration test, and mapped and improved legacy JSP/Spring pages. Handled feature changes and incident response alongside',
+        toBe: '`WA certification passed` · security vulnerabilities resolved',
+      },
+    ],
+    techStack: ['JSP', 'jQuery', 'Java', 'Spring', 'eGovFrame', 'Oracle'],
+  },
+  {
+    projectId: 'cms-site',
+    title: 'Company S — User Site & Admin CMS',
+    company: 'ER Solution Inc.',
+    period: '2022.07 – 2022.09',
+    role: 'Full Stack Development',
+    links: [],
+    scopeTags: ['Full stack'],
+    overview:
+      'Built a new user site (JSP) and admin CMS (React). DB and project structure design, a Q&A board (MVC), DB-driven management of the user site menu from the CMS, Container-Presenter pattern with per-menu permissions, Spring Boot REST API with MySQL, deployed on AWS EC2/RDS',
+    techStack: ['React', 'Redux', 'Material UI', 'JSP', 'jQuery', 'Java', 'Spring Boot', 'MySQL', 'AWS'],
   },
 ];

@@ -253,7 +253,10 @@ dialog::backdrop {
     print-color-adjust: exact;
   }
 
-  .no-print {
+  .no-print,
+  /* dev 서버에서만 뜨는 TanStack Query Devtools 버튼이 PDF에 찍히지 않도록 */
+  .tsqd-parent-container,
+  .tsqd-open-btn-container {
     display: none !important;
   }
 
@@ -299,9 +302,16 @@ dialog::backdrop {
   }
 
   .resume-project > header,
-  .resume-section > h2 {
+  .resume-section > h2,
+  .resume-employer {
     break-after: avoid;
     page-break-after: avoid;
+  }
+
+  /* 사례(AS-IS → TO-BE) 하나는 페이지 경계에서 쪼개지지 않게 */
+  .resume-case {
+    break-inside: avoid;
+    page-break-inside: avoid;
   }
 
   .resume-project {

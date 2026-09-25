@@ -17,7 +17,7 @@ export const portfolioSkillsMock: SkillsConfig = {
         'react-hook-form',
         'Zod',
         'Vite',
-        'Next Auth',
+        'NextAuth',
       ],
     },
     {

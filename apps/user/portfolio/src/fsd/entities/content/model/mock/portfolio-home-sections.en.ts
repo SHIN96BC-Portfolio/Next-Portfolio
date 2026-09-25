@@ -15,7 +15,7 @@ export const portfolioHomeSectionsEn: HomeSectionGetRes[] = [
     isActive: true,
     config: {
       name: 'Byeongcheol Shin',
-      title: 'Frontend Developer · 5 Years',
+      title: 'Frontend Developer · 4+ Years',
       tagline: 'A developer who keeps asking questions to find better directions',
       links: [
         { type: 'github', label: 'GitHub', url: 'https://github.com/SHIN96BC' },
@@ -38,9 +38,9 @@ export const portfolioHomeSectionsEn: HomeSectionGetRes[] = [
     displayOrder: 1,
     isActive: true,
     config: {
-      body: `Frontend developer with 5 years of experience, specializing in **Next.js-based web services**. I have delivered both greenfield builds and legacy-to-next-gen migrations across SI, startups, and travel platforms.
+      body: `Frontend developer with 4+ years of experience, specializing in **Next.js-based web services**. I have delivered both greenfield builds and legacy-to-next-gen migrations across SI, startups, and travel platforms.
 
-Currently at Modetour's B2C/B2B platform, running as-is operations alongside a full next-gen rebuild. I designed and implemented the **multi-tenant architecture** that operates ~300 BP/ONBP sites from a single Turborepo monorepo, completed the Next.js 12→15 major upgrade and state management migration with zero downtime, and personally built everything from the **FE deployment pipeline and Helm charts** to the **context system that keeps AI coding agents inside the monorepo's architectural boundaries** — now the team standard.
+Currently on Company M’s B2C/B2B travel platform, running as-is operations alongside a full next-gen rebuild. I designed and implemented the **multi-tenant architecture** that operates ~300 BP/ONBP sites from a single Turborepo monorepo, completed the Next.js 12→15 major upgrade and state management migration with zero downtime, and personally built everything from the **FE deployment pipeline and Helm charts** to the **context and verification harness that keep AI coding agents inside the monorepo's architectural boundaries** — now the team standard.
 
 Frontend-first, but equally comfortable with Java/Spring and Nest.js backends, DB design, and AWS/Azure infrastructure, delivering products end-to-end. My strength is **finding and removing structural bottlenecks**, not just shipping features.`,
     },
@@ -59,7 +59,7 @@ Frontend-first, but equally comfortable with Java/Spring and Nest.js backends, D
 
 · **Large-scale refactoring & architecture migration** — Experience rebuilding legacy services into next-gen structures with zero downtime (Next.js major upgrades, monorepo migration, state management migration)
 
-· **Performance optimization** — Structurally diagnosing large-data query and rendering bottlenecks, improving by orders of magnitude
+· **Performance optimization** — Structurally diagnosing large-data query bottlenecks for up to ~50× gains, and removing page-load and re-render bottlenecks
 
 · **Full-stack & infrastructure** — Frontend-first, spanning Java/Spring·Nest.js backends through FE deployment pipelines and Helm chart design across deployment and operations
 
@@ -69,19 +69,19 @@ Frontend-first, but equally comfortable with Java/Spring and Nest.js backends, D
 
 · **Unified 300+ multi-tenant sites into a single monorepo** — Operate and deploy ~150 shared-base BP sites plus ~150 fully custom ONBP sites per agency (still growing) from a single Turborepo codebase
 
-· **Stabilized legacy services plagued by critical payment & routing bugs** — Resolved 300+ issues including payment failures and abnormal routing, significantly improving service reliability
+· **Stabilized legacy services plagued by critical payment & routing bugs** — Resolved 400+ issues including payment failures and abnormal routing, significantly improving service reliability
 
 · **140M-row table queries: 4–6 min → under 5 sec (~50×+ improvement)** — Eliminated query bottlenecks with index and statistics table design
 
 · **Designed and built the FE deployment pipeline and Helm charts** — Restructured into 20+ pipelines across multi-service (B2C·BP·ONBP) × 4 environments; advanced Helm configuration (HPA, readinessProbe, node distribution). Azure Local ARC migration and DR failover done in collaboration with the infrastructure team. Build-to-deploy 30+ min → 12–15 min
 
-· **Cut key page load times to about one-third** — SSG/SSR mix, TanStack Query caching, and removal of unnecessary useEffect calls (Lighthouse mobile)
+· **Cut the slowest page loads to about one-third** — SSG/SSR mix, TanStack Query caching, and removal of unnecessary useEffect calls (Lighthouse mobile)
 
 · **Led Next.js 12→15 major upgrade** — Incremental migration including App Router and React 19 with zero service interruption
 
-· **Built the testing and quality system** — Vitest unit and integration tests plus Playwright E2E against remotely deployed environments, with a purpose-built Testbed for execution and reporting. Husky quality gates block regressions during component consolidation and major version upgrades
+· **Built the testing and quality system** — To supplement manual QA, Vitest unit and integration tests plus Playwright E2E against remotely deployed environments, with a purpose-built Testbed for execution and reporting. Husky quality gates block regressions during component consolidation and major version upgrades
 
-· **Built a context system for AI coding agents** — Encoded monorepo architectural boundaries (API contract / adapter / HTTP layer separation, B2C↔ONBP isolation) into AGENTS.md and path-scoped Rules so agents cannot cross layers. Standardized as shared context across Cursor, Claude, Gemini, and Codex, with a loop that feeds E2E failures back into follow-up work`,
+· **Built a context and verification harness for AI agents** — Encoded monorepo architectural boundaries (API contract / adapter / HTTP layer separation, B2C↔ONBP isolation) into AGENTS.md and path-scoped Rules to block violations at generation time, and required agent output to pass Biome·Vitest·Playwright quality gates before it lands. Standardized as shared context across Cursor, Claude, Gemini, and Codex, with E2E failures fed back into follow-up work`,
     },
   },
   {
@@ -116,7 +116,7 @@ Frontend-first, but equally comfortable with Java/Spring and Nest.js backends, D
           department: 'Web Development Team',
           position: 'Manager',
           role: 'Frontend Developer',
-          description: 'Next-gen Modetour service development and operations',
+          description: 'Next-gen development and operations for Company M’s travel platform',
           isDevRole: true,
         },
         {
@@ -127,7 +127,7 @@ Frontend-first, but equally comfortable with Java/Spring and Nest.js backends, D
           department: 'Development Team 1',
           position: 'Research Engineer',
           role: 'Frontend Developer',
-          description: 'In-house platform services (Lahat, Zootopia) development',
+          description: 'In-house services (Philippine commerce & delivery, veterinary booking platforms) development',
           isDevRole: true,
         },
         {

@@ -22,7 +22,13 @@
     "labels": {
       "problem": "背景・課題",
       "outcomes": "成果",
-      "techStack": "技術スタック"
+      "techStack": "技術スタック",
+      "overview": "概要",
+      "asIs": "AS-IS",
+      "approach": "改善",
+      "decision": "判断",
+      "toBe": "TO-BE",
+      "tech": "技術"
     }
   },
   "settings": {
