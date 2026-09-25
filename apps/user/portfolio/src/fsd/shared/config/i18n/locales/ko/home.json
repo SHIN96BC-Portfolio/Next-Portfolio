@@ -22,7 +22,13 @@
     "labels": {
       "problem": "배경·문제",
       "outcomes": "성과",
-      "techStack": "기술 스택"
+      "techStack": "기술 스택",
+      "overview": "개요",
+      "asIs": "AS-IS",
+      "approach": "개선",
+      "decision": "판단",
+      "toBe": "TO-BE",
+      "tech": "기술"
     }
   },
   "settings": {

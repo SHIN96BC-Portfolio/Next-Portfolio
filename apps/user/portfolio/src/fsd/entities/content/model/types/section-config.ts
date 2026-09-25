@@ -88,6 +88,25 @@ export interface ResumeExtraSection {
   items?: string[];
 }
 
+/** 사례 단위 AS-IS → 개선 → TO-BE. toBe 안의 `inline code` 는 수치 배지로 렌더된다. */
+export interface ResumeCase {
+  title: string;
+  asIs: string;
+  approach: string;
+  decision?: string;
+  toBe: string;
+}
+
+/** 같은 소속 회사의 프로젝트들 위에 한 번 그려지는 회사 헤더 정보 */
+export interface ResumeEmployer {
+  period: string;
+  detail: string;
+}
+
+/**
+ * configSchemaVersion 1: problem · workSections · outcomes · extraSections
+ * configSchemaVersion 2: scopeTags · overview · cases (+ employer 로 회사별 그룹핑)
+ */
 export interface ResumeProjectConfig {
   projectId: string;
   orderLabel?: string;
@@ -96,11 +115,15 @@ export interface ResumeProjectConfig {
   period: string;
   role: string;
   links: ProjectLink[];
-  problem: string;
-  workSections: ResumeWorkSection[];
-  outcomes: string[];
+  problem?: string;
+  workSections?: ResumeWorkSection[];
+  outcomes?: string[];
   extraSections?: ResumeExtraSection[];
   techStack: string[];
+  employer?: ResumeEmployer;
+  scopeTags?: string[];
+  overview?: string;
+  cases?: ResumeCase[];
 }
 
 export interface SkillsConfig {

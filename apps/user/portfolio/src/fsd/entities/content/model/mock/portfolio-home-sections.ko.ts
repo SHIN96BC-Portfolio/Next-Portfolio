@@ -40,7 +40,7 @@ export const portfolioHomeSectionsKo: HomeSectionGetRes[] = [
     config: {
       body: `5년차 프론트엔드 개발자입니다. **Next.js 기반 웹 서비스**를 전문으로 하며, SI·스타트업·여행 플랫폼 등 다양한 환경에서 신규 구축과 레거시 차세대 전환을 모두 수행했습니다.
 
-현재 모두투어 B2C/B2B 플랫폼에서 as-is 운영과 차세대 재구축을 병행하며, 약 300개 BP/ONBP 사이트를 단일 Turborepo 모노레포로 운영하는 **멀티테넌트 구조**를 설계·구현했습니다. Next.js 12→15 메이저 버전업과 상태관리 전환을 서비스 무중단으로 완료했고, **FE 배포 파이프라인·Helm 차트 설계**부터 **AI 코딩 에이전트가 모노레포 아키텍처 경계를 지키도록 하는 컨텍스트 체계**까지 직접 구축해 팀 표준으로 운영 중입니다.
+현재 M사 B2C/B2B 여행 플랫폼에서 as-is 운영과 차세대 재구축을 병행하며, 약 300개 BP/ONBP 사이트를 단일 Turborepo 모노레포로 운영하는 **멀티테넌트 구조**를 설계·구현했습니다. Next.js 12→15 메이저 버전업과 상태관리 전환을 서비스 무중단으로 완료했고, **FE 배포 파이프라인·Helm 차트 설계**부터 **AI 코딩 에이전트가 모노레포 아키텍처 경계를 지키도록 하는 컨텍스트·검증 하네스**까지 직접 구축해 팀 표준으로 운영 중입니다.
 
 프론트엔드를 주력으로 하되 Java/Spring·Nest.js 백엔드, DB 설계, AWS·Azure 인프라까지 다루며 제품을 End-to-End로 완성해왔습니다. 기능 구현에 그치지 않고 **구조적 병목을 찾아 해결하는 것**을 강점으로 생각합니다.`,
     },
@@ -59,7 +59,7 @@ export const portfolioHomeSectionsKo: HomeSectionGetRes[] = [
 
 · **대규모 리팩터링·아키텍처 전환** — 레거시 서비스를 무중단으로 차세대 구조로 재구축한 경험 (Next.js 메이저 버전업, 모노레포 전환, 상태관리 마이그레이션)
 
-· **성능 최적화** — 대용량 데이터 조회·렌더링 병목을 구조적으로 진단하고 수십 배 단위로 개선
+· **성능 최적화** — 대용량 조회 병목을 구조적으로 진단해 수십 배 단위로 개선하고, 페이지 로딩·재렌더링 병목 해소
 
 · **풀스택·인프라 대응** — 프론트엔드 주력, Java/Spring·Nest.js 백엔드부터 FE 배포 파이프라인·Helm 차트 설계까지 배포·운영 전반에 대한 경험
 
@@ -69,19 +69,19 @@ export const portfolioHomeSectionsKo: HomeSectionGetRes[] = [
 
 · **300개+ 멀티테넌트 사이트를 단일 모노레포로 통합** — 공통 기반 BP 약 150개 + 대리점별 풀커스텀 ONBP 약 150개(지속 증가)를 단일 Turborepo 코드베이스에서 운영·배포
 
-· **결제·라우팅 등 critical 버그로 불안정하던 레거시 서비스를 안정화** — 300건 이상의 이슈를 처리하며 결제 실패·비정상 라우팅 등 핵심 장애를 해소, 서비스 신뢰성 대폭 개선
+· **결제·라우팅 등 critical 버그로 불안정하던 레거시 서비스를 안정화** — 400건 이상의 이슈를 처리하며 결제 실패·비정상 라우팅 등 핵심 장애를 해소, 서비스 신뢰성 대폭 개선
 
 · **1.4억 건 대용량 테이블 조회 4~6분 → 5초 이내 (약 50배+ 개선)** — 인덱스·통계 테이블 설계로 조회 병목 해소
 
 · **FE 배포 파이프라인·Helm 차트 직접 설계·구축** — 멀티서비스(B2C·BP·ONBP) × 4환경 20개+ 파이프라인 체계로 재설계, Helm 고도화(HPA·readinessProbe·노드 분산). Azure Local ARC 전환·DR 페일오버는 인프라팀과 협업. 빌드~배포 30분+ → 12~15분 단축
 
-· **주요 페이지 로딩 약 1/3 수준으로 단축** — SSG/SSR 조합·TanStack Query 캐싱·불필요 useEffect 정리 (Lighthouse 모바일 기준)
+· **가장 느리던 페이지 로딩 약 1/3 수준으로 단축** — SSG/SSR 조합·TanStack Query 캐싱·불필요 useEffect 정리 (Lighthouse 모바일 기준)
 
 · **Next.js 12→15 메이저 버전업 주도** — App Router·React 19 대응을 포함한 점진적 마이그레이션을 서비스 무중단으로 수행
 
-· **테스트·품질 체계 구축** — Vitest 기반 단위·통합 테스트와 원격 배포 환경 대상 Playwright E2E를 구성하고, 실행·리포트용 Testbed를 직접 제작. Husky 품질 게이트로 공통화·메이저 버전업 과정의 회귀 차단
+· **테스트·품질 체계 구축** — 수작업 QA에 의존하던 검증을 보완하도록 Vitest 기반 단위·통합 테스트와 원격 배포 환경 대상 Playwright E2E를 구성하고, 실행·리포트용 Testbed를 직접 제작. Husky 품질 게이트로 공통화·메이저 버전업 과정의 회귀 차단
 
-· **AI 코딩 에이전트 컨텍스트 체계 구축** — 모노레포 아키텍처 경계(API 계약·어댑터·HTTP 레이어 분리, B2C↔ONBP 격리)를 AGENTS.md와 path-scoped Rule로 인코딩해 에이전트가 레이어를 침범하지 않도록 가드레일 구성. Cursor·Claude·Gemini·Codex 공통 컨텍스트로 표준화하고 E2E 실패 피드백을 후속 작업에 연결하는 루프 운영`,
+· **AI 에이전트 컨텍스트·검증 하네스 구축** — 모노레포 아키텍처 경계(API 계약·어댑터·HTTP 레이어 분리, B2C↔ONBP 격리)를 AGENTS.md와 path-scoped Rule로 인코딩해 생성 시점에 차단하고, 에이전트 산출물도 Biome·Vitest·Playwright 기반 품질 게이트를 통과해야 반영되도록 검증 하네스 구성. Cursor·Claude·Gemini·Codex 공통 컨텍스트로 표준화하고 E2E 실패 피드백을 후속 작업에 연결`,
     },
   },
   {
@@ -116,7 +116,7 @@ export const portfolioHomeSectionsKo: HomeSectionGetRes[] = [
           department: '웹개발팀',
           position: '매니저',
           role: 'Frontend Developer',
-          description: '모두투어 서비스 차세대 개발 및 운영',
+          description: 'M사 여행 플랫폼 차세대 개발 및 운영',
           isDevRole: true,
         },
         {
@@ -127,7 +127,7 @@ export const portfolioHomeSectionsKo: HomeSectionGetRes[] = [
           department: '개발1팀',
           position: '연구원',
           role: 'Frontend Developer',
-          description: '자사 플랫폼 서비스(Lahat, Zootopia) 개발 및 운영',
+          description: '자사 서비스(필리핀 커머스·배달, 동물병원 예약 플랫폼) 개발 및 운영',
           isDevRole: true,
         },
         {

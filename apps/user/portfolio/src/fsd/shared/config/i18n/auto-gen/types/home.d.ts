@@ -25,6 +25,12 @@ export interface DictionaryHome {
       problem: string;
       outcomes: string;
       techStack: string;
+      overview: string;
+      asIs: string;
+      approach: string;
+      decision: string;
+      toBe: string;
+      tech: string;
     };
   };
   settings: {

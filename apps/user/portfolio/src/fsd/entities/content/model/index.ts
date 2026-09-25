@@ -19,6 +19,8 @@ export type {
   ProjectItem,
   ProjectLink,
   ProjectLinkGroup,
+  ResumeCase,
+  ResumeEmployer,
   ResumeExtraSection,
   ResumeProjectConfig,
   ResumeWorkSection,

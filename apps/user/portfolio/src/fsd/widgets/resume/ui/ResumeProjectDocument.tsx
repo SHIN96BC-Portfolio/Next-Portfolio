@@ -2,6 +2,7 @@
 
 import { ResumeProjectConfig } from '@FsdEntities/content/model/types';
 import { DictionaryHome } from '@FsdShared/config/i18n/auto-gen/types/home';
+import ResumeCaseProject from './ResumeCaseProject';
 import { ResumeMarkdown } from './ResumeProse';
 
 interface Props {
@@ -10,6 +11,11 @@ interface Props {
 }
 
 export default function ResumeProjectDocument({ config, labels }: Props) {
+  // configSchemaVersion 2 — 사례(AS-IS → TO-BE) 형식
+  if (config.cases || config.overview) {
+    return <ResumeCaseProject config={config} labels={labels} />;
+  }
+
   const heading = config.orderLabel ? `${config.orderLabel}. ${config.title}` : config.title;
 
   return (
@@ -41,12 +47,14 @@ export default function ResumeProjectDocument({ config, labels }: Props) {
         ) : null}
       </header>
 
-      <section className="mb-6">
-        <h3 className="mb-2 text-sm font-semibold uppercase tracking-wide text-muted-foreground">{labels.problem}</h3>
-        <ResumeMarkdown text={config.problem} />
-      </section>
+      {config.problem ? (
+        <section className="mb-6">
+          <h3 className="mb-2 text-sm font-semibold uppercase tracking-wide text-muted-foreground">{labels.problem}</h3>
+          <ResumeMarkdown text={config.problem} />
+        </section>
+      ) : null}
 
-      {config.workSections.map((section) => (
+      {config.workSections?.map((section) => (
         <section key={section.title} className="mb-6">
           <h3 className="mb-2 text-sm font-semibold text-foreground">{section.title}</h3>
           <ul className="space-y-2 text-[15px] leading-7 text-foreground/90">
@@ -60,7 +68,7 @@ export default function ResumeProjectDocument({ config, labels }: Props) {
         </section>
       ))}
 
-      {config.outcomes.length > 0 ? (
+      {config.outcomes && config.outcomes.length > 0 ? (
         <section className="mb-6">
           <h3 className="mb-2 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
             {labels.outcomes}

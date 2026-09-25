@@ -22,7 +22,13 @@
     "labels": {
       "problem": "Background & Problem",
       "outcomes": "Outcomes",
-      "techStack": "Tech Stack"
+      "techStack": "Tech Stack",
+      "overview": "Overview",
+      "asIs": "AS-IS",
+      "approach": "Approach",
+      "decision": "Decision",
+      "toBe": "TO-BE",
+      "tech": "Tech"
     }
   },
   "settings": {

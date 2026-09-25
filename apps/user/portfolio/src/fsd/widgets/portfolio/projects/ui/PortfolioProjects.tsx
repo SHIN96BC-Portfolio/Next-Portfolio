@@ -63,7 +63,7 @@ function PortfolioProjectsPrint({ title, config, lang }: Omit<Props, 'displayVar
 
 function PortfolioProjectsScreen({ title, config, lang }: Omit<Props, 'displayVariant'>) {
   const [openCompany, setOpenCompany] = useState<string | null>(config.companies[0]?.id ?? null);
-  const [openProject, setOpenProject] = useState<string | null>('modetour');
+  const [openProject, setOpenProject] = useState<string | null>(config.companies[0]?.projects[0]?.id ?? null);
 
   const toggleCompany = (id: string) => {
     setOpenCompany((prev) => (prev === id ? null : id));
