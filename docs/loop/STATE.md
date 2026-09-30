@@ -19,8 +19,8 @@ _없음_
 ## Waiting on Human
 
 - Secrets / `ai-task` / `run:local` / 브랜치 보호 — [`ACTIONS-SETUP.md`](./ACTIONS-SETUP.md) · [`RUNNERS.md`](./RUNNERS.md)
+- 머지 후 ruleset 필수 체크에 `harness-owner-gate` 추가
 - B-002 — SECURITY Phase1 (denylist / secret 경로)
-- denylist strict (`HARNESS_STRICT_DENYLIST`) 켤지 합의
 
 ## Escalations
 

@@ -1,33 +1,100 @@
 #!/usr/bin/env bash
+# pre-push
+# =============================================================================
+# push 직전에 돌리는 로컬 게이트. GitHub CI 를 대체하지 않는다.
+# =============================================================================
+#
+# 포함하는 것:
+#   1. pnpm typecheck — 타입 오류가 원격에 올라가기 전에 막는다.
+#   2. pnpm biome — 포맷·FSD import 제한. CI 의 biome 과 같은 명령이다.
+#   3. pnpm guard:harness — NEXT_PUBLIC secret 패턴이 있으면 push 가 멈춘다.
+#      보호 경로(denylist)는 여기서 실패시키지 않는다. 그 판정은 PR 의 harness-owner-gate 다.
+#   4. pnpm guard:tests — portfolio 로직 변경에 대응 테스트 파일이 있는지 본다.
+#
+# 넣지 않는 것:
+#   Playwright e2e 와 production build 는 수 분 걸린다. 매 push 에 두면 우회(`--no-verify`)가 늘고,
+#   우회한 push 는 가드까지 건너뛴다. 둘은 `pnpm verify:<app>` 와 PR CI 에만 둔다.
+#
+# 범위를 working tree 가 아니라 “지금 올라가는 커밋”으로 잡는 이유:
+#   커밋이 끝난 뒤 트리가 깨끗하면 `git diff HEAD` 는 비어 있다.
+#   그러면 이미 커밋된 biome.json 변경을 가드가 못 본다.
+#   git 은 pre-push stdin 으로 local/remote SHA 를 준다. 그 remote SHA 를 HARNESS_BASE_REF 로 넘긴다.
+#   새 브랜치(remote SHA 가 0)면 origin/HEAD 와의 merge-base 를 쓴다.
+#
 . "$(dirname -- "$0")/_/husky.sh"
 
+# 상위 셸의 우회 스위치는 push 게이트에 쓰지 않는다.
+unset HARNESS_TESTS_SOFT SKIP_BIOME HARNESS_SCAN_ROOTS HARNESS_REQUIRE_TESTS
+
+fail() {
+  echo ""
+  echo "$1"
+  echo ""
+  exit "${2:-1}"
+}
+
 echo "🔍 TypeScript 타입 검사 중..."
-
 pnpm run typecheck
-
 status=$?
-if [ $status -ne 0 ]; then
-  echo ""
-  echo "❌ TypeScript 타입 검사에서 오류가 발견되었습니다. 푸시를 중단합니다."
-  echo "   오류 내용을 확인하고 수정한 뒤 다시 시도해주세요."
-  echo ""
-  exit $status
+if [ "$status" -ne 0 ]; then
+  fail "❌ TypeScript 타입 검사에서 오류가 발견되었습니다. 푸시를 중단합니다." "$status"
 fi
-
-echo "✅ 타입 검사를 통과했습니다! 계속 진행합니다."
+echo "✅ 타입 검사를 통과했습니다."
 
 echo "🔍 전체 프로젝트에 대해 Biome 코드 검사 중..."
-
-# 전체 코드 검사 실행
 pnpm run biome
-
 status=$?
-if [ $status -ne 0 ]; then
-  echo "❌ Biome 코드 검사에서 오류가 발견되었습니다. 푸시를 중단합니다."
-  echo "   오류 내용을 확인하고 수정한 뒤 다시 시도해주세요."
-  exit $status
+if [ "$status" -ne 0 ]; then
+  fail "❌ Biome 코드 검사에서 오류가 발견되었습니다. 푸시를 중단합니다." "$status"
+fi
+echo "✅ Biome 코드 검사를 통과했습니다."
+
+# stdin 한 줄: <local ref> <local sha> <remote ref> <remote sha>
+zero="0000000000000000000000000000000000000000"
+pushed=0
+while read -r local_ref local_sha remote_ref remote_sha; do
+  [ -z "${local_sha:-}" ] && continue
+  # 브랜치 삭제는 우리 커밋을 올리지 않는다.
+  if [ "$local_sha" = "$zero" ]; then
+    continue
+  fi
+  base="$remote_sha"
+  if [ "$remote_sha" = "$zero" ]; then
+    base="$(git merge-base origin/HEAD "$local_sha" 2>/dev/null || true)"
+  fi
+  if [ -z "$base" ]; then
+    fail "❌ push 범위의 기준 커밋을 찾지 못했습니다 ($local_ref). origin 을 fetch 한 뒤 다시 시도하세요."
+  fi
+
+  echo "🔍 push 범위 하네스 가드 ($base..$local_sha)"
+  HARNESS_BASE_REF="$base" pnpm guard:harness
+  status=$?
+  if [ "$status" -ne 0 ]; then
+    fail "❌ guard:harness 가 push 를 멈췄습니다. NEXT_PUBLIC secret 패턴을 확인하세요." "$status"
+  fi
+
+  echo "🔍 push 범위 테스트 가드 ($base..$local_sha)"
+  HARNESS_BASE_REF="$base" pnpm guard:tests
+  status=$?
+  if [ "$status" -ne 0 ]; then
+    fail "❌ guard:tests 가 push 를 멈췄습니다. 로직 변경에 대응 테스트가 없거나, e2e 갱신/e2e-skip 이 없습니다." "$status"
+  fi
+  pushed=1
+done
+
+# git 이 stdin 을 비우고 호출한 경우(훅을 손으로 실행)만 작업 트리를 본다.
+if [ "$pushed" -eq 0 ]; then
+  echo "🔍 작업 트리 기준 하네스·테스트 가드"
+  pnpm guard:harness
+  status=$?
+  if [ "$status" -ne 0 ]; then
+    fail "❌ guard:harness 가 실패했습니다." "$status"
+  fi
+  pnpm guard:tests
+  status=$?
+  if [ "$status" -ne 0 ]; then
+    fail "❌ guard:tests 가 실패했습니다." "$status"
+  fi
 fi
 
-echo "✅ Biome 코드 검사를 통과했습니다!"
-
-echo "✅ 모든 검사를 통과했습니다! 푸시를 계속 진행합니다."
+echo "✅ 모든 검사를 통과했습니다. 푸시를 계속합니다."

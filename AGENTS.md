@@ -21,8 +21,8 @@ pnpm lint:fsd                                         # FSD folder-structure (RU
 pnpm lint:fsd:dry                                     # same, report only
 pnpm lint:fix                                        # biome check --write .
 pnpm test                                             # turbo test
-pnpm guard:harness                                    # denylist·NEXT_PUBLIC secret 가드
-pnpm guard:harness:strict                             # denylist hit → fail
+pnpm guard:harness                                    # NEXT_PUBLIC secret 이면 fail. 보호 경로 판정은 harness-owner-gate
+pnpm guard:harness:strict                             # 위와 같은 명령
 pnpm guard:tests                                      # 새 로직→Jest / 셸→E2E (docs/harness/TESTING.md)
 pnpm verify:portfolio                                 # full: typecheck+biome+test+guard+guard:tests+e2e+build
 pnpm verify:portfolio:snap                            # full + screenshot (서버 필요할 수 있음)
@@ -47,9 +47,12 @@ pnpm --filter @apps/user-portfolio run gen:i18n-namespaces
 
 **Harness:** 모노레포 공통 게이트·denylist는 [`docs/harness/`](docs/harness/README.md). 앱 변경 후 해당 **`pnpm verify:<app>`** 으로 합격 여부를 말한다 (현재 1호: `pnpm verify:portfolio`). Cursor 스킬: `.cursor/skills/verify` · `plan-change` · `safe-edit`.
 
+Biome·FSD 린트·가드·훅·워크플로·`AGENTS.md`·`.cursor/skills` 는 human gate 다. 검사 실패를 그 파일을 느슨하게 고쳐 해결하지 않는다. 목록은 [`docs/harness/DENYLIST.md`](docs/harness/DENYLIST.md). FSD 파일과 그 보호 경로를 열면 [`.cursor/rules`](.cursor/rules) 가 같은 문서만 가리킨다.
+
 **Loop:** [`docs/loop/`](docs/loop/) (`DESIGN` / `BACKLOG` / `STATE` / `LOOP`). `loop: paused`면 중단.  
 이슈 TASK 프롬프트 작성: [`docs/loop/AI-TASK-PROMPT.md`](docs/loop/AI-TASK-PROMPT.md).  
 **Cursor = Build** · **Claude = Pre-PR** · **사람 = PR APPROVE/merge**.  
+Plan·Pre-PR 규칙 본문은 [`CLAUDE.md`](CLAUDE.md) 와 `.cursor/skills/loop-verify` · `loop-build` 에만 둔다.  
 자동: 이슈 `ai-task` (클라우드) 또는 `run:local`+`ai-task` (셀프 호스티드) → [`ai-loop.yml`](.github/workflows/ai-loop.yml). 셋업: [`ACTIONS-SETUP.md`](docs/loop/ACTIONS-SETUP.md) · [`RUNNERS.md`](docs/loop/RUNNERS.md).
 
 ## Architecture: Feature-Sliced Design (FSD)
@@ -180,7 +183,7 @@ StoreProvider (Redux + redux-persist)
 
 **Types:** feat, hotfix, docs, style, refactor, chore, build, deploy, revert, test
 
-**Hooks:** pre-commit(브랜치명 + lint-staged) · pre-push(typecheck + biome) · commit-msg(메시지 형식)
+**Hooks:** pre-commit(브랜치명 + lint-staged) · pre-push(typecheck + biome + guard:harness + guard:tests, e2e/build 는 CI) · commit-msg(메시지 형식)
 
 ## File Naming Conventions
 

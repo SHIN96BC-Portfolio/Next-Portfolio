@@ -78,3 +78,57 @@
 - denylist 자체 변경도 human gate입니다.
 - secret 스캔은 `apps/**` 전체 (`guard-harness.mjs`).
 - auth/cookie 세부 경로는 앱이 성숙하면 portfolio 절과 같이 추가한다.
+
+## Enforcement (human only)
+
+Biome, 테스트 러너, 가드, 루프 스크립트, git hook, 게이트 워크플로, 에이전트 규칙.
+에이전트가 검사 오류를 이 파일을 느슨하게 고쳐 통과시키지 못하게 하는 경로다.
+로컬 `pnpm guard:harness` 는 아래 경로가 diff 에 있어도 그 이유만으로 실패하지 않는다. 적중 수는 `HARNESS_DENYLIST_HITS=<n>` 로 찍고, AI 루프는 n 이 0보다 크면 그 실행의 게이트를 실패로 본다. 에이전트가 켤 수 있는 허용 환경변수는 두지 않는다.
+봇이 연 PR 은 [`.github/workflows/harness-owner-gate.yml`](../../.github/workflows/harness-owner-gate.yml) 이 베이스 브랜치의 이 목록과 CODEOWNERS 를 보고, 소유자 APPROVE 전까지 실패한다.
+
+### Lint / test runner
+
+- `biome.json`
+- `turbo.json`
+- `apps/**/jest.config.ts`
+- `apps/**/playwright.config.ts`
+
+### Guard / verify / loop scripts
+
+- `scripts/guard-harness.mjs`
+- `scripts/guard-tests.mjs`
+- `scripts/guard-tests.test.mjs`
+- `scripts/verify-app.mjs`
+- `scripts/app-gates.mjs`
+- `scripts/harness-policy.mjs`
+- `scripts/harness-policy.test.mjs`
+- `scripts/harness-owner-gate.mjs`
+- `scripts/lint-fsd-folder-structure.mjs`
+- `scripts/lint-fsd-ui-private-folders.mjs`
+- `scripts/ai-loop.sh`
+- `scripts/ai-loop-parse-issue.mjs`
+- `scripts/ai-loop-state.mjs`
+- `scripts/loop-lib.mjs`
+- `scripts/loop-lib.test.mjs`
+- `scripts/loop-prompt.test.mjs`
+- `scripts/loop-budget.mjs`
+- `scripts/loop-lock.mjs`
+- `scripts/loop-status.mjs`
+- `scripts/loop-unlock.mjs`
+
+### Hooks / agent rules
+
+- `.husky`
+- `AGENTS.md`
+- `CLAUDE.md`
+- `.cursor/skills`
+- `.cursor/rules`
+- `docs/harness`
+- `docs/loop/LOOP.md`
+
+### Workflows / ownership
+
+- `.github/CODEOWNERS`
+- `.github/workflows`
+
+`package.json` 과 `apps/**/package.json` 의 기존 `test` / `typecheck` / `lint` / `biome` / `guard:*` / `verify:*` / `loop:*` 값 변경도 같은 실패다. 의존성 번호만 바꾸는 것은 경로 denylist 에 없다.

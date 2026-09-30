@@ -10,7 +10,7 @@
 
 ### Unit (필수 — diff 기준)
 
-다음 경로의 **추가/수정** `.ts`/`.tsx` 는 같은 슬라이스에 대응 `*.test.ts` 또는 `*.spec.ts`가 **존재**해야 한다 (이번 diff에 없어도, 디스크에 있으면 OK).
+다음 경로의 **추가/수정** `.ts`/`.tsx` 는 같은 디렉터리의 대응 `*.test.ts` / `*.test.tsx` / `*.spec.ts` / `*.spec.tsx` 가 **이번 diff 에 함께** 있어야 한다. 디스크에 예전에 만든 테스트만 있고 이번 변경에 없으면 실패한다.
 
 | 대상 (예시) | 비대상 |
 |-------------|--------|
@@ -20,7 +20,7 @@
 | `**/hooks/**`, `use*.ts(x)` | `page.tsx` / `layout.tsx` / 순수 presentational UI |
 | `entities/**/model/**` (위 제외 규칙 적용 후) | stories, mock fixtures |
 
-신규 파일이면 테스트 파일이 없거나 비어 있으면 **fail**.
+로직 파일을 고치면 대응 테스트 파일도 같은 커밋·PR diff 에서 수정하거나 추가한다. 테스트만 고친 변경은 소스를 다시 요구하지 않는다.
 
 ### E2E (조건부)
 
@@ -45,9 +45,11 @@
 ```bash
 pnpm guard:tests
 HARNESS_BASE_REF=origin/master pnpm guard:tests
-# 경고만 (도입 초기에 soft):
-HARNESS_TESTS_SOFT=1 pnpm guard:tests
+# 경고만. 훅·verify·ai-loop 는 이 명령을 쓰지 않는다.
+pnpm guard:tests:soft
 ```
+
+`HARNESS_TESTS_SOFT`, `SKIP_BIOME`, `HARNESS_SCAN_ROOTS`, `HARNESS_REQUIRE_TESTS=0` 은 pre-push, `verify-app`, `ai-loop.sh` 가 호출 전에 지운다. lite 앱에서 테스트를 켜는 `HARNESS_REQUIRE_TESTS=1` 은 그대로다.
 
 ## 에이전트·이슈 AC
 

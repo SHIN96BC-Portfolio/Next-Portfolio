@@ -17,21 +17,43 @@
  *
  * 검사 2 — denylist 경로 변경
  *   docs/harness/DENYLIST.md 의 `- \`path\`` 항목과
- *   git diff (HARNESS_BASE_REF / GITHUB_BASE_REF 또는 working tree) 교집합.
- *   기본: 경고만. --strict-denylist 또는 HARNESS_STRICT_DENYLIST=1 이면 fail.
+ *   git diff (HARNESS_BASE_REF / GITHUB_BASE_REF 또는 working tree + untracked) 교집합.
+ *   로컬·CI 의 이 스크립트는 목록을 알리기만 한다. 실패시키지 않는다.
+ *   적중 수는 stdout 한 줄 `HARNESS_DENYLIST_HITS=<n>` 이다. AI 루프는 n > 0 이면 gate_ok=0.
+ *   에이전트가 켤 수 있는 환경변수로 끄고 켜는 스위치는 두지 않는다.
+ *   HARNESS_SCAN_ROOTS 는 수동 디버그용이다. pre-push, verify-app, ai-loop 는 호출 전에 지운다.
+ *   봇 PR 을 막는 검사는 GitHub harness-owner-gate 다.
+ *   그 검사는 베이스 브랜치의 이 목록과 CODEOWNERS 만 보고, PR 스크립트는 실행하지 않는다.
+ *
+ * 검사 3 — 게이트 스크립트 문자열
+ *   루트 package.json 의 biome/guard/verify/loop 등과
+ *   앱 package.json 의 test/test:e2e/typecheck/lint 가
+ *   베이스(또는 HEAD)에 있던 값과 달라지면 그 package.json 을 denylist 적중과 같이 본다.
+ *   의존성 버전만 바뀐 경우는 통과한다.
  *
  * Usage:
  *   pnpm guard:harness
- *   pnpm guard:harness:strict
+ *   pnpm guard:harness:strict          # 위와 같은 명령 (별도 실패 모드 없음)
+ *   node scripts/guard-harness.mjs --denylist-only
+ *     secret 전수 스캔은 생략하고 경로·스크립트 값만 알린다. 그 알림은 실패가 아니다.
  *   HARNESS_BASE_REF=origin/master node scripts/guard-harness.mjs
+ *   HARNESS_BASE_REF=<remote-sha>      # pre-push. SHA 는 origin/ 을 붙이지 않는다.
  *
- * 문서: docs/harness/DENYLIST.md · docs/harness/README.md
+ * 문서: docs/harness/DENYLIST.md · docs/harness/README.md · .github/workflows/harness-owner-gate.yml
  */
 
 import { execSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import {
+  APP_PROTECTED_SCRIPT_KEYS,
+  changedProtectedScripts,
+  matchDenylist,
+  parseDenylistPaths,
+  ROOT_PROTECTED_SCRIPT_KEYS,
+  resolveHarnessBaseRef,
+} from './harness-policy.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..');
@@ -74,7 +96,7 @@ const SECRET_ALLOWLIST = new Set([
 const SECRET_PATTERN = /NEXT_PUBLIC_[A-Z0-9_]*(?:SECRET|PASSWORD|PRIVATE_KEY|API_KEY)[A-Z0-9_]*/g;
 const SOURCE_EXT = new Set(['.ts', '.tsx', '.js', '.jsx', '.mjs', '.cjs']);
 
-const strictDenylist = process.argv.includes('--strict-denylist') || process.env.HARNESS_STRICT_DENYLIST === '1';
+const denylistOnly = process.argv.includes('--denylist-only');
 
 function walkFiles(dir, out = []) {
   if (!fs.existsSync(dir)) return out;
@@ -103,38 +125,54 @@ function scanSecrets() {
   return violations;
 }
 
-/** DENYLIST.md 불릿에서 path / glob 추출 */
-function parseDenylistPaths(md) {
-  const paths = [];
-  for (const line of md.split(/\r?\n/)) {
-    const trimmed = line.trim();
-    if (!trimmed.startsWith('-')) continue;
-    const tick = trimmed.match(/`([^`]+)`/);
-    if (tick?.[1] && !tick[1].includes('*') && !tick[1].startsWith('#')) {
-      paths.push(tick[1].replaceAll('\\', '/'));
-    }
-    const globLine = trimmed.match(/^- `?([^*\s`][^`]*\*[^`]*)`?/);
-    if (globLine?.[1]) {
-      paths.push(globLine[1].replaceAll('\\', '/'));
-    }
+function gitShow(ref, rel) {
+  try {
+    return execSync(`git show ${ref}:${rel.replaceAll('\\', '/')}`, {
+      cwd: ROOT,
+      encoding: 'utf8',
+      stdio: ['ignore', 'pipe', 'ignore'],
+    });
+  } catch {
+    return null;
   }
-  return paths;
 }
 
-function matchDenylist(changedFile, patterns) {
-  const normalized = changedFile.replaceAll('\\', '/');
-  return patterns.some((pattern) => {
-    if (pattern.includes('*')) {
-      const re = new RegExp(
-        `^${pattern
-          .replace(/[.+^${}()|[\]\\]/g, '\\$&')
-          .replace(/\*\*/g, '.*')
-          .replace(/\*/g, '[^/]*')}$`
-      );
-      return re.test(normalized);
+function readPackageJson(ref, rel) {
+  if (ref === null) {
+    const full = path.join(ROOT, rel);
+    if (!fs.existsSync(full)) return null;
+    return JSON.parse(fs.readFileSync(full, 'utf8'));
+  }
+  const raw = gitShow(ref, rel);
+  if (raw == null) return null;
+  return JSON.parse(raw);
+}
+
+/** 보호 스크립트 키가 base 대비 바뀐 package.json 경로 */
+function scriptDriftFiles(changed, baseRef, headRef) {
+  const candidates = [];
+  if (changed.includes('package.json')) {
+    candidates.push({ rel: 'package.json', keys: ROOT_PROTECTED_SCRIPT_KEYS });
+  }
+  for (const file of changed) {
+    if (file !== 'package.json' && file.endsWith('/package.json')) {
+      candidates.push({ rel: file, keys: APP_PROTECTED_SCRIPT_KEYS });
     }
-    return normalized === pattern || normalized.startsWith(`${pattern}/`);
-  });
+  }
+  const hits = [];
+  for (const candidate of candidates) {
+    try {
+      const drifted = changedProtectedScripts(
+        readPackageJson(baseRef, candidate.rel),
+        readPackageJson(headRef, candidate.rel),
+        candidate.keys
+      );
+      if (drifted.length > 0) hits.push(candidate.rel);
+    } catch {
+      hits.push(candidate.rel);
+    }
+  }
+  return hits;
 }
 
 /** PR base…HEAD 또는 working tree vs HEAD */
@@ -142,14 +180,16 @@ function getChangedFiles() {
   const base = process.env.HARNESS_BASE_REF || process.env.GITHUB_BASE_REF;
   try {
     if (base) {
-      const ref = base.startsWith('origin/') ? base : `origin/${base}`;
-      try {
-        execSync(`git fetch --no-tags --depth=1 origin ${base.replace(/^origin\//, '')}`, {
-          cwd: ROOT,
-          stdio: 'ignore',
-        });
-      } catch {
-        // offline 등 — merge-base / diff 로 계속
+      const ref = resolveHarnessBaseRef(base);
+      if (ref.startsWith('origin/')) {
+        try {
+          execSync(`git fetch --no-tags --depth=1 origin ${base.replace(/^origin\//, '')}`, {
+            cwd: ROOT,
+            stdio: 'ignore',
+          });
+        } catch {
+          // offline 등 — merge-base / diff 로 계속
+        }
       }
       const mergeBase = execSync(`git merge-base HEAD ${ref}`, { cwd: ROOT, encoding: 'utf8' }).trim();
       return execSync(`git diff --name-only ${mergeBase}...HEAD`, { cwd: ROOT, encoding: 'utf8' })
@@ -157,55 +197,95 @@ function getChangedFiles() {
         .map((l) => l.trim())
         .filter(Boolean);
     }
-    return execSync('git diff --name-only HEAD', { cwd: ROOT, encoding: 'utf8' })
+    const tracked = execSync('git diff --name-only HEAD', { cwd: ROOT, encoding: 'utf8' })
       .split(/\r?\n/)
-      .map((l) => l.trim())
+      .map((line) => line.trim())
       .filter(Boolean);
+    const untracked = execSync('git ls-files --others --exclude-standard', { cwd: ROOT, encoding: 'utf8' })
+      .split(/\r?\n/)
+      .map((line) => line.trim())
+      .filter(Boolean);
+    return [...tracked, ...untracked];
   } catch {
     return [];
   }
 }
 
+function compareRefs() {
+  const base = process.env.HARNESS_BASE_REF || process.env.GITHUB_BASE_REF;
+  if (!base) return { baseRef: 'HEAD', headRef: null, changed: getChangedFiles() };
+  const ref = resolveHarnessBaseRef(base);
+  if (ref.startsWith('origin/')) {
+    try {
+      execSync(`git fetch --no-tags --depth=1 origin ${base.replace(/^origin\//, '')}`, {
+        cwd: ROOT,
+        stdio: 'ignore',
+      });
+    } catch {
+      // offline — merge-base 로 계속
+    }
+  }
+  const mergeBase = execSync(`git merge-base HEAD ${ref}`, { cwd: ROOT, encoding: 'utf8' }).trim();
+  const changed = execSync(`git diff --name-only ${mergeBase}...HEAD`, { cwd: ROOT, encoding: 'utf8' })
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter(Boolean);
+  return { baseRef: mergeBase, headRef: 'HEAD', changed };
+}
+
 function main() {
   let failed = false;
 
-  const secretHits = scanSecrets();
-  if (secretHits.length > 0) {
-    failed = true;
-    console.error('❌ [guard:harness] allowlist에 없는 NEXT_PUBLIC secret 패턴이 있습니다:');
-    for (const hit of secretHits) {
-      console.error(`   - ${hit.name} @ ${hit.file}`);
+  if (!denylistOnly) {
+    const secretHits = scanSecrets();
+    if (secretHits.length > 0) {
+      failed = true;
+      console.error('❌ [guard:harness] allowlist에 없는 NEXT_PUBLIC secret 패턴이 있습니다:');
+      for (const hit of secretHits) {
+        console.error(`   - ${hit.name} @ ${hit.file}`);
+      }
+      console.error('   시크릿은 서버 env로 두고, 불가피한 debt만 docs/harness allowlist에 등록하세요.');
+    } else {
+      console.info(`✅ [guard:harness] NEXT_PUBLIC secret 스캔 통과 (${SCAN_ROOTS.length} app roots)`);
     }
-    console.error('   시크릿은 서버 env로 두고, 불가피한 debt만 docs/harness allowlist에 등록하세요.');
-  } else {
-    console.info(`✅ [guard:harness] NEXT_PUBLIC secret 스캔 통과 (${SCAN_ROOTS.length} app roots)`);
   }
 
+  let denylistHits = null;
   if (!fs.existsSync(DENYLIST_PATH)) {
     failed = true;
     console.error(`❌ [guard:harness] DENYLIST 없음: ${path.relative(ROOT, DENYLIST_PATH)}`);
   } else {
     const patterns = parseDenylistPaths(fs.readFileSync(DENYLIST_PATH, 'utf8'));
-    const changed = getChangedFiles();
-    const hits = changed.filter((f) => matchDenylist(f, patterns));
+    let changed = [];
+    let scriptHits = [];
+    try {
+      const compared = compareRefs();
+      changed = compared.changed;
+      scriptHits = scriptDriftFiles(changed, compared.baseRef, compared.headRef);
+    } catch {
+      changed = getChangedFiles();
+    }
+    const hits = [...new Set([...changed.filter((file) => matchDenylist(file, patterns)), ...scriptHits])];
+    denylistHits = hits.length;
 
     if (hits.length > 0) {
-      const msg = [
-        '⚠️  [guard:harness] denylist(human gate) 경로가 변경 목록에 있습니다:',
-        ...hits.map((f) => `   - ${f}`),
-        '   사람 승인 없이 머지하지 마세요. (--strict-denylist 또는 HARNESS_STRICT_DENYLIST=1 이면 fail)',
-      ].join('\n');
-      if (strictDenylist) {
-        failed = true;
-        console.error(msg.replace('⚠️  ', '❌ '));
-      } else {
-        console.info(msg);
-      }
+      console.info(
+        [
+          'ℹ️  [guard:harness] 보호 경로가 변경 목록에 있습니다:',
+          ...hits.map((file) => `   - ${file}`),
+          '   이 스크립트는 그 경로 때문에 실패하지 않습니다.',
+          '   봇이 연 PR 은 harness-owner-gate 가 베이스의 DENYLIST·CODEOWNERS 로 판단하고, 소유자 APPROVE 전까지 실패합니다.',
+        ].join('\n')
+      );
     } else if (changed.length === 0) {
       console.info('ℹ️  [guard:harness] 비교할 git diff가 없어 denylist diff 검사는 건너뜁니다.');
     } else {
       console.info('✅ [guard:harness] denylist 경로 변경 없음');
     }
+  }
+
+  if (denylistHits !== null) {
+    console.info(`HARNESS_DENYLIST_HITS=${denylistHits}`);
   }
 
   if (failed) {
@@ -214,4 +294,5 @@ function main() {
   console.info('✅ [guard:harness] 통과');
 }
 
-main();
+const isDirect = process.argv[1] && path.resolve(fileURLToPath(import.meta.url)) === path.resolve(process.argv[1]);
+if (isDirect) main();

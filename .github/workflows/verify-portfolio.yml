@@ -57,7 +57,7 @@ env:
   NEXT_PUBLIC_COOKIE_SECRET_KEY: harness-ci-cookie-secret-key
   NEXT_PUBLIC_STORAGE_CRYPTO_SECRET_KEY: harness-ci-storage-secret
   PRIVATE_COOKIE_SECRET_KEY: harness-ci-private-cookie-secret
-  # guard denylist: PR base 대비 diff
+  # guard denylist: PR base 대비 diff. 적중은 스크립트 기본값으로 fail.
   HARNESS_BASE_REF: ${{ github.event.pull_request.base.ref || '' }}
   NEXT_TURBOPACK_EXPERIMENTAL_USE_SYSTEM_TLS_CERTS: '1'
 
@@ -94,5 +94,3 @@ jobs:
         env:
           HARNESS_BASE_REF: ${{ github.event.pull_request.base.ref || '' }}
           CI: true
-          # 레포 Variable HARNESS_STRICT_DENYLIST=1 이면 denylist 경로 변경 시 fail
-          HARNESS_STRICT_DENYLIST: ${{ vars.HARNESS_STRICT_DENYLIST || '' }}

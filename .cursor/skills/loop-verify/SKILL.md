@@ -31,7 +31,7 @@ Do **not** output `APPROVE` as merge authority. If older docs say APPROVE, treat
 1. Identify BACKLOG item id and the diff/PR under review.
 2. Check each AC checkbox claim against evidence.
 3. Confirm app gate: `pnpm verify:<app>` (default `verify:portfolio`) or cite a fresh green run.
-4. `pnpm guard:harness` — denylist hits without human approval → `REJECT`.
+4. Read the `pnpm guard:harness` log. Secret violations fail the process. Denylist path hits do not: the log line `HARNESS_DENYLIST_HITS=<n>` with n > 0, and no human approval in this turn, → `REJECT`. The AI loop shell sets `gate_ok=0` from that line. Blocking merge is `harness-owner-gate` on the base branch.
 4b. `pnpm guard:tests` (or cite verify log) — new logic without `*.test.ts`, or page/widget change without e2e/`e2e-skip:` → `REJECT`. See `docs/harness/TESTING.md`.
 5. Look for concrete problems: regressions, FSD/import violations, missing tests for claimed AC, secrets, unsafe scope creep.
 6. Emit `PASS_TO_HUMAN` or `REJECT` (and escalate if rejects ≥ `LOOP.md` limit → recommend `loop: paused`).

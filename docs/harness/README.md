@@ -58,8 +58,7 @@ pnpm guard:tests
 | 스위치 | 효과 |
 |--------|------|
 | `pnpm verify:portfolio:snap` / `VERIFY_WITH_SNAP=1` | full 후 `snapRoutes` 촬영 |
-| `HARNESS_STRICT_DENYLIST=1` / `guard:harness:strict` | denylist hit → fail |
-| Variable `HARNESS_STRICT_DENYLIST=1` | verify-portfolio CI에 적용 |
+| `pnpm guard:harness` | NEXT_PUBLIC secret 패턴이면 fail. 보호 경로 변경은 알리기만 하고, 봇 PR 판정은 `harness-owner-gate` |
 
 ### 로컬 팁
 
@@ -86,4 +85,5 @@ Google Fonts TLS: portfolio `next.config`의 `turbopackUseSystemTlsCerts` (필�
 - 에이전트는 **변경한 앱의** `pnpm verify:<short>` 로 합격한다.
 - PR CI 1호: `verify-portfolio.yml` (다른 앱 CI는 온디맨드 — ROADMAP).
 - denylist·보안 경로는 사람 승인 후.
+- 로컬 push 훅(`.husky/pre-push`)은 typecheck, biome, `guard:harness`, `guard:tests` 만 돈다. e2e 와 production build 는 `pnpm verify:<app>` 와 PR CI 에만 있다. 훅이 느려지면 `--no-verify` 로 가드까지 빠지기 때문이다.
 - 로컬·PR·deploy quality가 **같은 verify 명령**으로 수렴하는 것이 목표.

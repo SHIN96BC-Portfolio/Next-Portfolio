@@ -7,29 +7,38 @@
  *
  * 왜 있는가:
  *   verify 가 “기존 테스트 스위트 통과”만 보면, 에이전트가 새 util/mapper를
- *   테스트 없이 넣을 수 있다. diff 기준으로 대응 테스트 파일 존재를 검사한다.
+ *   테스트 없이 넣을 수 있다.
+ *   예전에 있던 foo.test.ts 만으로는 부족하다. 로직 파일이 이번 diff 에 있으면
+ *   대응 *.test.ts / *.spec.ts 도 같은 diff 에 있어야 한다.
+ *   디스크에만 있는 파일은 통과시키지 않는다.
  *
  * 정책 SoT: docs/harness/TESTING.md
  *
  * Env:
- *   HARNESS_BASE_REF / GITHUB_BASE_REF — PR diff 기준 (없으면 working tree vs HEAD)
- *   HARNESS_TESTS_SOFT=1               — fail 대신 경고만
- *   HARNESS_REQUIRE_TESTS=0            — 강제 비활성 (verify-app lite 기본)
+ *   HARNESS_BASE_REF / GITHUB_BASE_REF — PR 또는 pre-push 범위.
+ *     브랜치 이름은 origin/ 을 붙이고, 커밋 SHA 는 그대로 merge-base 에 쓴다.
+ *     없으면 working tree vs HEAD (이미 커밋만 있고 트리가 깨끗하면 놓친다).
+ *   --soft                             — fail 대신 경고만 (`pnpm guard:tests:soft`)
+ *   HARNESS_TESTS_SOFT / HARNESS_REQUIRE_TESTS=0 은 보지 않는다.
+ *     pre-push, verify-app, ai-loop 도 이 값을 지운 뒤 호출한다.
  *   HARNESS_APP_DIR                    — 기본 apps/user/portfolio
  *
- * Exit 1: 단위 테스트 누락 또는 E2E 갱신 누락(스킵 사유 없음)
+ * Exit 1: 같은 diff 에 단위 테스트가 없음, 또는 E2E 갱신 누락(스킵 사유 없음)
+ *
+ * 직접 실행(`node scripts/guard-tests.mjs`)일 때만 main 이 돈다.
+ * 테스트가 이 파일을 import 하면 판정 함수만 쓰고 git 은 호출하지 않는다.
  */
 
 import { execSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { resolveHarnessBaseRef } from './harness-policy.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..');
 
-const soft = process.env.HARNESS_TESTS_SOFT === '1' || process.argv.includes('--soft');
-const disabled = process.env.HARNESS_REQUIRE_TESTS === '0';
+const soft = process.argv.includes('--soft');
 const appDir = (process.env.HARNESS_APP_DIR || 'apps/user/portfolio').replaceAll('\\', '/');
 
 /** 단위 테스트가 필요한 경로 (posix) */
@@ -62,14 +71,16 @@ function getChangedFiles() {
   const base = process.env.HARNESS_BASE_REF || process.env.GITHUB_BASE_REF;
   try {
     if (base) {
-      const ref = base.startsWith('origin/') ? base : `origin/${base}`;
-      try {
-        execSync(`git fetch --no-tags --depth=1 origin ${base.replace(/^origin\//, '')}`, {
-          cwd: ROOT,
-          stdio: 'ignore',
-        });
-      } catch {
-        // continue
+      const ref = resolveHarnessBaseRef(base);
+      if (ref.startsWith('origin/')) {
+        try {
+          execSync(`git fetch --no-tags --depth=1 origin ${base.replace(/^origin\//, '')}`, {
+            cwd: ROOT,
+            stdio: 'ignore',
+          });
+        } catch {
+          // continue
+        }
       }
       const mergeBase = execSync(`git merge-base HEAD ${ref}`, { cwd: ROOT, encoding: 'utf8' }).trim();
       return execSync(`git diff --name-only --diff-filter=ACMR ${mergeBase}...HEAD`, {
@@ -89,9 +100,15 @@ function getChangedFiles() {
       cwd: ROOT,
       encoding: 'utf8',
     });
+    // 아직 커밋하지 않은 새 파일도 같은 변경으로 본다.
+    // 빠지면 새 mapper 와 새 test 가 디스크에만 있고 diff 에는 안 잡힌다.
+    const untracked = execSync('git ls-files --others --exclude-standard', {
+      cwd: ROOT,
+      encoding: 'utf8',
+    });
     return [
       ...new Set(
-        `${unstaged}\n${staged}`
+        `${unstaged}\n${staged}\n${untracked}`
           .split(/\r?\n/)
           .map((l) => l.trim().replaceAll('\\', '/'))
           .filter(Boolean)
@@ -124,8 +141,25 @@ function candidateTestPaths(srcFile) {
   return [`${dir}/${base}.test.ts`, `${dir}/${base}.test.tsx`, `${dir}/${base}.spec.ts`, `${dir}/${base}.spec.tsx`];
 }
 
-function fileExists(rel) {
-  return fs.existsSync(path.join(ROOT, rel));
+/**
+ * 로직 변경과 대응 테스트가 같은 변경 목록에 있는지 본다.
+ * 디스크의 foo.test.ts 는 인자로 넘어오지 않으면 없는 것과 같다.
+ * 테스트 파일만 고친 경우는 소스 파일이 목록에 없으므로 여기서 실패하지 않는다.
+ *
+ * @param {string[]} changedFiles git diff 경로 (슬래시 구분)
+ * @returns {{ file: string, expected: string }[]}
+ */
+export function missingUnitTestsInDiff(changedFiles) {
+  const changed = new Set(changedFiles.map((file) => file.trim().replaceAll('\\', '/')).filter(Boolean));
+  const missing = [];
+  for (const file of changed) {
+    if (!needsUnit(file)) continue;
+    const candidates = candidateTestPaths(file);
+    if (!candidates.some((candidate) => changed.has(candidate))) {
+      missing.push({ file, expected: candidates[0] });
+    }
+  }
+  return missing;
 }
 
 function hasE2eSkipReason() {
@@ -146,26 +180,13 @@ function hasE2eSkipReason() {
 }
 
 function main() {
-  if (disabled) {
-    console.info('ℹ️  [guard:tests] HARNESS_REQUIRE_TESTS=0 — skipped');
-    process.exit(0);
-  }
-
   const changed = getChangedFiles();
   if (changed.length === 0) {
     console.info('ℹ️  [guard:tests] 비교할 diff 없음 — skip');
     process.exit(0);
   }
 
-  const unitMissing = [];
-  for (const file of changed) {
-    if (!needsUnit(file)) continue;
-    const candidates = candidateTestPaths(file);
-    const ok = candidates.some((c) => fileExists(c));
-    if (!ok) {
-      unitMissing.push({ file, expected: candidates[0] });
-    }
-  }
+  const unitMissing = missingUnitTestsInDiff(changed);
 
   const e2eTriggers = changed.filter(needsE2eTrigger);
   const e2eChanged = changed.some((f) => /\/e2e\/.+\.(spec|test)\.tsx?$/.test(f));
@@ -182,8 +203,9 @@ function main() {
   if (unitMissing.length > 0) {
     failed = true;
     const lines = [
-      '❌ [guard:tests] 단위 테스트(*.test.ts)가 없는 로직 파일:',
-      ...unitMissing.map((u) => `   - ${u.file}  → 기대: ${u.expected}`),
+      '❌ [guard:tests] 같은 diff 에 단위 테스트(*.test.ts)가 없는 로직 파일:',
+      ...unitMissing.map((u) => `   - ${u.file}  → 같은 변경에 필요: ${u.expected}`),
+      '   디스크에만 있는 기존 테스트는 통과하지 않습니다.',
       '   정책: docs/harness/TESTING.md',
     ];
     if (soft) console.info(lines.join('\n').replace('❌', '⚠️ '));
@@ -208,9 +230,10 @@ function main() {
 
   if (failed && !soft) process.exit(1);
   if (failed && soft) {
-    console.info('ℹ️  [guard:tests] HARNESS_TESTS_SOFT=1 — 경고만');
+    console.info('ℹ️  [guard:tests] --soft — 경고만');
   }
   console.info('✅ [guard:tests] 통과');
 }
 
-main();
+const isDirect = process.argv[1] && path.resolve(fileURLToPath(import.meta.url)) === path.resolve(process.argv[1]);
+if (isDirect) main();

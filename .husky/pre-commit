@@ -17,5 +17,5 @@ fi
 
 echo "✅ 브랜치명이 유효합니다!"
 
-# 변경된 파일만 검사
+# 변경된 파일만 Biome (lint-staged)
 npx lint-staged

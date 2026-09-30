@@ -17,15 +17,23 @@
  *   pnpm verify:portfolio / pnpm verify:commerce / …
  *
  * Env:
- *   HARNESS_STRICT_DENYLIST=1  — guard 가 denylist hit 시 fail
  *   VERIFY_WITH_SNAP=1         — --snap 과 동일 (portfolio snapRoutes)
- *   SKIP_BIOME=1               — 루트 biome 스킵 (비권장, 디버그용)
+ *   HARNESS_REQUIRE_TESTS=1    — lite 에서도 guard:tests 실행
+ *   SKIP_BIOME, HARNESS_TESTS_SOFT, HARNESS_SCAN_ROOTS, HARNESS_REQUIRE_TESTS=0
+ *     은 이 진입점에서 지운다. 검사를 낮추는 용도로 쓰지 않는다.
  *
  * maturity full:
- *   typecheck → biome(+fsd) → unit test → guard → guard:tests → e2e → build → (선택 snap)
+ *   harness-unit → typecheck → biome(+fsd) → unit test → guard → guard:tests → e2e → build → (선택 snap)
  * maturity lite:
- *   typecheck → biome → (test 있으면) → guard → build
+ *   harness-unit → typecheck → biome → (test 있으면) → guard → build
  *   e2e 스크립트가 있으면 실행(선택). guard:tests 는 HARNESS_REQUIRE_TESTS=1 일 때만
+ *
+ * harness-unit (`pnpm test:harness`) 은 앱과 무관하게 보호 규칙 순수 함수를 먼저 돌린다.
+ * 가드 스크립트를 고친 PR 이 그 테스트를 비우면 여기서 실패한다.
+ * denylist 경로 적중은 guard 프로세스를 실패시키지 않는다.
+ * 시크릿 패턴만 exit 1 이다. 적중 수는 `HARNESS_DENYLIST_HITS=<n>` 로 남고,
+ * AI 루프가 n > 0 이면 그 실행의 gate 를 실패로 본다.
+ * 봇 PR 의 차단은 베이스 브랜치의 harness-owner-gate 다.
  *
  * 실패: 해당 단계 nonzero → fail-fast. AI 루프는 stdout 을 .ai/verify.log 로 수집.
  *
@@ -90,6 +98,15 @@ function hasScript(name) {
 
 console.info(`[verify-app] ${gate.filter} (${gate.maturity})`);
 
+// 강제 진입점에서는 검사를 낮추는 env 를 물려받지 않는다.
+delete process.env.HARNESS_TESTS_SOFT;
+delete process.env.SKIP_BIOME;
+delete process.env.HARNESS_SCAN_ROOTS;
+if (process.env.HARNESS_REQUIRE_TESTS === '0') delete process.env.HARNESS_REQUIRE_TESTS;
+
+// 0) 보호 규칙 단위 테스트. 앱 빌드보다 먼저 돌려, 가드 자체 회귀를 빨리 본다.
+run('harness-unit', 'pnpm test:harness');
+
 // 1) 타입
 if (!hasScript('typecheck')) {
   console.error('typecheck script required');
@@ -98,9 +115,7 @@ if (!hasScript('typecheck')) {
 run('typecheck', `pnpm --filter ${gate.filter} run typecheck`);
 
 // 2) Biome + FSD folder lint (루트)
-if (process.env.SKIP_BIOME !== '1') {
-  run('biome', 'pnpm biome');
-}
+run('biome', 'pnpm biome');
 
 // 3) 단위 테스트 — full 필수, lite 는 스크립트 있을 때만
 if (gate.maturity === 'full' || hasScript('test')) {
@@ -112,11 +127,8 @@ if (gate.maturity === 'full' || hasScript('test')) {
   }
 }
 
-// 4) denylist / NEXT_PUBLIC secret 가드
-const guardCmd =
-  process.env.HARNESS_STRICT_DENYLIST === '1' || process.argv.includes('--strict-denylist')
-    ? 'pnpm guard:harness -- --strict-denylist'
-    : 'pnpm guard:harness';
+// 4) secret 패턴은 실패. denylist 경로 적중은 HARNESS_DENYLIST_HITS 로만 알린다.
+const guardCmd = 'pnpm guard:harness';
 run('guard', guardCmd);
 
 // 4b) 새 로직 → Jest / 페이지·위젯 → E2E (또는 e2e-skip)

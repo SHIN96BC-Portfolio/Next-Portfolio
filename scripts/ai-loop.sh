@@ -14,12 +14,15 @@
 #   4) STATE WIP 기록
 #   5) Claude Plan → .ai/plan.md
 #   6) 최대 MAX_ITER 회:
+#        예산(--attempt) 초과면 BUDGET_EXCEEDED 로 즉시 종료 (|| true 로 넘기지 않음)
 #        Cursor agent Build → verify+guard → Claude Pre-PR
+#        에이전트 실패 또는 작업 트리 변경이 없으면 PASS 금지
 #        PASS_TO_HUMAN 이면 break / REJECT 면 재시도
-#   7) PASS_TO_HUMAN 이면 코드+run-log 커밋 준비 (PR은 워크플로가 생성)
+#   7) PASS_TO_HUMAN 이고 변경이 있을 때만 코드+run-log 커밋 준비 (PR은 워크플로가 생성)
 #
 # 판정 문자열:
 #   PASS_TO_HUMAN — 사람에게 PR을 넘겨도 됨 (merge APPROVE 아님)
+#   BUDGET_EXCEEDED — 시도/거절 상한. STATE 는 loop: paused
 #   REJECT / FAIL / SKIPPED_PAUSED / SKIPPED_LOCK / ERROR
 #
 # 환경변수 (주요):
@@ -37,6 +40,12 @@ set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
+
+# 러너나 상위 셸이 물려준 우회 스위치는 이 잡의 게이트에 쓰지 않는다.
+unset HARNESS_TESTS_SOFT SKIP_BIOME HARNESS_SCAN_ROOTS
+if [[ "${HARNESS_REQUIRE_TESTS:-}" == "0" ]]; then
+  unset HARNESS_REQUIRE_TESTS
+fi
 
 MAX_ITER="${MAX_ITER:-3}"
 ISSUE_NUMBER="${ISSUE_NUMBER:-0}"
@@ -138,11 +147,47 @@ if [[ "$lock_ec" -ne 0 ]]; then
   exit 0
 fi
 
+# 이슈 코멘트의 최댓값으로 .cache 예산을 채운다. 횟수는 줄지 않는다.
+seed_budget_from_issue() {
+  if [[ "${ISSUE_NUMBER:-0}" == "0" ]]; then
+    return 0
+  fi
+  if ! command -v gh >/dev/null 2>&1; then
+    echo "[ai-loop] gh 없음 — 이슈 예산 마커를 읽지 않음"
+    return 0
+  fi
+  local comments
+  comments="$(gh issue view "$ISSUE_NUMBER" --json comments --jq '.comments[].body' 2>/dev/null || true)"
+  if [[ -z "$comments" ]]; then
+    return 0
+  fi
+  printf '%s\n' "$comments" | node scripts/loop-budget.mjs --seed --item "$BUDGET_ITEM"
+}
+
+# attempts=0 rejects=0 은 남기지 않는다. 그 줄이 최신이어도 파서는 더 큰 값을 유지한다.
+post_budget_marker() {
+  if [[ "${ISSUE_NUMBER:-0}" == "0" ]]; then
+    return 0
+  fi
+  if ! command -v gh >/dev/null 2>&1; then
+    return 0
+  fi
+  local line
+  line="$(node scripts/loop-budget.mjs --marker --item "$BUDGET_ITEM" 2>/dev/null || true)"
+  case "$line" in
+    ""|*" attempts=0 rejects=0") return 0 ;;
+  esac
+  gh issue comment "$ISSUE_NUMBER" --body "$line" >/dev/null || true
+}
+
 cleanup() {
+  post_budget_marker
   clear_wip
   pnpm loop:unlock || true
 }
 trap cleanup EXIT
+
+seed_budget_from_issue
 
 clear_wip() {
   ACTIVE_APP="${ACTIVE_APP:-@apps/user-portfolio}" BACKLOG_ID="${BACKLOG_ID:-}" ISSUE_NUMBER="${ISSUE_NUMBER:-0}" \
@@ -158,18 +203,16 @@ printf "# %s\n\n%s\n\n## Meta\n\n- issue: #%s\n- app: %s\n- verify: %s\n- backlo
   "$ISSUE_TITLE" "$ISSUE_BODY" "$ISSUE_NUMBER" "$ACTIVE_APP" "$VERIFY_CMD" "${BACKLOG_ID:-none}" "$BUDGET_ITEM" \
   > .ai/issue.md
 
-DENYLIST_HINT="Respect docs/harness/DENYLIST.md and .cursor/skills/safe-edit. Do not edit denylist paths without human approval. Do not add NEXT_PUBLIC_*SECRET*."
+# 규칙 본문은 CLAUDE.md 와 .cursor/skills 에만 둔다.
+# 아래 프롬프트는 이번 실행의 파일 경로와 게이트 값만 넘긴다.
 
 # -----------------------------------------------------------------------------
 # 1. Plan (Claude) — 코드 수정 금지, .ai/plan.md 만 작성
 # -----------------------------------------------------------------------------
 claude -p "${CLAUDE_FLAGS[@]}" \
-  "You are the Plan step for this monorepo. Read .ai/issue.md, AGENTS.md, docs/loop/LOOP.md, docs/loop/BACKLOG.md, docs/harness/README.md, and relevant code.
-If backlog id is set (${BACKLOG_ID:-none}), align the plan to that BACKLOG item.
-Write an implementation plan to .ai/plan.md with: scope (${ACTIVE_APP}), files to change, approach, checkable acceptance criteria, denylist notes.
-Gate command must be: ${VERIFY_CMD}
-${DENYLIST_HINT}
-Do not modify application source code." \
+  "Follow CLAUDE.md section Plan. This invocation is the Plan step.
+Read .ai/issue.md. Backlog: ${BACKLOG_ID:-none}. App: ${ACTIVE_APP}. Gate: ${VERIFY_CMD}.
+Write .ai/plan.md only." \
   > .ai/plan.log 2>&1 || true
 
 if [[ ! -f .ai/plan.md ]]; then
@@ -182,8 +225,18 @@ fi
 result="REJECT"
 for i in $(seq 1 "$MAX_ITER"); do
   echo "=== iteration ${i}/${MAX_ITER} ==="
-  # 시도 횟수 예산 (LOOP.md max_build_attempts_per_item)
-  pnpm loop:budget -- --item "$BUDGET_ITEM" --attempt || true
+  # 시도 횟수 예산. 상한이면 loop-budget 이 STATE 를 paused 로 쓰고 exit 1.
+  # 여기서 그 실패를 삼키면 루프가 계속 돈을 쓴다.
+  set +e
+  pnpm loop:budget -- --item "$BUDGET_ITEM" --attempt
+  budget_ec=$?
+  set -e
+  post_budget_marker
+  if [[ "$budget_ec" -ne 0 ]]; then
+    append_run_log "budget_exceeded" "build attempts exceeded (exit ${budget_ec})"
+    set_output "BUDGET_EXCEEDED"
+    exit 1
+  fi
 
   # ---------------------------------------------------------------------------
   # 2. Build (Cursor agent)
@@ -194,14 +247,14 @@ for i in $(seq 1 "$MAX_ITER"); do
     AGENT_ARGS+=(--model "$CURSOR_BUILD_MODEL")
   fi
 
+  set +e
   agent "${AGENT_ARGS[@]}" \
-    "You are Cursor Build for this monorepo (loop-build). Implement .ai/plan.md for app ${ACTIVE_APP}.
-If .ai/review.md exists, fix every issue listed after the first line.
-Follow AGENTS.md / FSD / Biome. One backlog-sized change only. Backlog: ${BACKLOG_ID:-none}.
-${DENYLIST_HINT}
-Do not edit files under .ai/ except you may read them.
-Do not merge or approve any PR." \
-    > ".ai/work-${i}.log" 2>&1 || true
+    "Follow .cursor/skills/loop-build/SKILL.md and CLAUDE.md section Build. This invocation is the Build step.
+Implement .ai/plan.md. App: ${ACTIVE_APP}. Backlog: ${BACKLOG_ID:-none}. Gate: ${VERIFY_CMD}.
+If .ai/review.md exists, fix the findings after its first line." \
+    > ".ai/work-${i}.log" 2>&1
+  agent_ec=$?
+  set -e
 
   # ---------------------------------------------------------------------------
   # 3. 기계 게이트 — AI 판단만으로 PASS 금지
@@ -219,30 +272,48 @@ Do not merge or approve any PR." \
   else
     gate_ok=0
   fi
+  # 경로 적중은 guard exit code 를 바꾸지 않는다. 토큰만 게이트에 반영한다.
+  denylist_hits="$(grep -E '^HARNESS_DENYLIST_HITS=[0-9]+$' .ai/guard.log | tail -n 1 | cut -d= -f2 || true)"
+  if [[ -n "${denylist_hits}" && "${denylist_hits}" -gt 0 ]]; then
+    gate_ok=0
+  fi
 
   git diff > .ai/diff.patch || true
+  # STATE WIP·run-log 만 바뀐 경우는 제품 변경이 아니다.
+  # 에이전트 프로세스가 실패했거나 그 외 변경이 없으면, verify 가 녹색이어도 PASS 하지 않는다.
+  product_changes="$(git status --porcelain | grep -v -E 'docs/loop/STATE\.md|docs/loop/loop-run-log\.md' || true)"
+  tree_dirty=0
+  if [[ -n "$product_changes" ]]; then
+    tree_dirty=1
+  fi
 
   # ---------------------------------------------------------------------------
-  # 4. Pre-PR (Claude) — 첫 줄 PASS_TO_HUMAN | REJECT 만 인정
-  #    gate_ok=0 이면 모델이 PASS 해도 루프는 REJECT 유지
+  # 4. Pre-PR (Claude) — 판정 문장은 loop-verify 스킬에만 있다.
+  #    셸은 읽을 파일과 gate_ok 만 넘긴다. gate_ok=0 이어도 스크립트가 PASS 를 받지 않는다.
   # ---------------------------------------------------------------------------
   claude -p "${CLAUDE_FLAGS[@]}" \
-    "You are Claude Pre-PR review (loop-verify). Do NOT modify product code.
-Read .ai/issue.md, .ai/plan.md, .ai/diff.patch, .ai/verify.log, .ai/guard.log, docs/loop/BACKLOG.md.
-Mechanical gate ok flag: ${gate_ok} (1=verify+guard passed). Expected gate: ${VERIFY_CMD}.
-${DENYLIST_HINT}
-Reply with the FIRST line exactly PASS_TO_HUMAN or REJECT.
-Use REJECT if gate_ok is 0, AC unmet, denylist violation, or concrete defects.
-After the first line, list concrete findings only." \
+    "Follow .cursor/skills/loop-verify/SKILL.md and CLAUDE.md section Pre-PR. This invocation is the Pre-PR step.
+Read .ai/issue.md, .ai/plan.md, .ai/diff.patch, .ai/verify.log, .ai/guard.log.
+gate_ok=${gate_ok}. Expected gate: ${VERIFY_CMD}.
+The first line must be the verdict token defined in that skill." \
     > .ai/review.md 2>.ai/review-stderr.log || true
 
   verdict="$(head -1 .ai/review.md 2>/dev/null | tr -d '\r' || true)"
-  if [[ "$gate_ok" = 1 ]] && echo "$verdict" | grep -q '^PASS_TO_HUMAN$'; then
+  if [[ "$agent_ec" -eq 0 && "$tree_dirty" = 1 && "$gate_ok" = 1 ]] && echo "$verdict" | grep -q '^PASS_TO_HUMAN$'; then
     result="PASS_TO_HUMAN"
     break
   fi
 
-  pnpm loop:budget -- --item "$BUDGET_ITEM" --reject || true
+  set +e
+  pnpm loop:budget -- --item "$BUDGET_ITEM" --reject
+  budget_ec=$?
+  set -e
+  post_budget_marker
+  if [[ "$budget_ec" -ne 0 ]]; then
+    append_run_log "budget_exceeded" "verifier rejects exceeded (exit ${budget_ec})"
+    set_output "BUDGET_EXCEEDED"
+    exit 1
+  fi
   result="REJECT"
 done
 
@@ -278,9 +349,17 @@ if [[ "$result" == "PASS_TO_HUMAN" ]]; then
   # .ai/ 는 커밋하지 않음 (gitignore + 경로 제외)
   git add -A -- . ':!.ai' || true
   git add docs/loop/loop-run-log.md docs/loop/STATE.md 2>/dev/null || true
-  if git diff --cached --quiet; then
-    echo "No staged changes — still PASS_TO_HUMAN (empty diff?)"
+  product_changes="$(git status --porcelain | grep -v -E 'docs/loop/STATE\.md|docs/loop/loop-run-log\.md' || true)"
+  if [[ -z "$product_changes" ]]; then
+    echo "empty product diff — downgrade PASS_TO_HUMAN"
+    result="REJECT"
+    set_output "REJECT"
+  elif git diff --cached --quiet; then
+    echo "No staged product changes — downgrade PASS_TO_HUMAN"
+    result="REJECT"
+    set_output "REJECT"
   else
-    git commit -m "feat: resolve #${ISSUE_NUMBER} (AI loop)"
+    # commit-msg 훅: [type/name] subject. feat: resolve #N 은 거절된다.
+    git commit -m "[feat/ai-loop] #${ISSUE_NUMBER} 이슈 반영"
   fi
 fi

@@ -40,6 +40,7 @@ workflow_dispatch cloud|local → 동일 워크플로
 | 위치 | 역할 |
 |------|------|
 | `docs/loop/STATE.md` | 시작 시 WIP(issue/backlog/app) → 종료 시 clear. kill switch는 사람이 유지 |
+| 이슈 코멘트 `loop-budget item=…` | 잡이 끝나도 시도·거절 횟수를 남긴다. 다음 실행은 그 최댓값에서 잇는다. `.cache` 만으로는 VM 밖으로 안 남는다 |
 | `docs/loop/loop-run-log.md` | 결과 append. PASS_TO_HUMAN 커밋에 포함될 수 있음 |
 | `.ai/` | job 스크래치 (gitignore). Actions artifact로만 보관 |
 | 브랜치 / PR / 이슈 코멘트 | VM 종료 후에도 남는 결과 |

@@ -29,7 +29,7 @@
 ## Denylist (SoT)
 
 - 경로 목록: [`docs/harness/DENYLIST.md`](../harness/DENYLIST.md)
-- 가드: `pnpm guard:harness` (`--strict-denylist`는 합의 후 — [`ROADMAP.md`](./ROADMAP.md))
+- 가드: `pnpm guard:harness` (secret 패턴은 fail. 보호 경로를 막는 GitHub 검사는 `harness-owner-gate`)
 - 루프/에이전트는 denylist 경로를 **사람 승인 없이 수정하지 않는다** (`.cursor/skills/safe-edit`)
 
 ## Limits
@@ -42,7 +42,8 @@ token_budget_note: "무제한 루프 금지 — 상한 초과 시 STATE escalati
 ```
 
 `max_concurrent_loops` / `pnpm loop:lock` 은 **같은 워킹트리(호스트) 프로세스** 기준이다.  
-Actions의 cloud/local **concurrency 그룹 분리**(`ai-loop-cloud` / `ai-loop-local`)와는 층이 다르다 — 두 러너가 동시에 돌 수 있으나 구독 한도는 공유 ([`RUNNERS.md`](./RUNNERS.md)).
+Actions의 cloud/local **concurrency 그룹 분리**(`ai-loop-cloud` / `ai-loop-local`)와는 층이 다르다 — 두 러너가 동시에 돌 수 있으나 구독 한도는 공유 ([`RUNNERS.md`](./RUNNERS.md)).  
+이 큐 분리는 유지한다. 두 러너를 한 그룹으로 합쳐 전역 동시 1개로 만들지 않는다.
 
 ## Active loops
 

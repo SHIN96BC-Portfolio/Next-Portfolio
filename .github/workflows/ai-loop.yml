@@ -97,8 +97,6 @@ jobs:
       PRIVATE_COOKIE_SECRET_KEY: harness-ci-private-cookie-secret
       NEXT_TURBOPACK_EXPERIMENTAL_USE_SYSTEM_TLS_CERTS: '1'
       CI: true
-      # ai-loop.sh 가 self-hosted 여부를 알 수 있게
-      AI_LOOP_LOCAL: ${{ runner.environment == 'self-hosted' && '1' || '0' }}
 
     steps:
       # fetch-depth: 0 → guard denylist 가 merge-base diff 를 잡을 수 있음
@@ -115,7 +113,9 @@ jobs:
         run: |
           NUM="${{ inputs.issue_number || github.event.issue.number }}"
           echo "ISSUE_NUMBER=$NUM" >> "$GITHUB_ENV"
-          echo "BRANCH=ai/issue-$NUM" >> "$GITHUB_ENV"
+          # pre-commit 브랜치 규칙: {type}/{name}/#{이슈번호}
+          # ai/issue-N 은 훅에서 거절되어 PASS 뒤 커밋이 실패한다.
+          echo "BRANCH=feat/ai-loop/#$NUM" >> "$GITHUB_ENV"
           TITLE="$(gh issue view "$NUM" --json title -q .title)"
           echo "ISSUE_TITLE=$TITLE" >> "$GITHUB_ENV"
           {
@@ -173,6 +173,8 @@ jobs:
           CURSOR_API_KEY: ${{ secrets.CURSOR_API_KEY }}
           # Build 모델 강제 (Claude Pre-PR과 분리용). 비우면 이슈 yaml / 계정 기본
           CURSOR_BUILD_MODEL_OVERRIDE: ${{ vars.CURSOR_BUILD_MODEL || '' }}
+          # runner 는 스텝 env 에서만 쓸 수 있다. 잡 env 에 두면 워크플로 파일이 거절된다.
+          AI_LOOP_LOCAL: ${{ runner.environment == 'self-hosted' && '1' || '0' }}
         run: bash scripts/ai-loop.sh
 
       # 실패 원인 분석용 (plan/review/verify 로그). .ai 는 gitignore

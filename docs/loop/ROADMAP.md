@@ -26,7 +26,7 @@
 
 ## 하네스 선택·품질
 
-- [ ] `HARNESS_STRICT_DENYLIST=1` 를 PR 기본으로 켤지
+- [x] 보호 경로의 PR 판정은 GitHub `harness-owner-gate`. 로컬 가드를 환경변수로 끄고 켜는 스위치는 두지 않는다 ([`ACTIONS-SETUP.md`](./ACTIONS-SETUP.md))
 - [ ] `snap`을 CI 기본 verify에 넣을지
 - [ ] Jest 커버리지 확대 (mapper 외)
 - [ ] SECURITY 코드 반영(B-002) 후 `guard-harness` allowlist 축소

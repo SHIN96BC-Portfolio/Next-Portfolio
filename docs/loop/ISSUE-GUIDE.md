@@ -30,7 +30,6 @@
 | `BUDGET_ITEM` | backlog id 또는 `issue-<n>` | ❌ |
 | `CLAUDE_CODE_OAUTH_TOKEN` / `CURSOR_API_KEY` | Actions **Secrets** | ✅ 필수 |
 | `CURSOR_BUILD_MODEL` | Actions **Variables** (선택, Build 모델 기본값) | 선택 |
-| `HARNESS_STRICT_DENYLIST` | Variables (`1`이면 denylist hit → CI fail) | 선택 |
 
 로컬에서 스크립트만 수동 실행할 때:
 

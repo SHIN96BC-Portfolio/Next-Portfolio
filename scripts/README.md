@@ -11,9 +11,9 @@
 | `verify:portfolio` 등 | `verify-app.mjs` + `app-gates.mjs` | 앱별 합격 게이트 (full/lite) |
 | `verify:app --list` | 同上 | 레지스트리 표 출력 |
 | `verify:portfolio:snap` | verify-app `--snap` | full verify + 라우트 스크린샷 |
-| `guard:harness` | `guard-harness.mjs` | NEXT_PUBLIC secret + denylist diff |
-| `guard:harness:strict` | 同上 `--strict-denylist` | denylist hit → fail |
-| `guard:tests` | `guard-tests.mjs` | 새 로직 → Jest / 조건부 E2E |
+| `guard:harness` | `guard-harness.mjs` | NEXT_PUBLIC secret fail. 보호 경로 알림은 owner gate 가 판정 |
+| `guard:harness:strict` | 同上 | `guard:harness` 와 같은 명령. 더 엄격한 로컬 모드는 없다 |
+| `guard:tests` | `guard-tests.mjs` | 로직 변경과 대응 Jest 가 같은 diff 인지 / 조건부 E2E |
 | `loop:status` | `loop-status.mjs` | STATE kill switch (paused=exit 2) |
 | `loop:lock` / `unlock` | `loop-lock.mjs` / `loop-unlock.mjs` | `.cache/loop.lock` 동시성 |
 | `loop:budget` | `loop-budget.mjs` | 항목별 attempts/rejects 상한 |
