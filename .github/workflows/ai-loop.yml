@@ -46,7 +46,7 @@ on:
 # 주의: 로컬+클라우드 동시 실행 시 Claude/Cursor 구독 한도는 공유.
 # -----------------------------------------------------------------------------
 concurrency:
-  group: ai-loop-${{ (github.event_name == 'workflow_dispatch' && inputs.target == 'local') || (github.event_name == 'issues' && contains(github.event.issue.labels.*.name, 'run:local')) && 'local' || 'cloud' }}
+  group: ai-loop-${{ ((github.event_name == 'workflow_dispatch' && inputs.target == 'local') || (github.event_name == 'issues' && contains(github.event.issue.labels.*.name, 'run:local'))) && 'local' || 'cloud' }}
   cancel-in-progress: false
 
 # 브랜치 push / PR 생성 / 이슈 코멘트에 필요
@@ -74,7 +74,7 @@ jobs:
     # - 그 외 → ubuntu-latest (GitHub 호스팅 일회용 VM)
     # 라벨 순서: ai-task가 트리거이므로 로컬 실행은 run:local을 먼저/같이 붙일 것.
     # -------------------------------------------------------------------------
-    runs-on: ${{ (github.event_name == 'workflow_dispatch' && inputs.target == 'local') || (github.event_name == 'issues' && contains(github.event.issue.labels.*.name, 'run:local')) && fromJSON('["self-hosted","ai-local"]') || 'ubuntu-latest' }}
+    runs-on: ${{ ((github.event_name == 'workflow_dispatch' && inputs.target == 'local') || (github.event_name == 'issues' && contains(github.event.issue.labels.*.name, 'run:local'))) && fromJSON('["self-hosted","ai-local"]') || 'ubuntu-latest' }}
     timeout-minutes: 120
 
     env:
