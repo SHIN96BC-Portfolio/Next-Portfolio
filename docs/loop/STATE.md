@@ -6,10 +6,10 @@
 ## Status
 
 ```yaml
-loop: paused
+loop: running
 active_mode: none
 # active_mode: none | report | build | verify
-updated_at: 2026-09-21
+updated_at: 2026-10-21
 ```
 
 ## WIP

@@ -23,7 +23,7 @@ export const portfolioCareerProjectsKo: ResumeProjectConfig[] = [
     period: '2024.08 – 재직중',
     role: '프론트엔드 개발',
     links: [],
-    scopeTags: ['FE 3명 → 5명', 'PL과 아키텍처 공동 설계'],
+    scopeTags: ['FE 3명 → 6명', 'PL과 아키텍처 공동 설계'],
     cases: [
       {
         title: '레거시 서비스 안정화',

@@ -23,7 +23,7 @@ export const portfolioCareerProjectsJa: ResumeProjectConfig[] = [
     period: '2024.08 – 在職中',
     role: 'フロントエンド開発',
     links: [],
-    scopeTags: ['FE 3名 → 5名', 'PL とアーキテクチャを共同設計'],
+    scopeTags: ['FE 3名 → 6名', 'PL とアーキテクチャを共同設計'],
     cases: [
       {
         title: 'レガシーサービスの安定化',

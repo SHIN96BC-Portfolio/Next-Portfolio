@@ -23,7 +23,7 @@ export const portfolioCareerProjectsEn: ResumeProjectConfig[] = [
     period: '2024.08 – Present',
     role: 'Frontend Development',
     links: [],
-    scopeTags: ['FE team 3 → 5', 'Architecture co-designed with PL'],
+    scopeTags: ['FE team 3 → 6', 'Architecture co-designed with PL'],
     cases: [
       {
         title: 'Stabilizing the legacy service',
