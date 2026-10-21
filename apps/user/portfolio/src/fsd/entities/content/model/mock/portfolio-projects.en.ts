@@ -11,7 +11,7 @@ export const portfolioProjectsEn: ProjectCompany[] = [
         id: 'travel-platform',
         name: 'Company M — B2C/B2B Travel Platform',
         period: '2024.08 –',
-        role: 'Frontend Developer · FE team of 3 during the next-gen rebuild, 5 today / stands in for the PL when absent',
+        role: 'Frontend Developer · FE team of 3 during the next-gen rebuild, 6 today / stands in for the PL when absent',
         summary:
           'Running as-is operations of Company M’s B2C/B2B travel platform alongside a full next-gen frontend rebuild.',
         highlights: [

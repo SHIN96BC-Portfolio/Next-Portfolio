@@ -11,7 +11,7 @@ export const portfolioProjectsJa: ProjectCompany[] = [
         id: 'travel-platform',
         name: 'M社 B2C/B2B 旅行プラットフォーム',
         period: '2024.08 –',
-        role: 'フロントエンド開発者 · 次世代再構築は FE 3名、現在は5名 / PL 不在時は役割を代行',
+        role: 'フロントエンド開発者 · 次世代再構築は FE 3名、現在は6名 / PL 不在時は役割を代行',
         summary: 'M社 B2C/B2B 旅行プラットフォームの as-is 運用と、次世代フロントエンドの全面再構築を並行。',
         highlights: [
           '[Next-Gen] コアドメインを再構築 — 航空（Topas）・ツアーパス（Klook）・ホテル・プロモーション・B2B・認証、as-is 運用を並行',

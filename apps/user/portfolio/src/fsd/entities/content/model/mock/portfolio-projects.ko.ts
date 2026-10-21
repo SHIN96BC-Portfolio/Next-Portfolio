@@ -11,7 +11,7 @@ export const portfolioProjectsKo: ProjectCompany[] = [
         id: 'travel-platform',
         name: 'M사 B2C/B2B 여행 플랫폼',
         period: '2024.08 –',
-        role: '프론트엔드 개발자 · 차세대 재구축 FE 3명 → 현재 5명 / PL 부재 시 역할 대행',
+        role: '프론트엔드 개발자 · 차세대 재구축 FE 3명 → 현재 6명 / PL 부재 시 역할 대행',
         summary: 'M사 B2C/B2B 여행 플랫폼의 as-is 운영과 차세대 프론트엔드 전면 재구축을 병행.',
         highlights: [
           '【차세대】 핵심 도메인 재구축 — 항공(Topas)·투어패스(Klook)·호텔·프로모션·B2B·인증, as-is 운영 병행',

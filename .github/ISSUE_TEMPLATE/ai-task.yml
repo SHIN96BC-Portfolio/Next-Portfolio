@@ -65,8 +65,7 @@ body:
     id: build_model
     attributes:
       label: Cursor build model (optional)
-      description: `agent --model` id so Build ≠ Claude review. Empty = account default.
-      placeholder: ""
+      description: "agent --model id so Build is not the Claude review. Empty = account default."
     validations:
       required: false
 
