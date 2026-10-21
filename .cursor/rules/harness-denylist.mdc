@@ -1,0 +1,38 @@
+---
+description: 가드·규칙·워크플로 파일을 열면 human gate 로 본다. 경로 목록은 DENYLIST 에 있다.
+globs:
+  - biome.json
+  - turbo.json
+  - package.json
+  - AGENTS.md
+  - CLAUDE.md
+  - .husky/**
+  - .github/workflows/**
+  - .github/CODEOWNERS
+  - .cursor/skills/**
+  - .cursor/rules/**
+  - docs/harness/**
+  - docs/loop/LOOP.md
+  - scripts/guard-*.mjs
+  - scripts/verify-app.mjs
+  - scripts/app-gates.mjs
+  - scripts/harness-*.mjs
+  - scripts/lint-fsd-*.mjs
+  - scripts/ai-loop.sh
+  - scripts/ai-loop-*.mjs
+  - scripts/loop-*.mjs
+  - apps/**/package.json
+  - apps/**/jest.config.ts
+  - apps/**/playwright.config.ts
+alwaysApply: false
+---
+
+# Human gate
+
+이 규칙은 위 glob 에 해당하는 파일을 열 때만 붙는다. 보호 경로 전체 목록을 여기 다시 적지 않는다.
+
+- 경로 목록: `docs/harness/DENYLIST.md`
+- 손대기 전 절차: `.cursor/skills/safe-edit/SKILL.md`
+- 요약: `AGENTS.md` 의 Harness 절
+
+Biome, FSD 린트, 테스트, 가드가 실패하면 이 파일들을 느슨하게 고쳐 통과시키지 않는다. 제품 코드나 테스트를 고친다. 사람이 이 경로를 바꾸라고 이 턴에 명시하기 전에는 수정하지 않는다.

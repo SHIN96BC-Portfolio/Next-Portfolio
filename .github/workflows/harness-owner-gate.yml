@@ -1,0 +1,61 @@
+# =============================================================================
+# Harness owner gate — 보호 경로는 베이스 브랜치 규칙 + 코드 소유자 APPROVE
+# =============================================================================
+#
+# pull_request 워크플로는 PR 브랜치의 yml 을 실행한다.
+# 에이전트가 그 파일을 빈 성공으로 바꾸면 검사가 사라진다.
+# pull_request_target 은 베이스 브랜치의 이 파일을 실행한다.
+#
+# 이 잡은 PR 코드를 체크아웃하거나 실행하지 않는다.
+# 파일 목록·package.json·리뷰는 GitHub API 로만 읽는다.
+# PR_AUTHOR 가 CODEOWNERS 소유자(@SHIN96BC)면 그 사람이 연 PR 은 통과한다.
+# 봇 계정이 열면 소유자의 APPROVE 가 있을 때만 통과한다.
+# 봇 토큰을 소유자 계정으로 만들면 이 구분이 사라진다.
+#
+# 보호가 시작되려면 이 파일이 default 브랜치에 있어야 한다.
+# 그 전 PR 에는 이 체크가 돌지 않는다. 머지 후 ruleset 에
+# 체크 이름 harness-owner-gate 를 필수로 넣는다.
+# =============================================================================
+
+name: Harness owner gate
+
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened, ready_for_review]
+  pull_request_review:
+    types: [submitted]
+
+permissions:
+  contents: read
+  pull-requests: read
+
+concurrency:
+  group: harness-owner-gate-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  gate:
+    name: harness-owner-gate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout base (gate source of truth)
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          persist-credentials: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Require code owner approval for protected paths
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          # PR 을 연 로그인. 소유자 본인이면 그 보호 파일은 통과하고, 봇이면 APPROVE 가 필요하다.
+          PR_AUTHOR: ${{ github.event.pull_request.user.login }}
+        run: node scripts/harness-owner-gate.mjs

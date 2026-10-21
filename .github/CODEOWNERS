@@ -1,0 +1,73 @@
+# =============================================================================
+# CODEOWNERS — 검사·규칙 파일을 사람 계정만 소유한다
+# =============================================================================
+#
+# GitHub는 마지막에 매칭된 줄의 소유자를 그 파일의 소유자로 본다.
+# 이 파일의 로그인 @SHIN96BC 는 이 레포 최근 커밋의 GitHub 계정이다.
+# @mousecjf-ui 도 본인 계정이면 각 줄 끝에 공백 후 @mousecjf-ui 를 붙인다.
+#
+# 이 목록만으로 머지가 막히지는 않는다.
+# Settings → Rules → Rulesets 에서
+# "Require review from Code Owners" 와 status check "harness-owner-gate" 를
+# 켜야 봇이 보호 파일을 혼자 머지할 수 없다.
+# 절차: docs/loop/ACTIONS-SETUP.md §6
+#
+# AI 봇 토큰의 GitHub 계정은 여기 적힌 소유자면 안 된다.
+# 소유자 본인이 연 PR 은 harness-owner-gate 가 통과시키고,
+# 봇이 연 PR 은 소유자가 Approve 해야 통과한다.
+# =============================================================================
+
+# --- 린트·테스트 러너. 여기를 느슨하게 고치면 검사 자체가 사라진다 ---
+/biome.json @SHIN96BC
+/turbo.json @SHIN96BC
+/apps/**/jest.config.ts @SHIN96BC
+/apps/**/playwright.config.ts @SHIN96BC
+
+# --- 게이트 명령이 들어 있는 매니페스트. 의존성 수정에도 리뷰가 붙는다 ---
+/package.json @SHIN96BC
+/apps/**/package.json @SHIN96BC
+
+# --- 에이전트가 매 턴 읽는 규칙. 지시문을 약하게 고치는 것을 막는다 ---
+/AGENTS.md @SHIN96BC
+/CLAUDE.md @SHIN96BC
+/.cursor/skills/ @SHIN96BC
+/.cursor/rules/ @SHIN96BC
+/docs/harness/ @SHIN96BC
+/docs/loop/LOOP.md @SHIN96BC
+
+# --- 커밋 훅과 가드 스크립트 ---
+/.husky/ @SHIN96BC
+/scripts/guard-harness.mjs @SHIN96BC
+/scripts/guard-tests.mjs @SHIN96BC
+/scripts/guard-tests.test.mjs @SHIN96BC
+/scripts/verify-app.mjs @SHIN96BC
+/scripts/app-gates.mjs @SHIN96BC
+/scripts/harness-policy.mjs @SHIN96BC
+/scripts/harness-policy.test.mjs @SHIN96BC
+/scripts/harness-owner-gate.mjs @SHIN96BC
+/scripts/lint-fsd-folder-structure.mjs @SHIN96BC
+/scripts/lint-fsd-ui-private-folders.mjs @SHIN96BC
+/scripts/ai-loop.sh @SHIN96BC
+/scripts/ai-loop-parse-issue.mjs @SHIN96BC
+/scripts/ai-loop-state.mjs @SHIN96BC
+/scripts/loop-lib.mjs @SHIN96BC
+/scripts/loop-lib.test.mjs @SHIN96BC
+/scripts/loop-prompt.test.mjs @SHIN96BC
+/scripts/loop-budget.mjs @SHIN96BC
+/scripts/loop-lock.mjs @SHIN96BC
+/scripts/loop-status.mjs @SHIN96BC
+/scripts/loop-unlock.mjs @SHIN96BC
+
+# --- 이 파일과 워크플로. PR 안에서 검사를 지워도 베이스 규칙이 남게 소유자를 둔다 ---
+/.github/CODEOWNERS @SHIN96BC
+/.github/workflows/ @SHIN96BC
+
+# --- DENYLIST 의 암호·인증·시크릿 경로. 테스트가 이 목록과 어긋나면 실패한다 ---
+/core/libs/crypto/ @SHIN96BC
+/apps/user/portfolio/src/fsd/app/auth/config/next-auth.ts @SHIN96BC
+/apps/user/portfolio/src/fsd/shared/config/proxy/handlers/auth/ @SHIN96BC
+/apps/user/portfolio/src/fsd/shared/config/cookie/ @SHIN96BC
+/apps/user/portfolio/src/fsd/shared/config/storage/storage.setup.ts @SHIN96BC
+/apps/**/.env @SHIN96BC
+/apps/**/.env.local @SHIN96BC
+/apps/**/.env.*.local @SHIN96BC

@@ -1,5 +1,5 @@
 import { PortfolioLayoutProps } from '@FsdApp/layouts/get-portfolio-layout-props';
-import PortfolioHeader from '@FsdWidgets/header/ui/PortfolioHeader';
+import { PortfolioHeader } from '@FsdWidgets/header/ui';
 
 interface Props extends PortfolioLayoutProps {
   children: React.ReactNode;

@@ -1,0 +1,17 @@
+---
+description: FSD 레이어를 고칠 때 상위는 하위만 import 한다. 본문은 AGENTS 에 있다.
+globs: apps/**/src/fsd/**/*
+alwaysApply: false
+---
+
+# FSD
+
+이 규칙은 `apps/**/src/fsd` 아래 파일을 열 때만 붙는다. 매 턴 전체를 다시 싣지 않기 위한 것이다.
+
+레이어 방향, 같은 레이어 cross-slice 금지, `_parts` 위치는 여기 적지 않는다. 복붙하면 AGENTS 와 어긋난다.
+
+- 경계와 import 표: `AGENTS.md` 의 Architecture, Import rules
+- 폴더·파일 이름, REST, i18n 상세: 루트 `README.md` 의 Design Pattern
+- 기계 검사: `biome.json` 의 import 제한, `pnpm lint:fsd`
+
+상위 레이어가 하위를 import 하게 규칙을 느슨히 고치지 않는다. 검사 실패는 호출 방향을 고쳐서 해결한다.
