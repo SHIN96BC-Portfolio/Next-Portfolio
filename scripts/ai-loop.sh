@@ -70,6 +70,7 @@ fi
 # -----------------------------------------------------------------------------
 ISSUE_BODY="$ISSUE_BODY" ISSUE_NUMBER="$ISSUE_NUMBER" \
   node scripts/ai-loop-parse-issue.mjs --write-env > .ai/parsed.env
+# --write-env 는 KEY='value' 라 source 해도 VERIFY_CMD 공백이 명령으로 쪼개지지 않는다.
 set -a
 # shellcheck disable=SC1091
 source .ai/parsed.env

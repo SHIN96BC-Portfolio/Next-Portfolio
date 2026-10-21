@@ -97,6 +97,9 @@ jobs:
       PRIVATE_COOKIE_SECRET_KEY: harness-ci-private-cookie-secret
       NEXT_TURBOPACK_EXPERIMENTAL_USE_SYSTEM_TLS_CERTS: '1'
       CI: true
+      # 로컬 훅(pre-commit/pre-push)은 개발자 PC용. 러너에서 git commit/push 가 dash `[[` 나
+      # 중복 typecheck 로 죽지 않게 한다. 게이트는 이 잡의 verify/guard 가 이미 돌린다.
+      HUSKY: '0'
 
     steps:
       # fetch-depth: 0 → guard denylist 가 merge-base diff 를 잡을 수 있음
