@@ -180,13 +180,15 @@ jobs:
           AI_LOOP_LOCAL: ${{ runner.environment == 'self-hosted' && '1' || '0' }}
         run: bash scripts/ai-loop.sh
 
-      # 실패 원인 분석용 (plan/review/verify 로그). .ai 는 gitignore
+      # 실패 원인 분석용 (plan/review/verify 로그). .ai 는 gitignore 라 커밋되지 않는다.
+      # 점 폴더라 v4 기본값(include-hidden-files: false)이면 zip 이 비어 Plan 실패를 못 본다.
       - name: Upload .ai artifacts
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: ai-loop-${{ env.ISSUE_NUMBER }}
           path: .ai/
+          include-hidden-files: true
           if-no-files-found: ignore
 
       # Claude가 PASS_TO_HUMAN 한 경우에만 PR. merge는 사람이 APPROVE
