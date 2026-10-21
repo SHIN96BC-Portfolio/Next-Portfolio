@@ -49,3 +49,15 @@ test('ai-loop.sh delegates rules to CLAUDE.md and the skills', () => {
   const guard = fs.readFileSync(new URL('./guard-harness.mjs', import.meta.url), 'utf8');
   assert.match(guard, /HARNESS_DENYLIST_HITS=\$\{denylistHits\}/);
 });
+
+test('Plan failure dumps plan.log and does not swallow the claude exit', () => {
+  assert.match(loop, /skipDangerousModePermissionPrompt/);
+  assert.match(loop, /dump_ai_file \.ai\/plan\.log/);
+  assert.match(loop, /plan_ec=\$\?/);
+  assert.equal(loop.includes('> .ai/plan.log 2>&1 || true'), false);
+});
+
+test('ai-loop workflow uploads the hidden .ai artifact directory', () => {
+  const yml = fs.readFileSync(new URL('../.github/workflows/ai-loop.yml', import.meta.url), 'utf8');
+  assert.match(yml, /include-hidden-files:\s*true/);
+});

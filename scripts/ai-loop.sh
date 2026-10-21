@@ -56,6 +56,39 @@ AI_LOOP_LOCAL="${AI_LOOP_LOCAL:-0}"
 # shellcheck disable=SC2086
 CLAUDE_FLAGS=(${AI_LOOP_CLAUDE_FLAGS:---dangerously-skip-permissions})
 
+# GitHub-hosted 는 매번 빈 HOME. skipDangerousModePermissionPrompt 가 없으면
+# --dangerously-skip-permissions 가 -p 에서 무시되고 Write 가 거절되어 plan.md 가 안 생긴다.
+ensure_claude_unattended() {
+  node --input-type=module -e '
+    import fs from "node:fs";
+    import os from "node:os";
+    import path from "node:path";
+    const dir = path.join(os.homedir(), ".claude");
+    fs.mkdirSync(dir, { recursive: true });
+    const file = path.join(dir, "settings.json");
+    let data = {};
+    try {
+      data = JSON.parse(fs.readFileSync(file, "utf8"));
+    } catch {
+      data = {};
+    }
+    if (data === null || typeof data !== "object" || Array.isArray(data)) data = {};
+    data.skipDangerousModePermissionPrompt = true;
+    fs.writeFileSync(file, `${JSON.stringify(data, null, 2)}\n`);
+  '
+}
+
+dump_ai_file() {
+  local f="$1"
+  echo "[ai-loop] ----- ${f} -----"
+  if [[ -f "$f" ]]; then
+    cat "$f"
+  else
+    echo "(missing)"
+  fi
+  echo "[ai-loop] ----- end ${f} -----"
+}
+
 # self-hosted 는 작업 디렉터리가 남아 .ai 잔여가 섞일 수 있음 → 매 실행 초기화
 rm -rf .ai
 mkdir -p .ai
@@ -210,15 +243,28 @@ printf "# %s\n\n%s\n\n## Meta\n\n- issue: #%s\n- app: %s\n- verify: %s\n- backlo
 # -----------------------------------------------------------------------------
 # 1. Plan (Claude) — 코드 수정 금지, .ai/plan.md 만 작성
 # -----------------------------------------------------------------------------
+if ! command -v claude >/dev/null 2>&1; then
+  echo "claude CLI not found on PATH"
+  append_run_log "fail" "claude CLI missing"
+  set_output "FAIL"
+  exit 1
+fi
+
+ensure_claude_unattended
+
+set +e
 claude -p "${CLAUDE_FLAGS[@]}" \
   "Follow CLAUDE.md section Plan. This invocation is the Plan step.
 Read .ai/issue.md. Backlog: ${BACKLOG_ID:-none}. App: ${ACTIVE_APP}. Gate: ${VERIFY_CMD}.
-Write .ai/plan.md only." \
-  > .ai/plan.log 2>&1 || true
+Use the Write tool to create .ai/plan.md only. Do not only print the plan to stdout." \
+  > .ai/plan.log 2>&1
+plan_ec=$?
+set -e
 
 if [[ ! -f .ai/plan.md ]]; then
-  echo "Plan missing — Claude did not write .ai/plan.md"
-  append_run_log "fail" "plan.md missing"
+  echo "Plan missing — Claude did not write .ai/plan.md (exit ${plan_ec})"
+  dump_ai_file .ai/plan.log
+  append_run_log "fail" "plan.md missing (claude exit ${plan_ec})"
   set_output "FAIL"
   exit 1
 fi
