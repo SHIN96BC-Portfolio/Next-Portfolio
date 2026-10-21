@@ -30,7 +30,7 @@
     "check-types": "turbo run typecheck",
     "typecheck": "pnpm run check-types",
     "test": "turbo test",
-    "test:harness": "node --test scripts/harness-policy.test.mjs scripts/loop-lib.test.mjs scripts/loop-prompt.test.mjs scripts/guard-tests.test.mjs",
+    "test:harness": "node --test scripts/harness-policy.test.mjs scripts/loop-lib.test.mjs scripts/loop-prompt.test.mjs scripts/guard-tests.test.mjs scripts/ai-loop-parse-issue.test.mjs",
     "biome": "biome check . && node scripts/lint-fsd-ui-private-folders.mjs && node scripts/lint-fsd-folder-structure.mjs",
     "lint:fsd": "node scripts/lint-fsd-folder-structure.mjs",
     "lint:fsd:dry": "node scripts/lint-fsd-folder-structure.mjs --dry-run",

@@ -20,6 +20,8 @@
  * 출력 (--write-env):
  *   ACTIVE_APP, VERIFY_CMD, BACKLOG_ID, BUDGET_ITEM,
  *   CURSOR_BUILD_MODEL, UNKNOWN_APP
+ *   값은 단일 따옴표로 감싼다. 공백이 있는 VERIFY_CMD 를 source 할 때
+ *   bash 가 `verify:portfolio` 를 명령으로 실행하지 않게 하기 위함이다.
  *
  * BUDGET_ITEM: backlog id 가 있으면 그 값, 없으면 issue-<n>
  *   → loop:budget --item 과 동일 키
@@ -192,6 +194,16 @@ export function clearStateWip() {
   fs.writeFileSync(STATE_PATH, md, 'utf8');
 }
 
+/**
+ * bash `source` 용 KEY='value'. 공백·콜론이 있어도 한 할당으로 들어간다.
+ * @param {string} key
+ * @param {string | number | boolean | null | undefined} value
+ */
+export function formatShellAssign(key, value) {
+  const escaped = String(value ?? '').replace(/'/g, `'\\''`);
+  return `${key}='${escaped}'`;
+}
+
 export { APP_ALIASES, APP_GATES, resolveGate };
 
 const isMain = process.argv[1] && path.resolve(process.argv[1]) === path.resolve(fileURLToPath(import.meta.url));
@@ -202,12 +214,12 @@ if (isMain) {
   const item = budgetItemId(parsed, issueNumber);
 
   if (process.argv.includes('--write-env')) {
-    console.info(`ACTIVE_APP=${parsed.activeApp}`);
-    console.info(`VERIFY_CMD=${parsed.verifyCmd}`);
-    console.info(`BACKLOG_ID=${parsed.backlogId}`);
-    console.info(`BUDGET_ITEM=${item}`);
-    console.info(`CURSOR_BUILD_MODEL=${parsed.cursorBuildModel}`);
-    console.info(`UNKNOWN_APP=${parsed.unknownApp ? '1' : '0'}`);
+    console.info(formatShellAssign('ACTIVE_APP', parsed.activeApp));
+    console.info(formatShellAssign('VERIFY_CMD', parsed.verifyCmd));
+    console.info(formatShellAssign('BACKLOG_ID', parsed.backlogId));
+    console.info(formatShellAssign('BUDGET_ITEM', item));
+    console.info(formatShellAssign('CURSOR_BUILD_MODEL', parsed.cursorBuildModel));
+    console.info(formatShellAssign('UNKNOWN_APP', parsed.unknownApp ? '1' : '0'));
   } else {
     console.info(JSON.stringify({ ...parsed, budgetItem: item }, null, 2));
   }
