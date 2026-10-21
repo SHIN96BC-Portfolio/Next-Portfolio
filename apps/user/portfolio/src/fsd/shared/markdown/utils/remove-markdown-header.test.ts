@@ -11,6 +11,10 @@ describe('removeMarkdownHeader', () => {
     expect(removeMarkdownHeader('a+b', '## a+b\n\nbody')).toBe('body');
   });
 
+  it('returns empty string when markdown is undefined', () => {
+    expect(removeMarkdownHeader('x', undefined)).toBe('');
+  });
+
   it('leaves content when header name does not match', () => {
     const input = '## Other\n\nbody';
     expect(removeMarkdownHeader('예약확정', input)).toBe(input);
