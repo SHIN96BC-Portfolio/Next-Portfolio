@@ -48,7 +48,7 @@
 | 하네스 | H1~H6 (모노레포, 앱 게이트 1호 full) | SoT: [`docs/harness/README.md`](../harness/README.md) |
 | 루프 | L2~L5 | 정책 SoT: [`LOOP.md`](./LOOP.md) · Actions: [`GITHUB-ACTIONS.md`](./GITHUB-ACTIONS.md) |
 
-마지막 갱신: 2026-09 (문서 슬림화 — 운영 표는 harness/LOOP로 이관, 이 파일은 4층 living)
+마지막 갱신: 2026-10-22 (빈칸·강화 순서 → [`STRENGTHEN.md`](./STRENGTHEN.md). 운영 표는 harness/LOOP)
 
 ---
 
