@@ -6,6 +6,7 @@
 - Next.js 웹 프론트 코드를 보여드리기 위한 프로젝트 입니다.
 
 ## Skill
+### User
 <div>
     <div>
         <img src="https://img.shields.io/badge/Node.js(v22.17.0)-339933?style=flat&logo=node.js&logoColor=white"/>
@@ -22,6 +23,27 @@
         <img src="https://img.shields.io/badge/ReactQuery-FF4154?style=flat&logo=reactquery&logoColor=white"/>
         <img src="https://img.shields.io/badge/Zod-3E67B1?style=flat&logo=zod&logoColor=white"/>
         <img src="https://img.shields.io/badge/React Hook Form-EC5990?style=flat&logo=reacthookform&logoColor=white"/>
+    </div>
+</div>
+
+### Admin
+<div>
+    <div>
+        <img src="https://img.shields.io/badge/Node.js(v22.17.0)-339933?style=flat&logo=node.js&logoColor=white"/>
+        <img src="https://img.shields.io/badge/npm(v11.7.0)-CB3837?style=flat&logo=npm&logoColor=white"/>
+    </div>
+    <div>
+        <img src="https://img.shields.io/badge/Next(v15.5.6)-000000?style=flat&logo=next.js&logoColor=white"/>
+        <img src="https://img.shields.io/badge/React(v19)-61DAFB?style=flat&logo=react&logoColor=white"/>
+        <img src="https://img.shields.io/badge/Typescript-3178C6?style=flat&logo=typescript&logoColor=white"/>
+    </div>
+    <div>
+        <img src="https://img.shields.io/badge/Tailwind CSS-06B6D4?style=flat&logo=tailwindcss&logoColor=white"/>
+        <img src="https://img.shields.io/badge/redux-764ABC?style=flatl&logo=redux&logoColor=white"/>
+        <img src="https://img.shields.io/badge/ReactQuery-FF4154?style=flat&logo=reactquery&logoColor=white"/>
+        <img src="https://img.shields.io/badge/Zod-3E67B1?style=flat&logo=zod&logoColor=white"/>
+        <img src="https://img.shields.io/badge/React Hook Form-EC5990?style=flat&logo=reacthookform&logoColor=white"/>
+        <img src="https://img.shields.io/badge/GraphQL-E10098?style=flat&logo=graphql&logoColor=white"/>
     </div>
 </div>
 
@@ -495,6 +517,42 @@ HTTP 동사가 아니라 **하는 일** 기준으로 이름 붙인다.
 - codegen: `pnpm run gen:graphql` / `pnpm --filter @apps/admin-master-admin run gen:graphql:check`
 - REST와 동일하게 **entities 슬라이스**에 두고, 공통 클라이언트 인프라는 core/shared config에 둔다.
 
+#### 폴더
+
+```
+# 화면이 쓰는 문서 (사용자 언어: register / find / edit / remove)
+src/fsd/entities/<domain>/model/gql/
+  registerProduct.graphql
+  findProductById.graphql
+  findProducts.graphql
+
+# 스키마 (시스템 언어: create / get / update / delete)
+src/fsd/shared/libs/graphql/schemas/
+  base.graphql                         # DateTime, PageInfo, ApiResult, ErrorInfo
+  <domain>/
+    <domain>.types.graphql
+    <domain>.inputs.graphql
+    <domain>.queries.graphql
+    <domain>.mutations.graphql
+    <domain>.result.graphql
+```
+
+예: `registerProduct.graphql` 은 스키마의 `createProduct` 를 호출한다.
+
+#### 이름
+
+| 층 | 등록 | 조회 | 수정 | 삭제 |
+|----|------|------|------|------|
+| 스키마 (`Query` / `Mutation`) | `createProduct` | `getProductById`, `getProducts` | `updateProduct` | `deleteProduct` |
+| entities 문서 (`model/gql`) | `registerProduct` | `findProductById`, `findProducts` | `editProduct` | `removeProduct` |
+
+- Type / Enum / Scalar: `PascalCase` (`Product`, `ErrorCode`)
+- field / argument: `camelCase` (`createdAt`, `pageSize`)
+- ENUM 값: `UPPER_SNAKE_CASE` (`NOT_FOUND`)
+- 입력: `CreateProductInput`, 필터: `ProductsFilter`, 결과: `ProductResult` / `ProductsResult` (`ApiResult` 구현)
+- 리스트 조회는 복수형 (`getProducts`, `findProducts`). 단수는 `…ById`
+- 시간은 `DateTime` 스칼라 (ISO-8601)
+
 ---
 
 ## Internationalization(국제화)
@@ -654,15 +712,16 @@ pnpm verify:portfolio
 
 
 ### Branch Name
-- type/name/#issueNo
-- ex: feat/john/#123
+- type/name/app/#issueNo
+- ex: feat/john/portfolio/#123
+- app: portfolio, commerce, fashion, social, master-admin, commerce-admin, fashion-admin, social-admin (`verify:<short>`). 앱이 아니면 core, harness
 
 ### Commit Message
-- [type/name] subject
+- [type/name/app] subject
   <br/>
   <br/>
   markdown
-- ex: [feat/john] 로그인 기능 구현
+- ex: [feat/john/portfolio] 로그인 기능 구현
   <br/>
   <br/>
   로그인 기능 구현 상세

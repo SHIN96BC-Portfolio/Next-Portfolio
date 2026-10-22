@@ -125,8 +125,8 @@ Claude Pre-PR과 Build 모델을 나누려면:
 
 ### 6.1 이 잠금을 default 에 넣기
 
-브랜치 훅은 `{type}/{name}/#{이슈번호}` 만 허용한다. 예: `chore/sbc/#0`  
-커밋 메시지는 `[chore/sbc] 보호 파일 잠금` 형식이다.
+브랜치 훅은 `{type}/{name}/{app}/#{이슈번호}` 만 허용한다. 예: `chore/sbc/harness/#0`  
+커밋 메시지는 `[chore/sbc/harness] 보호 파일 잠금` 형식이다.
 
 로컬 커밋을 풀어 주는 환경변수는 없다. 보호 파일 커밋도 보통의 `git commit` 으로 한다.  
 봇이 그 파일을 넣은 PR 을 막는 검사는 머지 뒤에 켜지는 `harness-owner-gate` 다.  

@@ -19,7 +19,7 @@
  *
  * 출력 (--write-env):
  *   ACTIVE_APP, VERIFY_CMD, BACKLOG_ID, BUDGET_ITEM,
- *   CURSOR_BUILD_MODEL, UNKNOWN_APP
+ *   CURSOR_BUILD_MODEL, APP_SHORT, UNKNOWN_APP
  *   값은 단일 따옴표로 감싼다. 공백이 있는 VERIFY_CMD 를 source 할 때
  *   bash 가 `verify:portfolio` 를 명령으로 실행하지 않게 하기 위함이다.
  *
@@ -48,11 +48,12 @@ const DEFAULTS = {
   verifyCmd: APP_GATES[DEFAULT_FILTER].verify,
   backlogId: '',
   cursorBuildModel: '',
+  appShort: APP_GATES[DEFAULT_FILTER].short,
 };
 
 /**
  * @param {string} body
- * @returns {{ activeApp: string, verifyCmd: string, backlogId: string, cursorBuildModel: string, unknownApp: boolean }}
+ * @returns {{ activeApp: string, verifyCmd: string, backlogId: string, cursorBuildModel: string, appShort: string, unknownApp: boolean }}
  */
 export function parseIssueBody(body = '') {
   const text = String(body || '');
@@ -98,11 +99,13 @@ export function parseIssueBody(body = '') {
   if (gate) {
     out.activeApp = gate.filter;
     out.verifyCmd = gate.verify;
+    out.appShort = gate.short;
     out.unknownApp = false;
   } else {
     out.unknownApp = true;
     out.activeApp = DEFAULTS.activeApp;
     out.verifyCmd = DEFAULTS.verifyCmd;
+    out.appShort = DEFAULTS.appShort;
   }
 
   return out;
@@ -219,6 +222,7 @@ if (isMain) {
     console.info(formatShellAssign('BACKLOG_ID', parsed.backlogId));
     console.info(formatShellAssign('BUDGET_ITEM', item));
     console.info(formatShellAssign('CURSOR_BUILD_MODEL', parsed.cursorBuildModel));
+    console.info(formatShellAssign('APP_SHORT', parsed.appShort));
     console.info(formatShellAssign('UNKNOWN_APP', parsed.unknownApp ? '1' : '0'));
   } else {
     console.info(JSON.stringify({ ...parsed, budgetItem: item }, null, 2));

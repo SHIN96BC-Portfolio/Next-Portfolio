@@ -4,14 +4,15 @@
 # 현재 브랜치 이름 가져오기
 BRANCH_NAME=$(git rev-parse --abbrev-ref HEAD)
 
-# 정규식: type/name/#issueNo 형식
-PATTERN="^(feat|hotfix|docs|style|refactor|chore|build|deploy|revert|test)/[a-zA-Z0-9_-]+/#[0-9]+$"
+# 정규식: type/name/app/#issueNo 형식
+PATTERN="^(feat|hotfix|docs|style|refactor|chore|build|deploy|revert|test)/[a-zA-Z0-9_-]+/[a-zA-Z0-9_-]+/#[0-9]+$"
 
 if [[ ! "$BRANCH_NAME" =~ $PATTERN ]]; then
-  echo "❌ 브랜치 이름은 {type}/{name}/{#issueNo} 형식이어야 합니다."
+  echo "❌ 브랜치 이름은 {type}/{name}/{app}/#{issueNo} 형식이어야 합니다."
   echo "현재 브랜치명: $BRANCH_NAME"
-  echo "예시: feat/john/#123"
+  echo "예시: feat/john/portfolio/#123"
   echo "type 목록: feat|hotfix|docs|style|refactor|chore|build|deploy|revert|test"
+  echo "app: portfolio|commerce|fashion|social|master-admin|commerce-admin|fashion-admin|social-admin|core|harness"
   exit 1
 fi
 

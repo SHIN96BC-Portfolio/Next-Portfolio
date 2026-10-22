@@ -114,6 +114,7 @@ VERIFY_CMD="${VERIFY_CMD:-pnpm verify:portfolio}"
 BACKLOG_ID="${BACKLOG_ID:-}"
 BUDGET_ITEM="${BUDGET_ITEM:-issue-${ISSUE_NUMBER}}"
 CURSOR_BUILD_MODEL="${CURSOR_BUILD_MODEL:-}"
+APP_SHORT="${APP_SHORT:-portfolio}"
 
 echo "[ai-loop] app=${ACTIVE_APP} verify=${VERIFY_CMD} backlog=${BACKLOG_ID:-none} budget=${BUDGET_ITEM} build_model=${CURSOR_BUILD_MODEL:-default}"
 
@@ -406,7 +407,7 @@ if [[ "$result" == "PASS_TO_HUMAN" ]]; then
     result="REJECT"
     set_output "REJECT"
   else
-    # commit-msg 훅: [type/name] subject. feat: resolve #N 은 거절된다.
-    git commit -m "[feat/ai-loop] #${ISSUE_NUMBER} 이슈 반영"
+    # commit-msg 훅: [type/name/app] subject. feat: resolve #N 은 거절된다.
+    git commit -m "[feat/ai-loop/${APP_SHORT}] #${ISSUE_NUMBER} 이슈 반영"
   fi
 fi
