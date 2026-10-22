@@ -36,7 +36,14 @@ Fine-grained PAT: Contents RW, Pull requests RW, Issues RW.
 
 기본 토큰만 쓸 때: Settings → Actions → General → **Allow GitHub Actions to create and approve pull requests**.
 
-루프 커밋 author는 이 토큰의 GitHub 유저(`{id}+{login}@users.noreply.github.com`)다. **잔디는 그 계정에 찍힌다.** 지금은 본인 PAT면 본인 잔디. 나중에 봇 계정 PAT로 바꾸면 잔디도 봇으로 간다. 그때도 본인 잔디를 유지하려면 Actions Variables에 `LOOP_GIT_AUTHOR_NAME` / `LOOP_GIT_AUTHOR_EMAIL`(GitHub에 등록된 메일 또는 본인 noreply)을 넣는다.
+루프 커밋 author는 이 토큰의 GitHub 유저(`{id}+{login}@users.noreply.github.com`)다. **잔디는 그 계정에 찍힌다.** 지금은 본인 PAT면 본인 잔디. 봇 계정 PAT로 바꾸면 잔디도 봇으로 간다.
+
+봇 PAT를 넣기 **전에** Actions Variables를 먼저 둔다. 이름은 로그인, 메일은 `SHIN96BC`에 묶인 noreply다. 개인 메일(`mousecjf@withmode.com`)은 `mousecjf-ui` 잔디로 간다.
+
+| Variable | 값 |
+|----------|-----|
+| `LOOP_GIT_AUTHOR_NAME` | `SHIN96BC` |
+| `LOOP_GIT_AUTHOR_EMAIL` | `87517304+SHIN96BC@users.noreply.github.com` |
 
 ## 2. 라벨
 

@@ -1,6 +1,7 @@
 # Loop roadmap
 
-후순위·합의 대기 체크리스트. **운영 SoT는 여기가 아니라** harness / LOOP / ACTIONS-SETUP.
+후순위·합의 대기 체크리스트. **운영 SoT는 여기가 아니라** harness / LOOP / ACTIONS-SETUP.  
+지금 부족한 것과 닫는 순서: [`STRENGTHEN.md`](./STRENGTHEN.md) (2026-10-22).
 
 ## maturity: lite vs full
 

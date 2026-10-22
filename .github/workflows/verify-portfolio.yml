@@ -14,7 +14,8 @@
 
 name: Verify Portfolio
 
-# paths 필터: 관련 없는 앱만 고친 PR에서 불필요하게 full gate를 돌리지 않음
+# paths 필터: 관련 없는 앱만 고친 PR에서 불필요하게 full gate를 돌리지 않음.
+# docs/loop 는 ruleset 필수 체크 verify:portfolio 와 맞춘다. 없으면 잡이 안 떠서 PR이 Expected에 멈춘다.
 on:
   pull_request:
     paths:
@@ -22,6 +23,7 @@ on:
       - 'core/**'
       - 'scripts/**'
       - 'docs/harness/**'
+      - 'docs/loop/**'
       - 'biome.json'
       - 'package.json'
       - 'pnpm-lock.yaml'
@@ -33,6 +35,7 @@ on:
       - 'core/**'
       - 'scripts/**'
       - 'docs/harness/**'
+      - 'docs/loop/**'
       - 'biome.json'
       - 'package.json'
       - 'pnpm-lock.yaml'
