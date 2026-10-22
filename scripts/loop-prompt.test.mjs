@@ -61,3 +61,10 @@ test('ai-loop workflow uploads the hidden .ai artifact directory', () => {
   const yml = fs.readFileSync(new URL('../.github/workflows/ai-loop.yml', import.meta.url), 'utf8');
   assert.match(yml, /include-hidden-files:\s*true/);
 });
+
+test('ai-loop commit author follows the GitHub user, not a hardcoded bot email', () => {
+  const yml = fs.readFileSync(new URL('../.github/workflows/ai-loop.yml', import.meta.url), 'utf8');
+  assert.equal(yml.includes('ai-loop-bot@users.noreply.github.com'), false);
+  assert.match(yml, /gh api user --jq/);
+  assert.match(yml, /LOOP_GIT_AUTHOR_EMAIL/);
+});
