@@ -26,7 +26,7 @@ workflow_dispatch cloud|local → 동일 워크플로
 
 | 필드 | 효과 |
 |------|------|
-| `app` | `ACTIVE_APP` (레지스트리 filter) |
+| `app` | `ACTIVE_APP` (레지스트리 filter) · `APP_SHORT` (브랜치 `{type}/ai-loop/{short}/#{n}`) |
 | `verify` | `VERIFY_CMD` |
 | `backlog` | budget item + STATE WIP |
 | `cursor_build_model` | `agent --model` (비우면 계정 기본) |

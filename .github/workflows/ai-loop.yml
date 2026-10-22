@@ -116,9 +116,7 @@ jobs:
         run: |
           NUM="${{ inputs.issue_number || github.event.issue.number }}"
           echo "ISSUE_NUMBER=$NUM" >> "$GITHUB_ENV"
-          # pre-commit 브랜치 규칙: {type}/{name}/#{이슈번호}
-          # ai/issue-N 은 훅에서 거절되어 PASS 뒤 커밋이 실패한다.
-          echo "BRANCH=feat/ai-loop/#$NUM" >> "$GITHUB_ENV"
+          # 브랜치는 App scope short 가 필요해서 Setup Node 뒤 Resolve loop branch 에서 정한다.
           TITLE="$(gh issue view "$NUM" --json title -q .title)"
           echo "ISSUE_TITLE=$TITLE" >> "$GITHUB_ENV"
           {
@@ -138,6 +136,12 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: pnpm
+
+      # pre-commit: {type}/{name}/{app}/#{이슈번호}. ai/issue-N 은 훅에서 거절된다.
+      - name: Resolve loop branch
+        run: |
+          eval "$(ISSUE_BODY="$ISSUE_BODY" ISSUE_NUMBER="$ISSUE_NUMBER" node scripts/ai-loop-parse-issue.mjs --write-env)"
+          echo "BRANCH=feat/ai-loop/${APP_SHORT}/#$ISSUE_NUMBER" >> "$GITHUB_ENV"
 
       # 브랜치마다 lockfile이 다를 수 있어 로컬 러너에서도 항상 실행
       - name: Install dependencies

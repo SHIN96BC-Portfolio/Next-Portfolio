@@ -11,6 +11,7 @@
 이슈 (템플릿 AI Task) + 라벨 ai-task
   → .github/workflows/ai-loop.yml
   → Load issue → ISSUE_NUMBER / TITLE / BODY (job env)
+  → Resolve loop branch → `feat/ai-loop/{APP_SHORT}/#{n}`
   → scripts/ai-loop.sh
        → parse-issue → Plan → Build → verify+guard → Pre-PR
   → PASS_TO_HUMAN 이면 PR (merge APPROVE는 사람)
@@ -25,7 +26,7 @@
 | 이름 | 어디서 오나 | 레포 Settings? |
 |------|-------------|----------------|
 | `ISSUE_NUMBER` / `ISSUE_TITLE` / `ISSUE_BODY` | 워크플로 `Load issue` (`gh issue view`) | ❌ |
-| `ACTIVE_APP` / `VERIFY_CMD` / `BACKLOG_ID` / `CURSOR_BUILD_MODEL` | 이슈 Loop config → `ai-loop-parse-issue.mjs` → `.ai/parsed.env` | ❌ |
+| `ACTIVE_APP` / `VERIFY_CMD` / `BACKLOG_ID` / `CURSOR_BUILD_MODEL` / `APP_SHORT` | 이슈 Loop config → `ai-loop-parse-issue.mjs` → `.ai/parsed.env` | ❌ |
 | `ACTIVE_MODE` | `ai-loop.sh`가 STATE WIP 갱신 시 (`build` 등) | ❌ |
 | `BUDGET_ITEM` | backlog id 또는 `issue-<n>` | ❌ |
 | `CLAUDE_CODE_OAUTH_TOKEN` / `CURSOR_API_KEY` | Actions **Secrets** | ✅ 필수 |

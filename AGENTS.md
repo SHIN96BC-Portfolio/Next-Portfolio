@@ -177,9 +177,11 @@ StoreProvider (Redux + redux-persist)
 
 ## Git Conventions
 
-**Branch:** `{type}/{name}/#{issueNo}` — 예: `feat/sbc/#123`
+**Branch:** `{type}/{name}/{app}/#{issueNo}` — 예: `feat/sbc/portfolio/#123`
 
-**Commit:** `[{type}/{name}] subject` — 예: `[feat/sbc] 로그인 기능 구현`
+**Commit:** `[{type}/{name}/{app}] subject` — 예: `[feat/sbc/portfolio] 로그인 기능 구현`
+
+**app:** `verify:<short>` (`portfolio`, `commerce`, `fashion`, `social`, `master-admin`, `commerce-admin`, `fashion-admin`, `social-admin`). 앱이 아니면 `core` / `harness`.
 
 **Types:** feat, hotfix, docs, style, refactor, chore, build, deploy, revert, test
 

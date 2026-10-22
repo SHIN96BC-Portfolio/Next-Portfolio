@@ -27,5 +27,19 @@ test('--write-env emits quoted VERIFY_CMD for the default portfolio gate', () =>
   assert.match(out, /^VERIFY_CMD='pnpm verify:portfolio'$/m);
   assert.match(out, /^ACTIVE_APP='@apps\/user-portfolio'$/m);
   assert.match(out, /^BUDGET_ITEM='issue-40'$/m);
+  assert.match(out, /^APP_SHORT='portfolio'$/m);
   assert.equal(out.includes('VERIFY_CMD=pnpm verify:portfolio\n'), false);
+});
+
+test('--write-env APP_SHORT follows Loop config app', () => {
+  const out = execFileSync(process.execPath, [parser, '--write-env'], {
+    encoding: 'utf8',
+    env: {
+      ...process.env,
+      ISSUE_NUMBER: '47',
+      ISSUE_BODY: ['```yaml', 'app: @apps/user-commerce', 'verify: pnpm verify:commerce', '```'].join('\n'),
+    },
+  });
+  assert.match(out, /^ACTIVE_APP='@apps\/user-commerce'$/m);
+  assert.match(out, /^APP_SHORT='commerce'$/m);
 });
