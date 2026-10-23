@@ -190,11 +190,12 @@ GitHub 는 PR 작성자가 자기 PR 을 Approve 하지 못한다.
 
 ## 6b. Claude 플래그
 
-`scripts/ai-loop.sh` 기본: `AI_LOOP_CLAUDE_FLAGS` 없음 (공개 레포에서 `--dangerously-skip-permissions`를 기본으로 두지 않는다).  
-GitHub-hosted Plan이 `.ai/plan.md`를 쓰려면 스크립트의 `ensure_claude_unattended`(`skipDangerousModePermissionPrompt`)는 그대로 둔다.  
+`scripts/ai-loop.sh` 기본: `AI_LOOP_CLAUDE_FLAGS` 없음 (공개 레포에서 `--dangerously-skip-permissions`를 스크립트 기본으로 두지 않는다).  
+`ensure_claude_unattended`(`skipDangerousModePermissionPrompt`)는 유지한다. 이것만으로는 비대화형 `-p` Write가 통과하지 않는다.  
+GitHub-hosted 잡은 일회용 VM이므로 `ai-loop.yml`의 Run AI loop 스텝이 env로만 덮어쓴다.  
 라벨 `ai-task` 트리거는 유지한다.
 
-로컬·잡에서 다시 넓히려면 env로만 덮어쓴다.
+로컬에서 다시 넓히려면 env로만 덮어쓴다.
 
 ```bash
 export AI_LOOP_CLAUDE_FLAGS="--dangerously-skip-permissions"

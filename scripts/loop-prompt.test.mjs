@@ -62,6 +62,13 @@ test('ai-loop workflow uploads the hidden .ai artifact directory', () => {
   assert.match(yml, /include-hidden-files:\s*true/);
 });
 
+test('GitHub-hosted loop sets skip-permissions via env, not script default', () => {
+  const yml = fs.readFileSync(new URL('../.github/workflows/ai-loop.yml', import.meta.url), 'utf8');
+  assert.match(yml, /AI_LOOP_CLAUDE_FLAGS:.*dangerously-skip-permissions/);
+  assert.match(yml, /runner\.environment == 'github-hosted'/);
+  assert.equal(loop.includes(':---dangerously-skip-permissions'), false);
+});
+
 test('ai-loop commit author follows the GitHub user, not a hardcoded bot email', () => {
   const yml = fs.readFileSync(new URL('../.github/workflows/ai-loop.yml', import.meta.url), 'utf8');
   assert.equal(yml.includes('ai-loop-bot@users.noreply.github.com'), false);
