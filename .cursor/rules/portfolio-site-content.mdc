@@ -1,0 +1,18 @@
+---
+description: portfolio site·content 슬라이스를 열 때만 인덱스 README를 로드한다.
+globs:
+  - apps/user/portfolio/src/fsd/entities/site/**
+  - apps/user/portfolio/src/fsd/entities/content/**
+alwaysApply: false
+---
+
+# portfolio site · content
+
+이 규칙은 `entities/site` 또는 `entities/content` 아래 파일을 열 때만 붙는다. 매 턴 전체를 다시 싣지 않기 위한 것이다.
+
+슬라이스 지도·public API·mapper는 여기 적지 않는다. 인덱스를 연다.
+
+- site: `apps/user/portfolio/src/fsd/entities/site/README.md`
+- content: `apps/user/portfolio/src/fsd/entities/content/README.md`
+- 레이어/import: `AGENTS.md`
+- REST/i18n/git: 루트 `README.md`
