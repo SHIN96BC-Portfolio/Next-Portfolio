@@ -35,7 +35,7 @@
 [루프] BACKLOG → Cursor Build → Claude pre-PR review → 사람 PR APPROVE/merge
 ```
 
-**현재 포지션:** 하네스·루프는 **모노레포 공통 문서/스크립트** + portfolio 1호 게이트. 기본 `loop: paused`. Claude는 머지 승인자 아님(Pre-PR만).
+**현재 포지션:** 하네스·루프는 **모노레포 공통 문서/스크립트** + portfolio 1호 게이트. 런타임 kill switch는 [`STATE.md`](./STATE.md) (`loop: running` | `paused`). Claude는 머지 승인자 아님(Pre-PR만).
 
 ---
 

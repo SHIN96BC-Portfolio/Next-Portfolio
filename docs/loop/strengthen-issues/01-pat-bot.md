@@ -1,6 +1,6 @@
 # 01 — 8.x 보드 문서 + 루프 PAT 분리
 
-- Status: `doing`
+- Status: `done`
 - STRENGTHEN: 6.2 + 보드 커밋 (워킹트리)
 - Type: Chore
 - Loop: 사람 (`ai-task` 금지)
