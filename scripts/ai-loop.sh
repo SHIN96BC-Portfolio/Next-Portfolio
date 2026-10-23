@@ -30,7 +30,7 @@
 #   ACTIVE_APP_OVERRIDE, VERIFY_CMD_OVERRIDE, BACKLOG_ID_OVERRIDE,
 #   CURSOR_BUILD_MODEL_OVERRIDE
 #   AI_LOOP_LOCAL=1          — self-hosted 러너
-#   AI_LOOP_CLAUDE_FLAGS     — 기본 --dangerously-skip-permissions
+#   AI_LOOP_CLAUDE_FLAGS     — 기본 없음. skip-permissions 를 쓰려면 env 로만 덮어쓴다
 #   CLAUDE_CODE_OAUTH_TOKEN, CURSOR_API_KEY
 #   GITHUB_OUTPUT            — Actions step output
 #
@@ -52,12 +52,16 @@ ISSUE_NUMBER="${ISSUE_NUMBER:-0}"
 ISSUE_TITLE="${ISSUE_TITLE:-AI task}"
 ISSUE_BODY="${ISSUE_BODY:-}"
 AI_LOOP_LOCAL="${AI_LOOP_LOCAL:-0}"
-# Claude non-interactive 플래그. 로컬에서 더 엄격히 하려면 AI_LOOP_CLAUDE_FLAGS 로 덮어쓰기
-# shellcheck disable=SC2086
-CLAUDE_FLAGS=(${AI_LOOP_CLAUDE_FLAGS:---dangerously-skip-permissions})
+# Claude 추가 플래그. 기본은 비움 (공개 레포에서 skip-permissions 를 기본으로 두지 않는다).
+# 다시 넓히려면 env AI_LOOP_CLAUDE_FLAGS 로만 덮어쓴다. 기본값을 되돌리지 않는다.
+CLAUDE_FLAGS=()
+if [[ -n "${AI_LOOP_CLAUDE_FLAGS:-}" ]]; then
+  # shellcheck disable=SC2206
+  CLAUDE_FLAGS=(${AI_LOOP_CLAUDE_FLAGS})
+fi
 
 # GitHub-hosted 는 매번 빈 HOME. skipDangerousModePermissionPrompt 가 없으면
-# --dangerously-skip-permissions 가 -p 에서 무시되고 Write 가 거절되어 plan.md 가 안 생긴다.
+# 비대화형 -p 에서 Write 가 거절되어 plan.md 가 안 생긴다. 플래그와 별개로 유지한다.
 ensure_claude_unattended() {
   node --input-type=module -e '
     import fs from "node:fs";
