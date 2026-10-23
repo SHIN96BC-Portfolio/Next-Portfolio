@@ -19,6 +19,7 @@ export default defineConfig([
       'modal/index': 'src/modal/index.ts',
       'print/index': 'src/print/index.ts',
       'sheet/index': 'src/sheet/index.ts',
+      'table/index': 'src/table/index.ts',
     },
   },
   {

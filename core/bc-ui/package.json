@@ -40,6 +40,11 @@
       "import": "./dist/sheet/index.js",
       "require": "./dist/sheet/index.cjs"
     },
+    "./table": {
+      "types": "./dist/table/index.d.ts",
+      "import": "./dist/table/index.js",
+      "require": "./dist/table/index.cjs"
+    },
     "./package.json": "./package.json"
   },
   "files": ["dist", "README.md"],

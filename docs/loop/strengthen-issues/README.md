@@ -16,8 +16,8 @@ GitHub 이슈 번호는 표와 각 md `GitHub` 줄에 적는다. 이 폴더가 �
 | 06 | [06-login-jest.md](./06-login-jest.md) | H-4 Jest | 필수 | ai-task | done #62 |
 | 07 | [07-slice-index.md](./07-slice-index.md) | C-3 인덱스 | 필수 | ai-task | done #56 |
 | 08 | [08-login-e2e.md](./08-login-e2e.md) | H-4 e2e | 필수 | ai-task | done #66 |
-| 09 | [09-product-1.md](./09-product-1.md) | L-2 | 필수 | ai-task | doing #68 |
-| 10 | [10-product-2.md](./10-product-2.md) | L-2 | 필수 | ai-task | blocked |
+| 09 | [09-product-1.md](./09-product-1.md) | L-2 | 필수 | ai-task | done #68 |
+| 10 | [10-product-2.md](./10-product-2.md) | L-2 | 필수 | ai-task | doing #70 |
 | 11 | [11-admin-auth-denylist.md](./11-admin-auth-denylist.md) | H-3 | 선 위 | 사람 | open |
 | 12 | [12-security-notes.md](./12-security-notes.md) | C-2 | 선 위 | 사람 | open |
 | 13 | [13-e2e-skip-guard.md](./13-e2e-skip-guard.md) | H-5 | 선 위 | 사람 | open |
