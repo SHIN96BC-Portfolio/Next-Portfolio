@@ -16,6 +16,12 @@
 
 ## Log
 
+### 2026-10-23T05:14 — build — issue-56
+- result: ok
+- summary: #56 `entities/site`·`entities/content` 슬라이스 README 2장 추가. ts/tsx 미변경.
+- verify: pass
+- notes: `.ai/review.md` 없음. 락은 ai-loop.sh 보유. Claude loop-verify 인계.
+
 ### 2026-10-21 — verify — issue-39
 - result: pass_to_human
 - summary: AC 5건 충족. diff 는 테스트 1건 + 루프 문서. verify:portfolio 통과, HARNESS_DENYLIST_HITS=0.
@@ -37,3 +43,13 @@
 - summary: issue #39 after loop (max 3)
 - verify: `pnpm verify:portfolio` (log in artifact)
 - notes: app=@apps/user-portfolio; issue=#39; backlog=none
+
+### 2026-10-23 — verify — issue-56
+- result: pass_to_human
+- summary: AC 4건 충족. 신규 README 2장(site·content), 경로·export 이름 실제 파일과 일치. ts/tsx·AGENTS.md 미변경. verify:portfolio 통과, HARNESS_DENYLIST_HITS=0.
+
+### 2026-10-23T05:15 — actions — issue-56
+- result: PASS_TO_HUMAN
+- summary: issue #56 after loop (max 3)
+- verify: `pnpm verify:portfolio` (log in artifact)
+- notes: app=@apps/user-portfolio; issue=#56; backlog=none
