@@ -1,6 +1,6 @@
 # 08 — login / print / interception e2e
 
-- Status: `doing`
+- Status: `done`
 - STRENGTHEN: H-4 e2e
 - Type: test
 - Loop: `ai-task`
@@ -49,3 +49,4 @@ AC:
 
 - 2026-10-22: 티켓 초안
 - 2026-10-23: GitHub #66. smoke e2e에 login·print·interception 경로 추가
+- 2026-10-23: Status `done` (#66)

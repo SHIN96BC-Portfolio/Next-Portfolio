@@ -4,6 +4,8 @@ export type { BottomSheetProps } from './BottomSheet';
 export { default as BottomSheet } from './BottomSheet';
 export type { CenterDialogProps } from './CenterDialog';
 export { default as CenterDialog } from './CenterDialog';
+export type { ConfirmDialogProps } from './ConfirmDialog';
+export { default as ConfirmDialog } from './ConfirmDialog';
 export type { ResponsiveDialogProps } from './ResponsiveDialog';
 export { default as ResponsiveDialog } from './ResponsiveDialog';
 export type { SideDrawerProps } from './SideDrawer';
