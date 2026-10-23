@@ -22,7 +22,7 @@ Actions AI 루프에서 Claude Code 가 읽는 지시문이다.
 
 이번 호출이 Build 이면 `.cursor/skills/loop-build/SKILL.md` 를 따른다.  
 규칙 본문은 그 스킬에 있다. 셸이 넘긴 `.ai/plan.md`, 앱, 백로그 id, 게이트 명령만 이번 실행 값이다.  
-`.ai/review.md` 가 있으면 그 거절 항목을 고친다. `.ai/` 는 읽기만 한다. PR 을 merge 하거나 Approve 하지 않는다.
+`.ai/review.md` 가 있으면 그 거절 항목을 고친다. `.ai/` 는 읽기만 한다. 예외: 스킬이 정한 `.ai/commit-body.md` 만 쓴다. PR 을 merge 하거나 Approve 하지 않는다.
 
 ## Pre-PR
 

@@ -93,6 +93,40 @@ dump_ai_file() {
   echo "[ai-loop] ----- end ${f} -----"
 }
 
+# 커밋 메시지 파일을 만든다. 제목을 셸에 직접 넣지 않는다 (따옴표·개행).
+# 본문은 Build가 쓴 .ai/commit-body.md, 없으면 staged --stat.
+write_loop_commit_msg() {
+  mkdir -p .ai
+  git diff --cached --stat > .ai/commit-stat.txt || true
+  ISSUE_NUMBER="$ISSUE_NUMBER" ISSUE_TITLE="${ISSUE_TITLE:-}" APP_SHORT="$APP_SHORT" node --input-type=module -e '
+    import fs from "node:fs";
+    const n = process.env.ISSUE_NUMBER || "0";
+    const app = process.env.APP_SHORT || "portfolio";
+    let title = String(process.env.ISSUE_TITLE || "").replace(/\r/g, "").split("\n")[0].trim();
+    title = title.replace(/^\[ai\]\s*/i, "").trim();
+    if (!title) title = `issue #${n}`;
+    let body = "";
+    try {
+      body = fs.readFileSync(".ai/commit-body.md", "utf8").replace(/\r/g, "").trim();
+    } catch {
+      body = "";
+    }
+    if (!body) {
+      try {
+        body = fs.readFileSync(".ai/commit-stat.txt", "utf8").replace(/\r/g, "").trim();
+      } catch {
+        body = "";
+      }
+    }
+    if (body && !/closes #\d+/i.test(body)) {
+      body = `${body}\n\nCloses #${n}`;
+    } else if (!body) {
+      body = `Closes #${n}`;
+    }
+    fs.writeFileSync(".ai/git-commit-msg", `[feat/ai-loop/${app}/#${n}] ${title}\n\n${body}\n`);
+  '
+}
+
 # self-hosted 는 작업 디렉터리가 남아 .ai 잔여가 섞일 수 있음 → 매 실행 초기화
 rm -rf .ai
 mkdir -p .ai
@@ -303,7 +337,8 @@ for i in $(seq 1 "$MAX_ITER"); do
   agent "${AGENT_ARGS[@]}" \
     "Follow .cursor/skills/loop-build/SKILL.md and CLAUDE.md section Build. This invocation is the Build step.
 Implement .ai/plan.md. App: ${ACTIVE_APP}. Backlog: ${BACKLOG_ID:-none}. Gate: ${VERIFY_CMD}.
-If .ai/review.md exists, fix the findings after its first line." \
+If .ai/review.md exists, fix the findings after its first line.
+Write .ai/commit-body.md as specified in that skill." \
     > ".ai/work-${i}.log" 2>&1
   agent_ec=$?
   set -e
@@ -411,7 +446,8 @@ if [[ "$result" == "PASS_TO_HUMAN" ]]; then
     result="REJECT"
     set_output "REJECT"
   else
-    # commit-msg 훅: [type/name/app] subject. feat: resolve #N 은 거절된다.
-    git commit -m "[feat/ai-loop/${APP_SHORT}] #${ISSUE_NUMBER} 이슈 반영"
+    # commit-msg 훅: [type/name/app/#n] subject. feat: resolve #N 은 거절된다.
+    write_loop_commit_msg
+    git commit -F .ai/git-commit-msg
   fi
 fi

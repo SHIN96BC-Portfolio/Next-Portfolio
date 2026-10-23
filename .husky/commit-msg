@@ -3,13 +3,13 @@
 # 커밋 메시지 파일 경로
 message=$(head -n 1 "$1")
 
-# 정규식: [type/name/app] subject 형식
-regex="^\[(feat|hotfix|docs|style|refactor|chore|build|deploy|revert|test)\/[a-zA-Z0-9_-]+\/[a-zA-Z0-9_-]+\] .+$"
+# 정규식: [type/name/app/#issueNo] subject 형식
+regex="^\[(feat|hotfix|docs|style|refactor|chore|build|deploy|revert|test)\/[a-zA-Z0-9_-]+\/[a-zA-Z0-9_-]+/#[0-9]+\] .+$"
 
 # 첫 줄 커밋 메시지 검증
 if ! echo "$message" | grep -qE "$regex"; then
-    echo "❌ 커밋 메세지는 {[type/name/app]} {subject} 형식이어야 합니다."
-    echo "예시: [feat/john/portfolio] 로그인 기능 구현"
+    echo "❌ 커밋 메세지는 {[type/name/app/#issueNo]} {subject} 형식이어야 합니다."
+    echo "예시: [feat/john/portfolio/#1] 로그인 기능 구현"
     echo "type 목록: feat|hotfix|docs|style|refactor|chore|build|deploy|revert|test"
     echo "app: portfolio|commerce|fashion|social|master-admin|commerce-admin|fashion-admin|social-admin|core|harness"
     exit 1

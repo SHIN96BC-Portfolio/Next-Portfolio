@@ -76,14 +76,18 @@ test('ai-loop commit author follows the GitHub user, not a hardcoded bot email',
   assert.match(yml, /LOOP_GIT_AUTHOR_EMAIL/);
 });
 
-test('branch and commit include app short (type/name/app)', () => {
+test('branch and commit include app short and issue number', () => {
   const yml = fs.readFileSync(new URL('../.github/workflows/ai-loop.yml', import.meta.url), 'utf8');
   const pre = fs.readFileSync(new URL('../.husky/pre-commit', import.meta.url), 'utf8');
   const msg = fs.readFileSync(new URL('../.husky/commit-msg', import.meta.url), 'utf8');
   assert.equal(yml.includes('BRANCH=feat/ai-loop/#$NUM'), false);
   assert.match(yml, /BRANCH=feat\/ai-loop\/\$\{APP_SHORT\}\/#\$ISSUE_NUMBER/);
-  assert.match(loop, /\[feat\/ai-loop\/\$\{APP_SHORT\}\]/);
+  assert.match(loop, /\[feat\/ai-loop\/\$\{app\}\/#\$\{n\}\]/);
+  assert.equal(loop.includes('이슈 반영'), false);
+  assert.match(loop, /commit-body\.md/);
+  assert.match(loop, /git commit -F \.ai\/git-commit-msg/);
   assert.match(pre, /\{type\}\/\{name\}\/\{app\}\/#\{issueNo\}/);
-  assert.match(msg, /type\/name\/app/);
+  assert.match(msg, /type\/name\/app\/#issueNo/);
+  assert.match(msg, /\/#\[0-9\]\+/);
   assert.match(msg, /\(feat\|hotfix\|docs\|style\|refactor\|chore\|build\|deploy\|revert\|test\)/);
 });

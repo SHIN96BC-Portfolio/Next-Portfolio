@@ -179,7 +179,7 @@ StoreProvider (Redux + redux-persist)
 
 **Branch:** `{type}/{name}/{app}/#{issueNo}` — 예: `feat/sbc/portfolio/#123`
 
-**Commit:** `[{type}/{name}/{app}] subject` — 예: `[feat/sbc/portfolio] 로그인 기능 구현`
+**Commit:** `[{type}/{name}/{app}/#{issueNo}] subject` — 예: `[feat/sbc/portfolio/#123] 로그인 기능 구현`
 
 **app:** `verify:<short>` (`portfolio`, `commerce`, `fashion`, `social`, `master-admin`, `commerce-admin`, `fashion-admin`, `social-admin`). 앱이 아니면 `core` / `harness`.
 

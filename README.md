@@ -717,11 +717,11 @@ pnpm verify:portfolio
 - app: portfolio, commerce, fashion, social, master-admin, commerce-admin, fashion-admin, social-admin (`verify:<short>`). 앱이 아니면 core, harness
 
 ### Commit Message
-- [type/name/app] subject
+- [type/name/app/#issueNo] subject
   <br/>
   <br/>
   markdown
-- ex: [feat/john/portfolio] 로그인 기능 구현
+- ex: [feat/john/portfolio/#1] 로그인 기능 구현
   <br/>
   <br/>
   로그인 기능 구현 상세

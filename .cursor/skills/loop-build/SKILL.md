@@ -19,6 +19,7 @@ description: >-
 6. **Do not APPROVE or merge the PR** — that is the human only.
 7. **Do not self-review as final** — after green verify, hand off to **Claude** via `loop-verify` (separate chat/model). Only open/push a PR for the human after Claude returns `PASS_TO_HUMAN` (or the user explicitly waives the Claude pass).
 8. Prefer worktree in `docs/loop/WORKTREE.md` when the main tree is busy.
+9. After implementing, write `.ai/commit-body.md` (2–5 lines): what **this diff** did. Do not paste the issue/Goal. Do not write merge/APPROVE. Pre-PR does not write this file. The shell commits from that file.
 
 ## Pipeline (this repo)
 
@@ -36,11 +37,12 @@ Human PR APPROVE / merge
 2. `pnpm loop:budget -- --item <id>` — over budget → escalate in STATE, pause, unlock, stop
 3. Set STATE `active_mode: build`, note WIP item id
 4. Implement the single item (FSD / AGENTS / README)
-5. Run the app gate (`pnpm verify:portfolio` unless BACKLOG says otherwise)
-6. **Stop coding.** Ask user / open a **separate** Claude turn with `loop-verify` on the diff
-7. On `PASS_TO_HUMAN` + user request: open PR (**no auto-merge**). On `REJECT`: fix within budget and re-run from step 5
-8. Append `loop-run-log.md`
-9. `pnpm loop:unlock`; clear WIP in STATE
+5. Write `.ai/commit-body.md` (rule 9)
+6. Run the app gate (`pnpm verify:portfolio` unless BACKLOG says otherwise)
+7. **Stop coding.** Ask user / open a **separate** Claude turn with `loop-verify` on the diff
+8. On `PASS_TO_HUMAN` + user request: open PR (**no auto-merge**). On `REJECT`: fix within budget and re-run from step 6
+9. Append `loop-run-log.md`
+10. `pnpm loop:unlock`; clear WIP in STATE
 
 ## Related
 
