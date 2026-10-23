@@ -9,7 +9,7 @@
 loop: running
 active_mode: none
 # active_mode: none | report | build | verify
-updated_at: 2026-10-21
+updated_at: 2026-10-23
 ```
 
 ## WIP
@@ -18,8 +18,6 @@ _없음_
 
 ## Waiting on Human
 
-- Secrets / `ai-task` / `run:local` / 브랜치 보호 — [`ACTIONS-SETUP.md`](./ACTIONS-SETUP.md) · [`RUNNERS.md`](./RUNNERS.md)
-- 머지 후 ruleset 필수 체크에 `harness-owner-gate` 추가
 - B-002 — SECURITY Phase1 (denylist / secret 경로)
 
 ## Escalations

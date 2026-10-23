@@ -1,12 +1,12 @@
 # 02 — DESIGN / STATE / ROADMAP 정합 + B-003 DONE
 
-- Status: `open`
+- Status: `doing`
 - STRENGTHEN: C-1, L-2 위생
 - Type: docs
 - Loop: 사람 (`ai-task` 없음)
 - 8.x: 일부. 컨텍스트 8.x는 07
 - Depends: 01 merge (STRENGTHEN이 master에 있는 뒤)
-- GitHub: —
+- GitHub: #51
 
 ## GitHub 본문 (복사)
 
@@ -34,3 +34,4 @@ Type: docs
 ## 로그
 
 - 2026-10-22: 티켓 초안
+- 2026-10-23: GitHub #51. DESIGN L38, STATE Waiting, ROADMAP 스모크, B-003 DONE

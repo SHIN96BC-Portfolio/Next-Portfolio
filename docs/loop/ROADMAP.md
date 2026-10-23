@@ -23,7 +23,8 @@
 ## Actions / runners
 
 - [x] cloud + local dual runner ([`RUNNERS.md`](./RUNNERS.md))
-- [ ] Secrets·러너 등록·스모크 — 사람 ([`ACTIONS-SETUP.md`](./ACTIONS-SETUP.md))
+- [x] Secrets·`ai-task`·클라우드 스모크 — issue-39 / PR #44 (2026-10-21)
+- [x] 6.2 PAT 분리 — `AI_BOT_TOKEN` = `SHIN96BOT` (#49)
 
 ## 하네스 선택·품질
 
