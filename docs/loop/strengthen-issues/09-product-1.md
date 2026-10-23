@@ -1,6 +1,6 @@
 # 09 — 제품 루프 1 (ConfirmDialog)
 
-- Status: `doing`
+- Status: `done`
 - STRENGTHEN: L-2
 - Type: Feature
 - Loop: `ai-task`
@@ -51,3 +51,4 @@ AC:
 
 - 2026-10-22: 티켓 초안, `blocked` (주제 없음)
 - 2026-10-23: GitHub #68. 주제 ConfirmDialog. Status `doing`
+- 2026-10-23: Status done (#68)

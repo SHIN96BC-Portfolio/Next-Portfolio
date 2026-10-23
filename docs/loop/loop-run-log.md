@@ -16,6 +16,16 @@
 
 ## Log
 
+### 2026-10-23 — verify — issue-70
+- result: pass_to_human
+- summary: #70 AC 충족. DataTable 셸(caption·th·td·empty 슬롯), table subpath exports/tsup, facade re-export만. verify:portfolio 통과 (guard:harness HITS=0, guard:tests OK).
+
+### 2026-10-23T09:01 — build — B-005
+- result: ok
+- summary: #70 DataTable 셸을 @core/bc-ui/table에 추가. portfolio shared/table/ui facade re-export. BACKLOG B-005, 보드 09 done #68 / 10 doing #70. B-004 → BACKLOG-DONE.
+- verify: pass
+- notes: `.ai/review.md` 없음. 락은 ai-loop.sh 보유. HARNESS_DENYLIST_HITS=0. e2e-skip: bc-ui 프리미티브와 facade만, 라우트 동작 동일. ConfirmDialog 미변경. Claude loop-verify 인계.
+
 ### 2026-10-23 — verify — issue-68
 - result: pass_to_human
 - summary: #68 AC 충족. ConfirmDialog가 CenterDialog를 조립하고 tone은 정적 클래스 맵. verify:portfolio 통과 (e2e 6, jest 50, guard:harness HITS=0, guard:tests OK).
@@ -103,3 +113,9 @@
 - summary: issue #68 after loop (max 3)
 - verify: `pnpm verify:portfolio` (log in artifact)
 - notes: app=@apps/user-portfolio; issue=#68; backlog=B-004
+
+### 2026-10-23T09:03 — actions — B-005
+- result: PASS_TO_HUMAN
+- summary: issue #70 after loop (max 3)
+- verify: `pnpm verify:portfolio` (log in artifact)
+- notes: app=@apps/user-portfolio; issue=#70; backlog=B-005

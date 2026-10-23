@@ -19,9 +19,9 @@
 
 ## Open
 
-### B-004 — bc-ui ConfirmDialog
-- Scope: `@apps/user-portfolio` (`core/bc-ui/src/sheet`, `apps/user/portfolio/src/fsd/shared/sheet/ui`)
-- [ ] Behavior: @core/bc-ui/sheet에서 ConfirmDialog와 props 타입이 나간다. open일 때 title·description(또는 children)·confirm·cancel이 보인다. confirm은 onConfirm, cancel/X/backdrop은 CenterDialog onClose. tone=danger는 클래스만 다르게 (문자열 보간 클래스 금지)
+### B-005 — bc-ui DataTable
+- Scope: `@apps/user-portfolio` (`core/bc-ui/src/table`, `apps/user/portfolio/src/fsd/shared/table/ui`)
+- [ ] Behavior: @core/bc-ui/table에서 DataTable과 column/row 타입이 나간다. caption·header·cell이 렌더되고 rows가 비면 empty 슬롯이 보인다. 정렬·필터·URL·tanstack 없음. 문자열 보간 클래스 금지
 - [ ] Unit: 프리젠테이션만이면 새 *.test.ts 없음. 훅·유틸을 빼면 같은 디렉터리 *.test.ts
 - [ ] E2E: e2e-skip: bc-ui 프리미티브와 facade만, 라우트 동작 동일
 - [ ] Gate: `pnpm verify:portfolio` 통과
