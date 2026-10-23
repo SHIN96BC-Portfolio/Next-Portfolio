@@ -16,6 +16,17 @@
 
 ## Log
 
+### 2026-10-23 — verify — issue-68
+- result: pass_to_human
+- summary: #68 AC 충족. ConfirmDialog가 CenterDialog를 조립하고 tone은 정적 클래스 맵. verify:portfolio 통과 (e2e 6, jest 50, guard:harness HITS=0, guard:tests OK).
+- notes: STATE.md WIP 블록 뒤 빈 줄 누락(`## Waiting on Human` 앞) — 비차단, 정리 권장.
+
+### 2026-10-23T08:13 — build — B-004
+- result: ok
+- summary: #68 ConfirmDialog를 CenterDialog 조립으로 추가. portfolio sheet facade re-export. BACKLOG B-004, 보드 08 done #66 / 09 doing #68 / 10 blocked.
+- verify: pass
+- notes: `.ai/review.md` 없음. 락은 ai-loop.sh 보유. HARNESS_DENYLIST_HITS=0. e2e-skip: bc-ui 프리미티브와 facade만, 라우트 동작 동일. Claude loop-verify 인계.
+
 ### 2026-10-23T07:00 — verify — issue-66
 - result: pass_to_human
 - summary: #66 AC 충족. smoke e2e 4개 추가, 보드 02·04·05·06·07 done, 08 doing #66. verify:portfolio 통과 (e2e 6, jest 50, guard:harness HITS=0, guard:tests OK).
@@ -86,3 +97,9 @@
 - summary: issue #66 after loop (max 3)
 - verify: `pnpm verify:portfolio` (log in artifact)
 - notes: app=@apps/user-portfolio; issue=#66; backlog=none
+
+### 2026-10-23T08:15 — actions — B-004
+- result: PASS_TO_HUMAN
+- summary: issue #68 after loop (max 3)
+- verify: `pnpm verify:portfolio` (log in artifact)
+- notes: app=@apps/user-portfolio; issue=#68; backlog=B-004
