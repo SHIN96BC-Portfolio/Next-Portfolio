@@ -16,6 +16,17 @@
 
 ## Log
 
+### 2026-10-23T06:05 — verify — issue-62
+- result: pass_to_human
+- summary: #62 AC 충족. 테스트 2개만 추가, 구현·denylist 미변경. verify:portfolio 통과 (unit 50, guard:harness HITS=0, guard:tests OK).
+- notes: e2e-skip: 페이지·위젯 미변경, 단위 테스트만 추가.
+
+### 2026-10-23T05:58 — build — issue-62
+- result: ok
+- summary: #62 `login-schema.test.ts`·`password-strength.test.ts` 추가. 구현 ts 미변경.
+- verify: pass
+- notes: `.ai/review.md` 없음. 락은 ai-loop.sh 보유. e2e-skip: 페이지·위젯 미변경, 단위 테스트만 추가. Claude loop-verify 인계.
+
 ### 2026-10-23T05:14 — build — issue-56
 - result: ok
 - summary: #56 `entities/site`·`entities/content` 슬라이스 README 2장 추가. ts/tsx 미변경.
@@ -53,3 +64,9 @@
 - summary: issue #56 after loop (max 3)
 - verify: `pnpm verify:portfolio` (log in artifact)
 - notes: app=@apps/user-portfolio; issue=#56; backlog=none
+
+### 2026-10-23T06:00 — actions — issue-62
+- result: PASS_TO_HUMAN
+- summary: issue #62 after loop (max 3)
+- verify: `pnpm verify:portfolio` (log in artifact)
+- notes: app=@apps/user-portfolio; issue=#62; backlog=none
