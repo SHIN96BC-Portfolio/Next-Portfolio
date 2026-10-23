@@ -188,13 +188,16 @@ GitHub 는 PR 작성자가 자기 PR 을 Approve 하지 못한다.
 `harness-owner-gate` 를 끄는 Actions Variable 은 없다.  
 로컬 가드에 보호 경로 실패를 풀어 주는 환경변수도 없다.
 
-## 6b. (선택) 로컬 self-hosted Claude 플래그
+## 6b. Claude 플래그
 
-`scripts/ai-loop.sh` 기본: `AI_LOOP_CLAUDE_FLAGS=--dangerously-skip-permissions`  
-(비대화형 CI용). 로컬 러너에서 더 엄격히 하려면 job/환경에 예를 들어:
+`scripts/ai-loop.sh` 기본: `AI_LOOP_CLAUDE_FLAGS` 없음 (공개 레포에서 `--dangerously-skip-permissions`를 기본으로 두지 않는다).  
+GitHub-hosted Plan이 `.ai/plan.md`를 쓰려면 스크립트의 `ensure_claude_unattended`(`skipDangerousModePermissionPrompt`)는 그대로 둔다.  
+라벨 `ai-task` 트리거는 유지한다.
+
+로컬·잡에서 다시 넓히려면 env로만 덮어쓴다.
 
 ```bash
-export AI_LOOP_CLAUDE_FLAGS=""   # 또는 Claude Code가 허용하는 더 좁은 플래그
+export AI_LOOP_CLAUDE_FLAGS="--dangerously-skip-permissions"
 ```
 
 가능하면 self-hosted를 Docker/`ai-local` 전용 유저로 격리하고, **공개 레포에서는 self-hosted를 쓰지 않는다** ([`RUNNERS.md`](./RUNNERS.md)).

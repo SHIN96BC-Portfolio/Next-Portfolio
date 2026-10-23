@@ -156,7 +156,7 @@ P0로 깎지 않는 것도 맞다. `author_association` OWNER/MEMBER/COLLABORATO
 | ID | 우선 | 담당 | 빈칸 | 근거 |
 |----|------|------|------|------|
 | L-2 | P1 | 사람 | 제품 백로그가 없음. **지금 루프를 막는 것** | Open: B-002 blocked, B-003 미완. issue-39는 backlog=none |
-| L-4 | P1 | 사람 | 공개 레포에서 skip-permissions가 기본 | `visibility: public`. `AI_LOOP_CLAUDE_FLAGS` 기본값. 익명 트리거는 association이 막음 |
+| L-4 | 닫힘 #54 | 사람 | 기본 skip-permissions 제거 | `ai-loop.sh` 기본 플래그 없음. `ai-task` 트리거 유지. 덮어쓰기는 env만 |
 | L-3 | P2 | 사람 | Report cron·worktree 자동화 없음 | 후순위. 맞음 |
 | L-1 잔여 | P2 | 사람 | `run:local` 러너 | 클라우드 스모크와 별개 |
 

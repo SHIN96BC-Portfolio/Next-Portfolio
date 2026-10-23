@@ -11,7 +11,7 @@ GitHub 이슈 번호는 아직 없다. 이 폴더가 진행 보드다.
 | 01 | [01-pat-bot.md](./01-pat-bot.md) | 보드 문서 + 6.2 PAT | 필수 | 사람 | done #49 |
 | 02 | [02-living-docs.md](./02-living-docs.md) | C-1 · L-2 위생 | 일부 | 사람 | doing #51 |
 | 03 | [03-secrets-b002.md](./03-secrets-b002.md) | H-2 | 선 위 P0 | 사람 | blocked |
-| 04 | [04-skip-permissions.md](./04-skip-permissions.md) | L-4 | 필수 | 사람 | open |
+| 04 | [04-skip-permissions.md](./04-skip-permissions.md) | L-4 | 필수 | 사람 | doing #54 |
 | 05 | [05-slice-glob.md](./05-slice-glob.md) | C-3 glob | 필수 | 사람 | open |
 | 06 | [06-login-jest.md](./06-login-jest.md) | H-4 Jest | 필수 | ai-task | open |
 | 07 | [07-slice-index.md](./07-slice-index.md) | C-3 인덱스 | 필수 | ai-task | open |
