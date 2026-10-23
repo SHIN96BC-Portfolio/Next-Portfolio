@@ -194,6 +194,9 @@ jobs:
           CURSOR_BUILD_MODEL_OVERRIDE: ${{ vars.CURSOR_BUILD_MODEL || '' }}
           # runner 는 스텝 env 에서만 쓸 수 있다. 잡 env 에 두면 워크플로 파일이 거절된다.
           AI_LOOP_LOCAL: ${{ runner.environment == 'self-hosted' && '1' || '0' }}
+          # 스크립트 기본 플래그는 비움 (#54). skipDangerousModePermissionPrompt 만으로는
+          # GitHub-hosted -p Write 가 거절되어 plan.md 가 안 생긴다. 일회용 VM에서만 덮어쓴다.
+          AI_LOOP_CLAUDE_FLAGS: ${{ runner.environment == 'github-hosted' && '--dangerously-skip-permissions' || '' }}
         run: bash scripts/ai-loop.sh
 
       # 실패 원인 분석용 (plan/review/verify 로그). .ai 는 gitignore 라 커밋되지 않는다.
