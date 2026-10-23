@@ -1,13 +1,13 @@
 # 06 — login-schema · password-strength Jest
 
-- Status: `open`
+- Status: `done`
 - STRENGTHEN: H-4 Jest
 - Type: test
 - Loop: `ai-task`
 - App: `@apps/user-portfolio`
 - 8.x: 필수
 - Depends: 없음
-- GitHub: —
+- GitHub: #62
 
 ## GitHub 본문 (복사)
 
@@ -52,3 +52,4 @@ AC:
 ## 로그
 
 - 2026-10-22: 티켓 초안
+- 2026-10-23: GitHub #62. login-schema·password-strength Jest 머지. done

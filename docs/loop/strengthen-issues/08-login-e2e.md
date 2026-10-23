@@ -1,13 +1,13 @@
 # 08 — login / print / interception e2e
 
-- Status: `open`
+- Status: `doing`
 - STRENGTHEN: H-4 e2e
 - Type: test
 - Loop: `ai-task`
 - App: `@apps/user-portfolio`
 - 8.x: 필수
 - Depends: 없음
-- GitHub: —
+- GitHub: #66
 
 ## GitHub 본문 (복사)
 
@@ -48,3 +48,4 @@ AC:
 ## 로그
 
 - 2026-10-22: 티켓 초안
+- 2026-10-23: GitHub #66. smoke e2e에 login·print·interception 경로 추가
