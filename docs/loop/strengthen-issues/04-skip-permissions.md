@@ -1,6 +1,6 @@
 # 04 — 공개 레포 skip-permissions 축소
 
-- Status: `doing`
+- Status: `done`
 - GitHub: #54
 - STRENGTHEN: L-4
 - Type: Chore
@@ -42,3 +42,4 @@ Type: Chore
 
 - 2026-10-22: 티켓 초안
 - 2026-10-23: GitHub #54. 방향 A 구현 (기본 플래그 제거, unattended settings 유지)
+- 2026-10-23: 후속 #57. 본 이슈는 done #54

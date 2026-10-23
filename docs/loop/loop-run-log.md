@@ -16,6 +16,16 @@
 
 ## Log
 
+### 2026-10-23T07:00 — verify — issue-66
+- result: pass_to_human
+- summary: #66 AC 충족. smoke e2e 4개 추가, 보드 02·04·05·06·07 done, 08 doing #66. verify:portfolio 통과 (e2e 6, jest 50, guard:harness HITS=0, guard:tests OK).
+
+### 2026-10-23T06:53 — build — issue-66
+- result: ok
+- summary: #66 smoke e2e에 login·interception·print 경로 추가. 8.x 보드 02·04·05·06·07 done, 08 doing #66. 제품 코드 미변경.
+- verify: pass
+- notes: `.ai/review.md` 없음. 락은 ai-loop.sh 보유. HARNESS_DENYLIST_HITS=0. Claude loop-verify 인계.
+
 ### 2026-10-23T06:05 — verify — issue-62
 - result: pass_to_human
 - summary: #62 AC 충족. 테스트 2개만 추가, 구현·denylist 미변경. verify:portfolio 통과 (unit 50, guard:harness HITS=0, guard:tests OK).
@@ -70,3 +80,9 @@
 - summary: issue #62 after loop (max 3)
 - verify: `pnpm verify:portfolio` (log in artifact)
 - notes: app=@apps/user-portfolio; issue=#62; backlog=none
+
+### 2026-10-23T06:54 — actions — issue-66
+- result: PASS_TO_HUMAN
+- summary: issue #66 after loop (max 3)
+- verify: `pnpm verify:portfolio` (log in artifact)
+- notes: app=@apps/user-portfolio; issue=#66; backlog=none

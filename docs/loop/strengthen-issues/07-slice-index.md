@@ -1,13 +1,13 @@
 # 07 — site · content 슬라이스 인덱스
 
-- Status: `open`
+- Status: `done`
 - STRENGTHEN: C-3 인덱스
 - Type: docs
 - Loop: `ai-task`
 - App: `@apps/user-portfolio`
 - 8.x: 필수 (컨텍스트 8.x 본체)
 - Depends: 없음. glob은 05
-- GitHub: —
+- GitHub: #56
 
 ## GitHub 본문 (복사)
 
@@ -48,3 +48,4 @@ AC:
 ## 로그
 
 - 2026-10-22: 티켓 초안
+- 2026-10-23: GitHub #56. site·content 슬라이스 인덱스 머지. done

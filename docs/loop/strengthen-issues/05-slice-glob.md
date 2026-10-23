@@ -1,6 +1,6 @@
 # 05 — site/content glob rule
 
-- Status: `doing`
+- Status: `done`
 - STRENGTHEN: C-3 glob
 - Type: docs
 - Loop: 사람
@@ -28,3 +28,4 @@ Type: docs
 
 - 2026-10-22: 티켓 초안
 - 2026-10-23: GitHub #60. 07 인덱스 경로로 glob rule 추가 (`portfolio-site-content.mdc`)
+- 2026-10-23: master 반영. done #60

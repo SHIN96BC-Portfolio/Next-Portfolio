@@ -1,6 +1,6 @@
 # 02 — DESIGN / STATE / ROADMAP 정합 + B-003 DONE
 
-- Status: `doing`
+- Status: `done`
 - STRENGTHEN: C-1, L-2 위생
 - Type: docs
 - Loop: 사람 (`ai-task` 없음)
@@ -35,3 +35,4 @@ Type: docs
 
 - 2026-10-22: 티켓 초안
 - 2026-10-23: GitHub #51. DESIGN L38, STATE Waiting, ROADMAP 스모크, B-003 DONE
+- 2026-10-23: master 반영. done #51
