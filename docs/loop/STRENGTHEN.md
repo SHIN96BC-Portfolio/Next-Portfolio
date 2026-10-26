@@ -1,9 +1,8 @@
 # 컨텍스트 · 하네스 · 루프 — 빈칸과 강화
 
-> 2026-10-22 재평가. 1차: 워킹트리. 2차: [`STRENGTHEN-REBUTTAL.md`](./STRENGTHEN-REBUTTAL.md) + GitHub API.  
+> 2026-10-22 재평가. 1차: 워킹트리. 2차: GitHub API. 재평가 본문은 이 파일.  
 > 설계: [`DESIGN.md`](./DESIGN.md) · 운영: [`../harness/README.md`](../harness/README.md) · [`LOOP.md`](./LOOP.md)  
-> 사람 셋업: [`ACTIONS-SETUP.md`](./ACTIONS-SETUP.md) · 후순위: [`ROADMAP.md`](./ROADMAP.md)  
-> 이슈 보드: [`strengthen-issues/README.md`](./strengthen-issues/README.md)
+> 사람 셋업: [`ACTIONS-SETUP.md`](./ACTIONS-SETUP.md) · 후순위: [`ROADMAP.md`](./ROADMAP.md)
 
 **이 파일의 역할:** 지금 부족한 것, 왜 부족한지, 어떻게 닫을지.  
 정책·게이트 표는 여기 다시 쓰지 않는다.
@@ -24,7 +23,7 @@
 | 층 | 지금 | 8.x에 필요한 빈칸 | 그 위에서 더 올리는 것 |
 |----|------|-------------------|------------------------|
 | 컨텍스트 | 7.6 | **C-1 + C-3** (두께·슬라이스 인덱스가 7.6의 본체). C-2는 같이 | AGENTS 더 줄이기 |
-| 하네스 | **8.0** (이미 선) | 선을 넘긴 상태. **단단한 8.x는 6.2 + H-4** | H-2 시크릿, H-3 admin auth |
+| 하네스 | **8.0** (이미 선) | 선을 넘긴 상태. **단단한 8.x는 6.2 + H-4** | H-2 시크릿 (B-002) |
 | 루프 | 7.3 | **L-2 제품 항목 + 제품 루프 반복** (스모크 1회가 아님), **L-4**, **6.2** | cron·worktree (범위 밖) |
 
 C-1만, 또는 BACKLOG 한 줄만으로는 8.x가 안 된다.
@@ -39,7 +38,7 @@ C-1만, 또는 BACKLOG 한 줄만으로는 8.x가 안 된다.
 |----|------|
 | 컨텍스트 | README 상세 / AGENTS 요약 / CLAUDE는 스킬 포인터. FSD·denylist glob 규칙은 본문 복붙 없음. Biome + `lint:fsd` |
 | 하네스 | `verify:<app>` 레지스트리. portfolio = full. pre-push에 typecheck·biome·`guard:harness`·`guard:tests`. `harness-owner-gate`는 베이스 브랜치 실행 |
-| 하네스 | **ruleset `protect-default-no-ai-merge` (id 24093423, active).** 필수 체크 `verify:portfolio` + `harness-owner-gate`. 삭제·force push 금지. PR 필수. Bypass 없음. 갱신 2026-10-21T04:58Z |
+| 하네스 | **ruleset `protect-default-no-ai-merge` (id 24093423, active).** 필수 체크 `verify-affected` + `harness-owner-gate`. 삭제·force push 금지. PR 필수. Bypass 없음. 갱신 2026-10-26 |
 | 루프 | Plan → Cursor Build → verify → Claude Pre-PR → 사람 PR. kill switch, lock, 예산 초과 시 `paused`. 빈 제품 diff는 PASS 강등 |
 | 루프 | issue-39 → PR #44 merge (작성·머지 모두 `@SHIN96BC`, 2026-10-21). Secrets·`ai-task`·클라우드 실행은 성립함 |
 
@@ -103,14 +102,14 @@ P0로 깎지 않는 것도 맞다. `author_association` OWNER/MEMBER/COLLABORATO
 | ID | 우선 | 담당 | 빈칸 | 근거 |
 |----|------|------|------|------|
 | C-1 | P1 | 에이전트 | DESIGN L38이 STATE와 어긋남 | “기본 `loop: paused`”. STATE는 `running`. 표 footer는 이미 2026-10-22. STATE Waiting의 끝난 ruleset 줄도 여기 |
-| C-2 | P1 | 에이전트 | 보안 논점이 임시 파일 | `SECURITY-NOTES.tmp.md`. AGENTS 미링크 |
+| C-2 | 닫힘 #78 | 사람 | SECURITY-NOTES 정식화 | `docs/security/NOTES.md` + AGENTS 링크. 코드 이전은 B-002 |
 | C-3 | P1 | 에이전트 | 매 턴 요약은 싣고 작업 지도는 없음 | AGENTS 223줄 + CLAUDE always-apply. README 1573줄. `site`/`content` 인덱스 없음 |
 
 ### 어떻게 강화할지
 
 **C-1** — DESIGN L38을 STATE에 맞춘다. 현황 표를 STATE로 복제하지 않는다. STATE Waiting에서 끝난 ruleset 줄을 지운다.
 
-**C-2** — `SECURITY-NOTES.tmp.md` → `docs/` 후 AGENTS 링크. 코드 이전은 B-002.
+**C-2** — 완료 #78. `docs/security/NOTES.md` + AGENTS 링크. 코드 이전은 B-002.
 
 **C-3** — portfolio `entities/site`·`content` 한 장. REST/i18n/git은 glob rule + README 링크. AGENTS Commands는 `verify:<short>`만.
 
@@ -126,9 +125,9 @@ P0로 깎지 않는 것도 맞다. `author_association` OWNER/MEMBER/COLLABORATO
 |----|------|------|------|------|
 | H-2 | P0 | 사람 | `NEXT_PUBLIC_*SECRET*` 7개가 allowlist | `SECRET_ALLOWLIST`. 신규만 fail. [B-002](./BACKLOG.md) |
 | 6.2 | P0 | 사람 | 루프 PAT = CODEOWNERS | PR #44 작성자 `@SHIN96BC`. owner-gate가 그 PR의 보호 파일을 사람 PR로 통과 |
-| H-3 | P1 | 둘 다 | **auth 소스**가 portfolio만 denylist | `master-admin/.../next-auth.ts` 미기재. `.env*`·deploy는 이미 전 앱 |
+| H-3 | 닫힘 #76 | 사람 | master-admin next-auth denylist | CODEOWNERS + DENYLIST. 로직 리라이트는 B-002 |
 | H-4 | P1 | 에이전트 | 합격 신호가 얇음 | 단위 테스트 11파일. e2e `/ko`·`/ko/resume`. schema/Impl 없음. `guard:tests`는 이번 diff만 |
-| H-5 | P2 | 에이전트 | 가드가 e2e 스펙 갱신을 env로 건너뜀 | Playwright 본실행은 끄지 않음. skip 출처에서 STATE.md를 빼는 일은 남음 |
+| H-5 | 닫힘 #81 | 사람 | 가드 e2e-skip 우회 | env·STATE.md로 스펙 강제를 건너뛰지 않음. Playwright는 그대로 |
 | H-6 | P2 | 사람 | full은 portfolio 하나 | 1호 유지가 맞음. 그 앱을 루프에 넣기 전에 승격 |
 
 ### 어떻게 강화할지
@@ -137,11 +136,11 @@ P0로 깎지 않는 것도 맞다. `author_association` OWNER/MEMBER/COLLABORATO
 
 **6.2** — `AI_BOT_TOKEN` GitHub 유저 ≠ `@SHIN96BC`. 그 전에는 “봇 보호 파일 PR이 owner-gate에서 실패한다”고 말하지 않는다. 절차: [`ACTIONS-SETUP.md`](./ACTIONS-SETUP.md) §6.2.
 
-**H-3** — `master-admin` `next-auth.ts`(및 cookie/storage가 생기면) DENYLIST 앱 절 + CODEOWNERS. DENYLIST 수정은 human gate.
+**H-3** — 완료 #76. `master-admin` `next-auth.ts` DENYLIST + CODEOWNERS. 로직 리라이트는 B-002.
 
 **H-4** — 정책을 느슨히 하지 말고 테스트를 추가한다. login/print/interception e2e. `login-schema`·`password-strength` Jest. (선택, 사람 승인) `features/**/model/*-schema.ts`를 `guard:tests` include에.
 
-**H-5** — `HARNESS_E2E_SKIP` unset, skip 판정에서 STATE.md 제거. “verify e2e 자체를 끈다”가 아님. 스크립트는 denylist → 사람 승인.
+**H-5** — 완료 #81. `HARNESS_E2E_SKIP` unset, skip 판정에서 STATE.md 제거. Playwright 본실행은 그대로.
 
 **H-6** — 그 앱을 루프 대상으로 쓰기 전에 Playwright smoke + `maturity: 'full'`.
 
@@ -155,7 +154,7 @@ P0로 깎지 않는 것도 맞다. `author_association` OWNER/MEMBER/COLLABORATO
 
 | ID | 우선 | 담당 | 빈칸 | 근거 |
 |----|------|------|------|------|
-| L-2 | P1 | 사람 | 제품 백로그가 없음. **지금 루프를 막는 것** | Open: B-002 blocked, B-003 미완. issue-39는 backlog=none |
+| L-2 | P1 | 사람 | 열린 제품 항목은 B-002 | B-003~B-005 완료. Open: B-002 blocked (시크릿 이전) |
 | L-4 | 닫힘 #54 | 사람 | 기본 skip-permissions 제거 | `ai-loop.sh` 기본 플래그 없음. `ai-task` 트리거 유지. 덮어쓰기는 env만 |
 | L-3 | P2 | 사람 | Report cron·worktree 자동화 없음 | 후순위. 맞음 |
 | L-1 잔여 | P2 | 사람 | `run:local` 러너 | 클라우드 스모크와 별개 |
@@ -183,9 +182,9 @@ P0로 깎지 않는 것도 맞다. `author_association` OWNER/MEMBER/COLLABORATO
 | 3 | 6.2 | 하네스 | 루프 PAT ≠ `@SHIN96BC` | 봇이 `biome.json`을 넣은 PR은 owner-gate 실패, 소유자 Approve 후 통과 | 사람 |
 | 4 | H-2 | 하네스 | B-002 시크릿 이전 후 allowlist 축소 | `guard:harness`가 그 이름에 fail | 사람 |
 | 5 | L-2 | 루프 | 제품 BACKLOG 한 줄 + B-003 정리 | Open에 Behavior/Unit/E2E/Gate 항목 ≥ 1 | 사람 |
-| 6 | H-4, H-3 | 하네스 | login/print e2e, admin auth denylist | 해당 경로 e2e 존재. admin auth 변경은 owner-gate 대상 | 에이전트 + 사람 승인 |
+| 6 | H-4, ~~H-3~~ | 하네스 | login/print e2e, admin auth denylist | H-3 **완료 #76**. H-4 login/print e2e·jest는 #62 #66 | 에이전트 + 사람 승인 |
 | 7 | C-1, C-3, L-4 | 둘 | DESIGN/STATE 정합, site/content 인덱스, 공개 skip-permissions 축소 | 컨텍스트·루프가 8.x 선. L38=`running`. 슬라이스 한 장. 플래그가 공개 기본이 아님 | 사람 + 에이전트 |
-| 8 | H-5, C-2 | 둘 | 가드 skip 출처, 보안 메모 정식화 | 8.x 선 위 | 사람 승인 |
+| 8 | ~~H-5~~, ~~C-2~~ | 둘 | 가드 skip 출처, 보안 메모 정식화 | **완료 #81 / #78** | 사람 승인 |
 
 5(L-2)는 3·4를 기다릴 필요 없다. 제품 루프에 먹이를 주는 일과 시크릿/토큰 분리는 병렬이다.  
 **8.x는 3·5·6(H-4)·7이 같이 끝나야 한다.** 6의 denylist·H-5 가드 스크립트, 7의 AGENTS 축소는 human gate다.

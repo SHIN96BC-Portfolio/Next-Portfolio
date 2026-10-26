@@ -163,19 +163,18 @@ export function missingUnitTestsInDiff(changedFiles) {
 }
 
 function hasE2eSkipReason() {
-  // 커밋 메시지 + 이슈 스크래치 + 환경
+  // 커밋 메시지 + 이슈 스크래치. env 와 STATE.md 는 출처가 아니다.
   const chunks = [];
   try {
     chunks.push(execSync('git log -1 --pretty=%B', { cwd: ROOT, encoding: 'utf8' }));
   } catch {
     // ignore
   }
-  for (const p of ['.ai/issue.md', '.ai/pr-body.md', 'docs/loop/STATE.md']) {
+  for (const p of ['.ai/issue.md', '.ai/pr-body.md']) {
     const full = path.join(ROOT, p);
     if (fs.existsSync(full)) chunks.push(fs.readFileSync(full, 'utf8'));
   }
   if (process.env.ISSUE_BODY) chunks.push(process.env.ISSUE_BODY);
-  if (process.env.HARNESS_E2E_SKIP) return true;
   return /e2e-skip\s*:/i.test(chunks.join('\n'));
 }
 

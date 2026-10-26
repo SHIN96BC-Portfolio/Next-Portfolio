@@ -20,8 +20,8 @@
  * Env:
  *   VERIFY_WITH_SNAP=1         — --snap 과 동일 (portfolio snapRoutes)
  *   HARNESS_REQUIRE_TESTS=1    — lite 에서도 guard:tests 실행
- *   SKIP_BIOME, HARNESS_TESTS_SOFT, HARNESS_SCAN_ROOTS, HARNESS_REQUIRE_TESTS=0
- *     은 이 진입점에서 지운다. 검사를 낮추는 용도로 쓰지 않는다.
+ *   SKIP_BIOME, HARNESS_TESTS_SOFT, HARNESS_SCAN_ROOTS, HARNESS_REQUIRE_TESTS=0,
+ *   HARNESS_E2E_SKIP 은 이 진입점에서 지운다. 검사를 낮추는 용도로 쓰지 않는다.
  *
  * maturity full:
  *   harness-unit → typecheck → biome(+fsd) → unit test → guard → guard:tests → e2e → build → (선택 snap)
@@ -115,6 +115,7 @@ console.info(`[verify-app] ${gate.filter} (${gate.maturity})`);
 delete process.env.HARNESS_TESTS_SOFT;
 delete process.env.SKIP_BIOME;
 delete process.env.HARNESS_SCAN_ROOTS;
+delete process.env.HARNESS_E2E_SKIP;
 if (process.env.HARNESS_REQUIRE_TESTS === '0') delete process.env.HARNESS_REQUIRE_TESTS;
 
 // 0) 보호 규칙 단위 테스트. 앱 빌드보다 먼저 돌려, 가드 자체 회귀를 빨리 본다.

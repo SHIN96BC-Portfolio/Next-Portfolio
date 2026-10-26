@@ -27,6 +27,7 @@ const ROOT = path.resolve(__dirname, '..');
 delete process.env.HARNESS_TESTS_SOFT;
 delete process.env.SKIP_BIOME;
 delete process.env.HARNESS_SCAN_ROOTS;
+delete process.env.HARNESS_E2E_SKIP;
 if (process.env.HARNESS_REQUIRE_TESTS === '0') delete process.env.HARNESS_REQUIRE_TESTS;
 
 function run(label, cmd) {
