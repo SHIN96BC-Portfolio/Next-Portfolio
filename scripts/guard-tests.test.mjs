@@ -13,6 +13,7 @@
  * 이 파일도 DENYLIST 에 있다. 단언을 지워 검사를 비우는 변경은 human gate 다.
  */
 import assert from 'node:assert/strict';
+import fs from 'node:fs';
 import test from 'node:test';
 import { missingUnitTestsInDiff } from './guard-tests.mjs';
 
@@ -67,4 +68,10 @@ test('hook and validation edits need their own test in the diff', () => {
     ]),
     []
   );
+});
+
+test('e2e skip does not honor env or STATE.md', () => {
+  const src = fs.readFileSync(new URL('./guard-tests.mjs', import.meta.url), 'utf8');
+  assert.equal(src.includes('docs/loop/STATE.md'), false);
+  assert.equal(/if \(process\.env\.HARNESS_E2E_SKIP\)/.test(src), false);
 });

@@ -42,7 +42,7 @@ ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
 
 # 러너나 상위 셸이 물려준 우회 스위치는 이 잡의 게이트에 쓰지 않는다.
-unset HARNESS_TESTS_SOFT SKIP_BIOME HARNESS_SCAN_ROOTS
+unset HARNESS_TESTS_SOFT SKIP_BIOME HARNESS_SCAN_ROOTS HARNESS_E2E_SKIP
 if [[ "${HARNESS_REQUIRE_TESTS:-}" == "0" ]]; then
   unset HARNESS_REQUIRE_TESTS
 fi

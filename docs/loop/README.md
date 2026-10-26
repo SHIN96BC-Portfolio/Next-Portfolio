@@ -15,7 +15,6 @@
 | cloud vs local | [`RUNNERS.md`](./RUNNERS.md) |
 | Actions 계약 | [`GITHUB-ACTIONS.md`](./GITHUB-ACTIONS.md) |
 | 빈칸·강화 순서 | [`STRENGTHEN.md`](./STRENGTHEN.md) |
-| 8.x 이슈 보드 | [`strengthen-issues/README.md`](./strengthen-issues/README.md) |
 | 후순위 | [`ROADMAP.md`](./ROADMAP.md) |
 | worktree | [`WORKTREE.md`](./WORKTREE.md) |
 | 런타임 | [`BACKLOG.md`](./BACKLOG.md) · [`STATE.md`](./STATE.md) · [`loop-run-log.md`](./loop-run-log.md) |

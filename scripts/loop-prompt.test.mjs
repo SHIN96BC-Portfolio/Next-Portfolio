@@ -39,6 +39,12 @@ test('path rules point at the source docs and do not restate them', () => {
   assert.equal(gate.split('\n').length < 80, true);
 });
 
+test('ai-loop.sh unsets HARNESS_E2E_SKIP so env cannot skip guard:tests', () => {
+  assert.match(loop, /unset HARNESS_TESTS_SOFT SKIP_BIOME HARNESS_SCAN_ROOTS HARNESS_E2E_SKIP/);
+  const verifyApp = fs.readFileSync(new URL('./verify-app.mjs', import.meta.url), 'utf8');
+  assert.match(verifyApp, /delete process\.env\.HARNESS_E2E_SKIP/);
+});
+
 test('ai-loop.sh delegates rules to CLAUDE.md and the skills', () => {
   assert.match(loop, /CLAUDE\.md section Plan/);
   assert.match(loop, /loop-build\/SKILL\.md/);
