@@ -14,7 +14,8 @@
  *   node scripts/verify-app.mjs @apps/user-commerce
  *   node scripts/verify-app.mjs portfolio --snap
  *   node scripts/verify-app.mjs --list
- *   pnpm verify:portfolio / pnpm verify:commerce / …
+ *   node scripts/verify-app.mjs core  → scripts/verify-core.mjs
+ *   pnpm verify:portfolio / pnpm verify:commerce / pnpm verify:core / …
  *
  * Env:
  *   VERIFY_WITH_SNAP=1         — --snap 과 동일 (portfolio snapRoutes)
@@ -27,6 +28,8 @@
  * maturity lite:
  *   harness-unit → typecheck → biome → (test 있으면) → guard → build
  *   e2e 스크립트가 있으면 실행(선택). guard:tests 는 HARNESS_REQUIRE_TESTS=1 일 때만
+ * maturity libs (core):
+ *   scripts/verify-core.mjs — 앱 e2e·Next build 없음. 소비자 verify 를 묶지 않음
  *
  * harness-unit (`pnpm test:harness`) 은 앱과 무관하게 보호 규칙 순수 함수를 먼저 돌린다.
  * 가드 스크립트를 고친 PR 이 그 테스트를 비우면 여기서 실패한다.
@@ -72,6 +75,16 @@ if (!gate) {
   console.error(`Unknown app: ${target}. Known:`);
   for (const g of listGates()) console.error(`  - ${g.short} (${g.filter})`);
   process.exit(1);
+}
+
+if (gate.maturity === 'libs' || gate.short === 'core') {
+  execSync('node scripts/verify-core.mjs', {
+    cwd: ROOT,
+    stdio: 'inherit',
+    env: process.env,
+    shell: true,
+  });
+  process.exit(0);
 }
 
 const pkgPath = path.join(ROOT, gate.dir, 'package.json');

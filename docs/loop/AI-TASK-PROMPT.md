@@ -62,14 +62,23 @@ backlog: B-003
 cursor_build_model:
 ```
 
+core만 고치면 App scope에서 `@core (verify:core)` 를 고르고 yaml도 맞춘다.
+
+```yaml
+app: @core
+verify: pnpm verify:core
+backlog: B-005
+cursor_build_model:
+```
+
 | 키 | 프롬프트 관점 | 파서 규칙 (`ai-loop-parse-issue`) |
 |----|----------------|-------------------------------------|
-| `app` | 에이전트 작업 공간. 틀리면 잘못된 게이트·경로. 브랜치는 `feat/ai-loop/{short}/#{n}` | `app-gates.mjs`에 있는 filter만. 드롭다운과 달라도 **yaml 우선**. short는 `verify:<short>` |
+| `app` | 에이전트 작업 공간. 틀리면 잘못된 게이트·경로. 브랜치는 `feat/ai-loop/{short}/#{n}` | `app-gates.mjs`에 있는 filter만. 드롭다운과 달라도 **yaml 우선**. short는 `verify:<short>`. core만 고치면 `app: @core` / `verify: pnpm verify:core` |
 | `verify` | AC Gate와 같은 문자열 (`pnpm verify:<short>`) | 레지스트리 밖·이상한 문자열이면 **portfolio로 harden** |
 | `backlog` | 예산·WIP·BACKLOG AC와 한 줄 | 없으면 budget 키 = `issue-<n>` |
 | `cursor_build_model` | Build≠Review 모델 분리 | 비우면 계정 기본. 레포 Variable `CURSOR_BUILD_MODEL`이 있으면 전 실행 override |
 
-드롭다운 App scope와 yaml이 다르면 **yaml이 이긴다**. yaml을 진실의 원천으로 유지.
+파서는 yaml 펜스 → 본문 kv → `### App scope` 헤딩 순이다. 폼 이슈는 헤딩이 마지막이라 **드롭다운이 yaml 기본값을 덮는다**. 둘 다 `@core` / `verify:core`로 맞추는 편이 안전하다.
 
 ### 2.3 Goal — “무엇을 / 왜 / 어디까지 / 하지 말 것”
 

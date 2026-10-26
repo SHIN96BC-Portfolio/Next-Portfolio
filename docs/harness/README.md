@@ -8,14 +8,15 @@
 ```text
 docs/harness/     ← 이 문서 · DENYLIST · TESTING
 docs/loop/        ← BACKLOG / STATE / LOOP / Actions
-scripts/verify-app.mjs · app-gates.mjs · guard-harness.mjs · guard-tests.mjs
-pnpm verify:<short>   ← 앱별 (전 앱 일괄 금지)
+scripts/verify-app.mjs · verify-core.mjs · app-gates.mjs · guard-harness.mjs · guard-tests.mjs
+pnpm verify:<short>   ← 앱별 또는 core (전 앱 일괄 금지)
 ```
 
 ## 앱별 게이트
 
 | short | filter | maturity | 명령 |
 |-------|--------|----------|------|
+| core | `@core/*` | **libs** | `pnpm verify:core` |
 | portfolio | `@apps/user-portfolio` | **full** | `pnpm verify:portfolio` |
 | commerce | `@apps/user-commerce` | lite | `pnpm verify:commerce` |
 | fashion | `@apps/user-fashion` | lite | `pnpm verify:fashion` |
@@ -26,10 +27,12 @@ pnpm verify:<short>   ← 앱별 (전 앱 일괄 금지)
 | social-admin | `@apps/admin-social-admin` | lite | `pnpm verify:social-admin` |
 
 **full** = typecheck → biome(+fsd) → unit → `guard:harness` → `guard:tests` → e2e → build  
-**lite** = typecheck → biome → guard → build (+ test 스크립트 있으면). e2e 승격은 [`../loop/ROADMAP.md`](../loop/ROADMAP.md)
+**lite** = typecheck → biome → guard → build (+ test 스크립트 있으면). e2e 승격은 [`../loop/ROADMAP.md`](../loop/ROADMAP.md)  
+**libs** (`verify:core`) = harness-unit → `build:libs` → `@core/*` typecheck → biome → (패키지에 test 있으면) → guard. 앱 e2e·Next build 없음. 소비자 앱 게이트는 이 명령에 묶지 않는다.
 
 ```bash
 pnpm verify:app --list
+pnpm verify:core             # @core/* libs
 pnpm verify:portfolio
 pnpm verify:portfolio:snap   # + snapRoutes (서버 필요할 수 있음)
 pnpm verify:commerce         # lite
@@ -74,7 +77,7 @@ Google Fonts TLS: portfolio `next.config`의 `turbopackUseSystemTlsCerts` (필�
 | 단계 | 내용 | 모노레포 |
 |------|------|----------|
 | H1–H2 | hooks / Biome / FSD | ✅ |
-| H3 | `verify:<app>` | ✅ 전 앱 스크립트 (portfolio=full, 나머지=lite) |
+| H3 | `verify:<app>` | ✅ 전 앱 스크립트 (portfolio=full, 나머지=lite) + `verify:core` |
 | H4 | Playwright | ✅ portfolio만 |
 | H5 | denylist + guard (전 apps 스캔) | ✅ |
 | H5b | `guard:tests` (Jest/E2E 강제) | ✅ portfolio full |
@@ -82,7 +85,7 @@ Google Fonts TLS: portfolio `next.config`의 `turbopackUseSystemTlsCerts` (필�
 
 ## 규칙
 
-- 에이전트는 **변경한 앱의** `pnpm verify:<short>` 로 합격한다.
+- 에이전트는 **변경한 앱의** `pnpm verify:<short>` 로 합격한다. core만 바꾸면 `pnpm verify:core`.
 - PR CI 1호: `verify-portfolio.yml` (다른 앱 CI는 온디맨드 — ROADMAP).
 - denylist·보안 경로는 사람 승인 후.
 - 로컬 push 훅(`.husky/pre-push`)은 typecheck, biome, `guard:harness`, `guard:tests` 만 돈다. e2e 와 production build 는 `pnpm verify:<app>` 와 PR CI 에만 있다. 훅이 느려지면 `--no-verify` 로 가드까지 빠지기 때문이다.

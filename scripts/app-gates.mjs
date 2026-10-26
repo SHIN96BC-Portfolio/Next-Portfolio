@@ -10,13 +10,14 @@
  *
  * 필드 (AppGate):
  *   short       — package.json 스크립트 접미사 (verify:portfolio → portfolio)
- *   filter      — pnpm --filter 패키지명
+ *   filter      — pnpm --filter 패키지명 (`@core/*` 는 워크스페이스 글로브)
  *   verify      — 루트에서 돌리는 전체 게이트 명령 문자열
- *   dir         — 앱 루트 상대 경로 (package.json 존재 확인용)
- *   maturity    — 'full' | 'lite'
+ *   dir         — 앱 루트 상대 경로 (package.json 존재 확인용). core 는 `core/`
+ *   maturity    — 'full' | 'lite' | 'libs'
  *     full: typecheck + biome + test + guard + guard:tests + e2e + build
  *     lite: typecheck + biome + guard + build (+ test 스크립트 있으면)
  *           ※ lite ≠ 앱 없음. e2e 성숙도 단계다.
+ *     libs: @core/* typecheck + (test 있으면) + guard + build:libs. 앱 e2e 없음
  *   snapRoutes  — (선택) verify --snap 시 촬영 경로
  *
  * 별칭:
@@ -27,11 +28,15 @@
  *   1) 여기 APP_GATES + APP_ALIASES
  *   2) package.json 에 verify:<short>
  *   3) docs/harness/README.md 표 · DENYLIST 앱 절
+ *   4) AI Task 폼 `.github/ISSUE_TEMPLATE/ai-task.yml` App scope 옵션
+ *
+ * core 게이트: filter `@core/*`, verify `pnpm verify:core` (`scripts/verify-core.mjs`).
+ * 소비자 앱을 이 명령에 묶지 않는다.
  *
  * 문서: docs/harness/README.md · docs/loop/ROADMAP.md
  */
 
-/** @typedef {{ short: string, filter: string, verify: string, dir: string, maturity: 'full' | 'lite', snapRoutes?: string[] }} AppGate */
+/** @typedef {{ short: string, filter: string, verify: string, dir: string, maturity: 'full' | 'lite' | 'libs', snapRoutes?: string[] }} AppGate */
 
 /** @type {Record<string, AppGate>} */
 export const APP_GATES = {
@@ -92,10 +97,19 @@ export const APP_GATES = {
     dir: 'apps/admin/social-admin',
     maturity: 'lite',
   },
+  '@core/*': {
+    short: 'core',
+    filter: '@core/*',
+    verify: 'pnpm verify:core',
+    dir: 'core',
+    maturity: 'libs',
+  },
 };
 
 /** short name / alias → filter 키 */
 export const APP_ALIASES = {
+  core: '@core/*',
+  '@core': '@core/*',
   portfolio: '@apps/user-portfolio',
   'user-portfolio': '@apps/user-portfolio',
   commerce: '@apps/user-commerce',
@@ -116,7 +130,7 @@ export const APP_ALIASES = {
 
 /**
  * 이슈/CLI 문자열 → AppGate
- * 허용 예: portfolio | @apps/user-portfolio | pnpm verify:commerce | verify:fashion
+ * 허용 예: portfolio | @apps/user-portfolio | core | @core | pnpm verify:commerce | verify:core
  *
  * @param {string} raw
  * @returns {AppGate | null}
@@ -128,6 +142,7 @@ export function resolveGate(raw) {
   if (!s) return null;
 
   if (APP_GATES[s]) return APP_GATES[s];
+  if (s === '@core' || s.startsWith('@core/')) return APP_GATES['@core/*'];
 
   const alias = APP_ALIASES[s] || APP_ALIASES[s.replace(/^@apps\//, '')];
   if (alias && APP_GATES[alias]) return APP_GATES[alias];

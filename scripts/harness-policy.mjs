@@ -50,6 +50,7 @@ export const ROOT_PROTECTED_SCRIPT_KEYS = [
   'verify:commerce-admin',
   'verify:fashion-admin',
   'verify:social-admin',
+  'verify:core',
   'loop:status',
   'loop:lock',
   'loop:unlock',

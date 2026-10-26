@@ -9,6 +9,7 @@
 | pnpm 명령 | 구현 파일 | 하는 일 |
 |-----------|-----------|---------|
 | `verify:portfolio` 등 | `verify-app.mjs` + `app-gates.mjs` | 앱별 합격 게이트 (full/lite) |
+| `verify:core` | `verify-core.mjs` | `@core/*` build:libs + typecheck + (test 있으면) + guard |
 | `verify:app --list` | 同上 | 레지스트리 표 출력 |
 | `verify:portfolio:snap` | verify-app `--snap` | full verify + 라우트 스크린샷 |
 | `guard:harness` | `guard-harness.mjs` | NEXT_PUBLIC secret fail. 보호 경로 알림은 owner gate 가 판정 |
@@ -25,9 +26,10 @@
 ## 게이트 (verify)
 
 ```text
-app-gates.mjs     ← 앱 표 (filter / maturity / snapRoutes)
+app-gates.mjs     ← 앱 표 (filter / maturity / snapRoutes) + core (libs)
        ↓
 verify-app.mjs    ← typecheck → biome → test? → guard → guard:tests? → e2e? → build → snap?
+verify-core.mjs   ← typecheck → biome → test? → guard → build:libs
        ↓
 pnpm verify:<short>
 ```

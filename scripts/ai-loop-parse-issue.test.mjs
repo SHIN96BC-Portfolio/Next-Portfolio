@@ -31,6 +31,43 @@ test('--write-env emits quoted VERIFY_CMD for the default portfolio gate', () =>
   assert.equal(out.includes('VERIFY_CMD=pnpm verify:portfolio\n'), false);
 });
 
+test('--write-env core Loop config maps to verify:core', () => {
+  const out = execFileSync(process.execPath, [parser, '--write-env'], {
+    encoding: 'utf8',
+    env: {
+      ...process.env,
+      ISSUE_NUMBER: '70',
+      ISSUE_BODY: ['```yaml', 'app: @core', 'verify: pnpm verify:core', '```'].join('\n'),
+    },
+  });
+  assert.match(out, /^ACTIVE_APP='@core\/\*'$/m);
+  assert.match(out, /^VERIFY_CMD='pnpm verify:core'$/m);
+  assert.match(out, /^APP_SHORT='core'$/m);
+});
+
+test('--write-env App scope heading core maps to verify:core', () => {
+  const out = execFileSync(process.execPath, [parser, '--write-env'], {
+    encoding: 'utf8',
+    env: {
+      ...process.env,
+      ISSUE_NUMBER: '71',
+      ISSUE_BODY: [
+        '### App scope',
+        '',
+        '@core (verify:core) [libs]',
+        '',
+        '```yaml',
+        'app: @apps/user-portfolio',
+        'verify: pnpm verify:portfolio',
+        '```',
+      ].join('\n'),
+    },
+  });
+  assert.match(out, /^ACTIVE_APP='@core\/\*'$/m);
+  assert.match(out, /^VERIFY_CMD='pnpm verify:core'$/m);
+  assert.match(out, /^APP_SHORT='core'$/m);
+});
+
 test('--write-env APP_SHORT follows Loop config app', () => {
   const out = execFileSync(process.execPath, [parser, '--write-env'], {
     encoding: 'utf8',
