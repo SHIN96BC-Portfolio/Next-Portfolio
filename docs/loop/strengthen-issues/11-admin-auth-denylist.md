@@ -1,12 +1,12 @@
 # 11 — master-admin next-auth denylist
 
-- Status: `open`
+- Status: `doing`
 - STRENGTHEN: H-3
 - Type: Chore
 - Loop: 사람
 - 8.x: 선 위
 - Depends: 8.x 이후. 01이 있어야 봇 PR 판정이 의미 있음
-- GitHub: —
+- GitHub: #76
 
 ## GitHub 본문 (복사)
 
@@ -26,3 +26,4 @@ Type: Chore
 ## 로그
 
 - 2026-10-22: 티켓 초안
+- 2026-10-26: GitHub #76. Status `doing`
