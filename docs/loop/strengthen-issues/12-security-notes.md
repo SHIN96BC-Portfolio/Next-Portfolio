@@ -1,12 +1,12 @@
 # 12 — SECURITY-NOTES 정식화
 
-- Status: `open`
+- Status: `doing`
 - STRENGTHEN: C-2
 - Type: docs
 - Loop: 사람 (AGENTS.md = human gate)
 - 8.x: 선 위
 - Depends: 없음. 03과 섞지 않음
-- GitHub: —
+- GitHub: #78
 
 ## GitHub 본문 (복사)
 
@@ -26,3 +26,4 @@ Type: docs
 ## 로그
 
 - 2026-10-22: 티켓 초안
+- 2026-10-26: GitHub #78. Status `doing`

@@ -1,6 +1,6 @@
 # 11 — master-admin next-auth denylist
 
-- Status: `doing`
+- Status: `done`
 - STRENGTHEN: H-3
 - Type: Chore
 - Loop: 사람
@@ -27,3 +27,4 @@ Type: Chore
 
 - 2026-10-22: 티켓 초안
 - 2026-10-26: GitHub #76. Status `doing`
+- 2026-10-26: Status `done` (#76)

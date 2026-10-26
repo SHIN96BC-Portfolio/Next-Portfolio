@@ -20,7 +20,7 @@
 ## Open
 
 ### B-002 — SECURITY Phase1 (human gate)
-- Scope: `NEXT_PUBLIC_*SECRET*` 제거·로테이션 — [`SECURITY-NOTES.tmp.md`](../../SECURITY-NOTES.tmp.md)
+- Scope: `NEXT_PUBLIC_*SECRET*` 제거·로테이션 — [`docs/security/NOTES.md`](../security/NOTES.md)
 - [ ] Behavior: 클라이언트 번들에 OAuth/crypto secret 미노출 (서버 env로 이전)
 - [ ] Test: `pnpm guard:harness` allowlist 축소 가능
 - [ ] UI: N/A

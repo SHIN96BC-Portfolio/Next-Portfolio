@@ -24,4 +24,4 @@ description: >-
 ## Related
 
 - `docs/harness/README.md`
-- SECURITY code remediations: BACKLOG B-002 / `SECURITY-NOTES.tmp.md` (separate from harness guards)
+- SECURITY code remediations: BACKLOG B-002 / `docs/security/NOTES.md` (separate from harness guards)
