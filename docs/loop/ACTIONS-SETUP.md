@@ -73,7 +73,7 @@ Fine-grained PAT: Contents RW, Pull requests RW, Issues RW.
 | Block force pushes | On |
 | Require a pull request before merging | On |
 | Required approvals | **0** 가능 (혼자 + 잔디/자기승인 이슈 피하려면 0) |
-| Require status checks to pass | On → `verify:portfolio` (이름 CI에 맞게) |
+| Require status checks to pass | On → `verify-affected` + `harness-owner-gate` (앱마다 체크를 추가하지 않음) |
 | **Restrict who can push** (또는 merge 제한) | On → **본인(사람)만** 허용. AI 봇·`github-actions`는 넣지 않음 |
 | Bypass list | 비우거나 **본인만**. AI 계정 bypass 금지 |
 | Allow auto-merge | **Off** (레포 Settings → General에서도 끄기) |
@@ -167,8 +167,9 @@ Fine-grained PAT 권한은 기존과 같다. Contents RW, Pull requests RW, Issu
    - **Require review from Code Owners**
    - **Require status checks to pass**
      - 검색해서 추가: `harness-owner-gate`
-     - 이미 쓰던 체크: `verify:portfolio`
-     - 워크플로가 default 에 머지된 뒤 한 번 PR 을 열어야 체크 이름이 목록에 나타난다. 그 전에 이름이 없으면 머지 후 첫 PR 에서 다시 이 화면으로 와 추가한다
+     - 필수 체크: `harness-owner-gate`, `verify-affected`
+     - 워크플로가 default 에 머지된 뒤 한 번 PR 을 열어야 체크 이름이 목록에 나타난다
+     - 이름 전환: 머지 전에 `verify:portfolio` 를 잠시 빼고, 머지 후 `verify-affected` 를 넣는다. `harness-owner-gate` 는 유지. 새 앱이 생겨도 이 목록에 체크를 추가하지 않는다
    - **Require conversation resolution** 은 선택
 8. 레포 **Settings → General → Pull Requests** 에서 **Allow auto-merge** 를 끈다
 

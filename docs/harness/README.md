@@ -8,7 +8,7 @@
 ```text
 docs/harness/     ← 이 문서 · DENYLIST · TESTING
 docs/loop/        ← BACKLOG / STATE / LOOP / Actions
-scripts/verify-app.mjs · verify-core.mjs · app-gates.mjs · guard-harness.mjs · guard-tests.mjs
+scripts/verify-app.mjs · verify-core.mjs · verify-affected.mjs · app-gates.mjs · guard-harness.mjs · guard-tests.mjs
 pnpm verify:<short>   ← 앱별 또는 core (전 앱 일괄 금지)
 ```
 
@@ -32,6 +32,7 @@ pnpm verify:<short>   ← 앱별 또는 core (전 앱 일괄 금지)
 
 ```bash
 pnpm verify:app --list
+pnpm verify:affected         # 바뀐 경로의 verify:<short>만
 pnpm verify:core             # @core/* libs
 pnpm verify:portfolio
 pnpm verify:portfolio:snap   # + snapRoutes (서버 필요할 수 있음)
@@ -52,7 +53,7 @@ pnpm guard:tests
 | e2e | `apps/user/portfolio/e2e/` · Playwright config |
 | 가드 | `scripts/guard-harness.mjs` · `scripts/guard-tests.mjs` |
 | denylist | [`DENYLIST.md`](./DENYLIST.md) |
-| PR CI | [`.github/workflows/verify-portfolio.yml`](../../.github/workflows/verify-portfolio.yml) |
+| PR CI | [`.github/workflows/verify-affected.yml`](../../.github/workflows/verify-affected.yml) (체크 이름 `verify-affected`) |
 | Deploy quality | [`deploy-portfolio.yml`](../../.github/workflows/deploy-portfolio.yml) → 동일 `verify:portfolio` |
 | env 예시 | `apps/user/portfolio/.env.example` |
 
@@ -86,7 +87,7 @@ Google Fonts TLS: portfolio `next.config`의 `turbopackUseSystemTlsCerts` (필�
 ## 규칙
 
 - 에이전트는 **변경한 앱의** `pnpm verify:<short>` 로 합격한다. core만 바꾸면 `pnpm verify:core`.
-- PR CI 1호: `verify-portfolio.yml` (다른 앱 CI는 온디맨드 — ROADMAP).
+- PR CI: `verify-affected.yml` 이 항상 뜨고 체크 이름은 `verify-affected`. 바뀐 앱/`core` 게이트만 돈다. ruleset 에 앱별 체크를 추가하지 않는다.
 - denylist·보안 경로는 사람 승인 후.
 - 로컬 push 훅(`.husky/pre-push`)은 typecheck, biome, `guard:harness`, `guard:tests` 만 돈다. e2e 와 production build 는 `pnpm verify:<app>` 와 PR CI 에만 있다. 훅이 느려지면 `--no-verify` 로 가드까지 빠지기 때문이다.
 - 로컬·PR·deploy quality가 **같은 verify 명령**으로 수렴하는 것이 목표.

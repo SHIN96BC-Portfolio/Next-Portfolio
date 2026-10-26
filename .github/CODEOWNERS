@@ -42,6 +42,8 @@
 /scripts/guard-tests.test.mjs @SHIN96BC
 /scripts/verify-app.mjs @SHIN96BC
 /scripts/verify-core.mjs @SHIN96BC
+/scripts/verify-affected.mjs @SHIN96BC
+/scripts/verify-affected.test.mjs @SHIN96BC
 /scripts/app-gates.mjs @SHIN96BC
 /scripts/harness-policy.mjs @SHIN96BC
 /scripts/harness-policy.test.mjs @SHIN96BC
