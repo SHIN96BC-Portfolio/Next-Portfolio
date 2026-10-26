@@ -24,6 +24,7 @@ pnpm test                                             # turbo test
 pnpm guard:harness                                    # NEXT_PUBLIC secret 이면 fail. 보호 경로 판정은 harness-owner-gate
 pnpm guard:harness:strict                             # 위와 같은 명령
 pnpm guard:tests                                      # 새 로직→Jest / 셸→E2E (docs/harness/TESTING.md)
+pnpm verify:core                                      # @core/*: typecheck+biome+guard+build:libs (앱 e2e 없음)
 pnpm verify:portfolio                                 # full: typecheck+biome+test+guard+guard:tests+e2e+build
 pnpm verify:portfolio:snap                            # full + screenshot (서버 필요할 수 있음)
 pnpm verify:commerce                                  # lite gate (다른 앱도 verify:<short>)
