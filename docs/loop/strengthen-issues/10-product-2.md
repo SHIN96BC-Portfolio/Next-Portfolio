@@ -1,6 +1,6 @@
 # 10 — 제품 루프 2 (DataTable)
 
-- Status: `doing`
+- Status: `done`
 - STRENGTHEN: L-2 반복
 - Type: Feature
 - Loop: `ai-task`
@@ -50,3 +50,4 @@ AC:
 
 - 2026-10-22: 티켓 초안, `blocked`
 - 2026-10-23: GitHub #70. 주제 DataTable. Status `doing`
+- 2026-10-26: Status `done` (#70). B-005 → BACKLOG-DONE (#76)

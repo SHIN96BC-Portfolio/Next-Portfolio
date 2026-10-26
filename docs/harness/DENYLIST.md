@@ -49,6 +49,12 @@
 
 ## @apps/admin-master-admin (lite)
 
+### Auth / session
+
+- `apps/admin/master-admin/src/fsd/app/auth/config/next-auth.ts`
+
+### Env / secrets / deploy
+
 - `apps/admin/master-admin/.env`
 - `apps/admin/master-admin/.env.local`
 - `apps/admin/master-admin/.env.*.local`

@@ -68,6 +68,7 @@
 # --- DENYLIST 의 암호·인증·시크릿 경로. 테스트가 이 목록과 어긋나면 실패한다 ---
 /core/libs/crypto/ @SHIN96BC
 /apps/user/portfolio/src/fsd/app/auth/config/next-auth.ts @SHIN96BC
+/apps/admin/master-admin/src/fsd/app/auth/config/next-auth.ts @SHIN96BC
 /apps/user/portfolio/src/fsd/shared/config/proxy/handlers/auth/ @SHIN96BC
 /apps/user/portfolio/src/fsd/shared/config/cookie/ @SHIN96BC
 /apps/user/portfolio/src/fsd/shared/config/storage/storage.setup.ts @SHIN96BC

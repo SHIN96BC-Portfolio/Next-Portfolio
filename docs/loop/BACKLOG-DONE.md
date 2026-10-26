@@ -4,6 +4,11 @@
 
 ## Done
 
+### B-005 — bc-ui DataTable
+- 완료: 2026-10-23 (#70). 보드 반영: 2026-10-26 (#76)
+- 변경: DataTable 셸을 `@core/bc-ui/table`에 추가. portfolio `shared/table/ui` facade re-export
+- Gate: `pnpm verify:portfolio` 통과
+
 ### B-004 — bc-ui ConfirmDialog
 - 완료: 2026-10-23 (#68)
 - 변경: `ConfirmDialog`를 CenterDialog 조립으로 추가. portfolio `shared/sheet/ui` facade re-export
