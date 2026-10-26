@@ -47,7 +47,8 @@ pnpm --filter @apps/user-portfolio run gen:i18n-namespaces
 
 앱 로컬 스크립트(`dev` / `dev:https` / `start` 등)는 `apps/user/portfolio/package.json` 참고.
 
-**Harness:** 모노레포 공통 게이트·denylist는 [`docs/harness/`](docs/harness/README.md). 앱 변경 후 해당 **`pnpm verify:<app>`** 으로 합격 여부를 말한다 (현재 1호: `pnpm verify:portfolio`). Cursor 스킬: `.cursor/skills/verify` · `plan-change` · `safe-edit`.
+**Harness:** 모노레포 공통 게이트·denylist는 [`docs/harness/`](docs/harness/README.md). 앱 변경 후 해당 **`pnpm verify:<app>`** 으로 합격 여부를 말한다 (현재 1호: `pnpm verify:portfolio`). Cursor 스킬: `.cursor/skills/verify` · `plan-change` · `safe-edit`.  
+보안 논점(코드 반영은 B-002): [`docs/security/NOTES.md`](docs/security/NOTES.md).
 
 Biome·FSD 린트·가드·훅·워크플로·`AGENTS.md`·`.cursor/skills` 는 human gate 다. 검사 실패를 그 파일을 느슨하게 고쳐 해결하지 않는다. 목록은 [`docs/harness/DENYLIST.md`](docs/harness/DENYLIST.md). FSD 파일과 그 보호 경로를 열면 [`.cursor/rules`](.cursor/rules) 가 같은 문서만 가리킨다.
 

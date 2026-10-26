@@ -18,8 +18,8 @@ GitHub 이슈 번호는 표와 각 md `GitHub` 줄에 적는다. 이 폴더가 �
 | 08 | [08-login-e2e.md](./08-login-e2e.md) | H-4 e2e | 필수 | ai-task | done #66 |
 | 09 | [09-product-1.md](./09-product-1.md) | L-2 | 필수 | ai-task | done #68 |
 | 10 | [10-product-2.md](./10-product-2.md) | L-2 | 필수 | ai-task | done #70 |
-| 11 | [11-admin-auth-denylist.md](./11-admin-auth-denylist.md) | H-3 | 선 위 | 사람 | doing #76 |
-| 12 | [12-security-notes.md](./12-security-notes.md) | C-2 | 선 위 | 사람 | open |
+| 11 | [11-admin-auth-denylist.md](./11-admin-auth-denylist.md) | H-3 | 선 위 | 사람 | done #76 |
+| 12 | [12-security-notes.md](./12-security-notes.md) | C-2 | 선 위 | 사람 | doing #78 |
 | 13 | [13-e2e-skip-guard.md](./13-e2e-skip-guard.md) | H-5 | 선 위 | 사람 | open |
 
 GitHub 이슈를 만든 뒤에 착수한다. 본문은 각 파일 `GitHub 본문 (복사)`.  

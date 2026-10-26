@@ -32,4 +32,4 @@
 - [ ] `snap`을 CI 기본 verify에 넣을지
 - [ ] Jest 커버리지 확대 (mapper 외)
 - [ ] SECURITY 코드 반영(B-002) 후 `guard-harness` allowlist 축소
-- [ ] SECURITY-NOTES.tmp → `docs/` 정식화 후 AGENTS 링크
+- [x] SECURITY-NOTES.tmp → `docs/` 정식화 후 AGENTS 링크 (`docs/security/NOTES.md`)

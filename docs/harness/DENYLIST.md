@@ -80,7 +80,7 @@
 
 ## Notes
 
-- 알려진 `NEXT_PUBLIC_*SECRET*` debt allowlist는 [`scripts/guard-harness.mjs`](../../scripts/guard-harness.mjs) (`SECRET_ALLOWLIST`). 코드 리라이트는 BACKLOG B-002 / `SECURITY-NOTES.tmp.md`.
+- 알려진 `NEXT_PUBLIC_*SECRET*` debt allowlist는 [`scripts/guard-harness.mjs`](../../scripts/guard-harness.mjs) (`SECRET_ALLOWLIST`). 코드 리라이트는 BACKLOG B-002 / [`docs/security/NOTES.md`](../security/NOTES.md).
 - denylist 자체 변경도 human gate입니다.
 - secret 스캔은 `apps/**` 전체 (`guard-harness.mjs`).
 - auth/cookie 세부 경로는 앱이 성숙하면 portfolio 절과 같이 추가한다.

@@ -57,7 +57,7 @@ Actions의 cloud/local **concurrency 그룹 분리**(`ai-loop-cloud` / `ai-loop-
 ## Human gates
 
 - [`docs/harness/DENYLIST.md`](../harness/DENYLIST.md) 전 항목
-- SECURITY 코드 리라이트 (BACKLOG B-002 / `SECURITY-NOTES.tmp.md`)
+- SECURITY 코드 리라이트 (BACKLOG B-002 / [`docs/security/NOTES.md`](../security/NOTES.md))
 - `docs/harness/DENYLIST.md` / `LOOP.md` limits 변경 자체
 - force push · `--no-verify` · auto-merge 설정
 - **최종 PR APPROVE / merge**

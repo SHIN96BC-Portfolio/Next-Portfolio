@@ -101,7 +101,7 @@ Cursor / Claude Code가 파일을 잘 집어 오더라도, **무엇을 소스 �
 | 4 | [`docs/loop/`](./) | BACKLOG / STATE / LOOP / Actions / runners |
 | 5 | [`.cursor/skills/`](../../.cursor/skills/) | verify · plan-change · safe-edit · loop-* |
 | 6 | `node_modules/@shin96bc/ai-skills/...` | 웹 디자인 / CBD·FSD 퍼블 / Jest 등 작업 스킬 |
-| 7 | [`SECURITY-NOTES.tmp.md`](../../SECURITY-NOTES.tmp.md) | 보안 논점 (코드 반영은 BACKLOG B-002) |
+| 7 | [`docs/security/NOTES.md`](../security/NOTES.md) | 보안 논점 (코드 반영은 BACKLOG B-002) |
 
 코드 컨텍스트(자동):
 
@@ -118,7 +118,7 @@ Cursor / Claude Code가 파일을 잘 집어 오더라도, **무엇을 소스 �
 ### 2.4 부족 / 다음에 넣을 것
 
 - [x] 루프 도입 시 `docs/loop/` 와 이 문서의 역할 표 고정
-- [ ] SECURITY-NOTES → `docs/` 정식화 후 AGENTS에서 링크 — [`ROADMAP.md`](./ROADMAP.md)
+- [x] SECURITY-NOTES → `docs/` 정식화 후 AGENTS에서 링크 — [`ROADMAP.md`](./ROADMAP.md)
 - [x] 모노레포 공통 vs 앱별 `verify:<app>` 표 (`docs/harness`)
 - [x] 타 앱 `verify:<short>` lite 게이트 (`app-gates.mjs`)
 
@@ -238,7 +238,7 @@ docs/harness/                ← verify·DENYLIST·TESTING 운영 SoT
 docs/loop/AI-TASK-PROMPT.md  ← 이슈 프롬프트 SoT
 AGENTS.md · README.md        ← 에이전트 요약 · 아키텍처 SoT
 scripts/* · .cursor/skills/* · .github/workflows/*
-SECURITY-NOTES.tmp.md        ← 보안 논점 (임시 → ROADMAP)
+docs/security/NOTES.md       ← 보안 논점 (코드 반영은 B-002)
 ```
 
 ---
