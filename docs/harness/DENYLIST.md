@@ -100,6 +100,8 @@ Biome, 테스트 러너, 가드, 루프 스크립트, git hook, 게이트 워크
 - `scripts/guard-tests.test.mjs`
 - `scripts/verify-app.mjs`
 - `scripts/verify-core.mjs`
+- `scripts/verify-affected.mjs`
+- `scripts/verify-affected.test.mjs`
 - `scripts/app-gates.mjs`
 - `scripts/harness-policy.mjs`
 - `scripts/harness-policy.test.mjs`

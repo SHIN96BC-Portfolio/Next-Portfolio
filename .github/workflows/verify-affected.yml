@@ -1,0 +1,71 @@
+# =============================================================================
+# Verify — PR/push 품질 게이트 (사람·에이전트 공통 합격 신호)
+# =============================================================================
+#
+# 목적:
+#   바뀐 경로의 `pnpm verify:<short>` 만 돈다 (`scripts/verify-affected.mjs`).
+#   체크 이름은 `verify-affected`. 이 PR 머지 전에 ruleset 에서 `verify:portfolio` 를
+#   잠시 빼고, 머지 후 `verify-affected` 를 넣는다. `harness-owner-gate` 는 유지.
+#
+# 문서: docs/harness/README.md
+# =============================================================================
+
+name: Verify
+
+# path 필터 없음: 필수 체크가 안 뜨면 PR 이 Expected 에 멈춘다.
+# 관련 없는 경로는 verify-affected 가 성공으로 끝낸다.
+on:
+  pull_request:
+  push:
+    branches: [master, main]
+
+# 같은 PR에 push가 연속되면 이전 verify 취소 → 분·큐 절약
+concurrency:
+  group: verify-affected-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  NODE_VERSION: '22'
+  # e2e/MSW용 더미 (실 시크릿 커밋 금지)
+  NEXT_PUBLIC_API_MOCKING: enabled
+  NEXT_PUBLIC_API_SERVER_URL: http://127.0.0.1:8080
+  NEXT_PUBLIC_API_AUTH_SERVER_URL: http://127.0.0.1:8080
+  NEXTAUTH_URL: http://127.0.0.1:3010
+  NEXTAUTH_SECRET: harness-ci-nextauth-secret
+  NEXT_PUBLIC_COOKIE_SECRET_KEY: harness-ci-cookie-secret-key
+  NEXT_PUBLIC_STORAGE_CRYPTO_SECRET_KEY: harness-ci-storage-secret
+  PRIVATE_COOKIE_SECRET_KEY: harness-ci-private-cookie-secret
+  # guard denylist: PR base 대비 diff. 적중은 스크립트 기본값으로 fail.
+  HARNESS_BASE_REF: ${{ github.event.pull_request.base.sha || github.event.before || '' }}
+  NEXT_TURBOPACK_EXPERIMENTAL_USE_SYSTEM_TLS_CERTS: '1'
+
+jobs:
+  verify:
+    name: verify-affected
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Verify affected
+        run: pnpm verify:affected
+        env:
+          HARNESS_BASE_REF: ${{ github.event.pull_request.base.sha || github.event.before || '' }}
+          CI: true

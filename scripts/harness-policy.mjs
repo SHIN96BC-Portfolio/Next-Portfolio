@@ -51,6 +51,7 @@ export const ROOT_PROTECTED_SCRIPT_KEYS = [
   'verify:fashion-admin',
   'verify:social-admin',
   'verify:core',
+  'verify:affected',
   'loop:status',
   'loop:lock',
   'loop:unlock',

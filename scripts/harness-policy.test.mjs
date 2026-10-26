@@ -41,7 +41,7 @@ test('parseDenylistPaths reads backtick paths and globs', () => {
 test('matchDenylist covers exact, directory, and glob', () => {
   const patterns = ['.cursor/skills', '.github/workflows', 'apps/**/jest.config.ts', 'biome.json'];
   assert.equal(matchDenylist('.cursor/skills/verify/SKILL.md', patterns), true);
-  assert.equal(matchDenylist('.github/workflows/verify-portfolio.yml', patterns), true);
+  assert.equal(matchDenylist('.github/workflows/verify-affected.yml', patterns), true);
   assert.equal(matchDenylist('apps/user/portfolio/jest.config.ts', patterns), true);
   assert.equal(matchDenylist('biome.json', patterns), true);
   assert.equal(matchDenylist('apps/user/portfolio/src/page.tsx', patterns), false);

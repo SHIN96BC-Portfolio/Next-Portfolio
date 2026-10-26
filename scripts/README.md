@@ -10,6 +10,7 @@
 |-----------|-----------|---------|
 | `verify:portfolio` 등 | `verify-app.mjs` + `app-gates.mjs` | 앱별 합격 게이트 (full/lite) |
 | `verify:core` | `verify-core.mjs` | `@core/*` build:libs + typecheck + (test 있으면) + guard |
+| `verify:affected` | `verify-affected.mjs` | 바뀐 경로의 `verify:<short>`만. 없으면 성공 |
 | `verify:app --list` | 同上 | 레지스트리 표 출력 |
 | `verify:portfolio:snap` | verify-app `--snap` | full verify + 라우트 스크린샷 |
 | `guard:harness` | `guard-harness.mjs` | NEXT_PUBLIC secret fail. 보호 경로 알림은 owner gate 가 판정 |
@@ -83,5 +84,5 @@ scripts/ai-loop.sh
 | 파일 | 역할 |
 |------|------|
 | `.github/workflows/ai-loop.yml` | AI 루프 오케스트레이터 (cloud/local) |
-| `.github/workflows/verify-portfolio.yml` | PR/push portfolio 합격 CI |
+| `.github/workflows/verify-affected.yml` | PR/push 합격 CI (체크 이름 `verify-affected`) |
 | `.github/ISSUE_TEMPLATE/ai-task.yml` | `ai-task` 이슈 폼 → 루프 입력 |
