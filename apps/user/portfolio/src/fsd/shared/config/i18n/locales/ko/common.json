@@ -2,5 +2,11 @@
   "title": "공통",
   "test": {
     "title": "타이틀"
+  },
+  "login": {
+    "title": "로그인",
+    "email": "이메일",
+    "password": "비밀번호",
+    "submit": "로그인"
   }
 }

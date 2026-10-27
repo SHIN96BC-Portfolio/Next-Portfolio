@@ -19,15 +19,6 @@
 
 ## Open
 
-### B-006 — Login 화면 로케일 카피
-- Scope: `@apps/user-portfolio` — `features/login`, `pages/login`, `pages/interception-modal/login`, i18n locales, `e2e/smoke.spec.ts`
-- [ ] Behavior: `/ko/login`과 인터셉션 로그인에 한글 제목·이메일·비밀번호·제출 버튼이 보인다. `/en/login`·`/ja/login`은 각 로케일 카피
-- [ ] Test: 새 mapper/utils가 생기면 같은 디렉터리 `*.test.ts`. 카피만이면 JSON + `pnpm run gen:i18n`. `pnpm guard:tests`
-- [ ] UI: `apps/user/portfolio/e2e/smoke.spec.ts` 로그인 단언을 로케일 카피로. `Login Page` 하드코딩 제거
-- [ ] Gate: `pnpm verify:portfolio` 통과
-- [ ] denylist 경로 미변경 (`next-auth.ts`·cookie·게스트 기본값·signIn 로직 금지)
-- 구현은 이 레일 이슈(#83)와 같은 diff에 넣지 않는다. 후속 AI Task / Build 한 사이클.
-
 ### B-002 — SECURITY Phase1 (human gate)
 - Scope: `NEXT_PUBLIC_*SECRET*` 제거·로테이션 — [`docs/security/NOTES.md`](../security/NOTES.md)
 - [ ] Behavior: 클라이언트 번들에 OAuth/crypto secret 미노출 (서버 env로 이전)

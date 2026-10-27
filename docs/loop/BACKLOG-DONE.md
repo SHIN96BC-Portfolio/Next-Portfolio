@@ -4,6 +4,11 @@
 
 ## Done
 
+### B-006 — Login 화면 로케일 카피
+- 완료: 2026-10-27 (#87)
+- 변경: 로그인 페이지·인터셉션 모달 제목·이메일·비밀번호·제출을 `common` 로케일 사전으로 이전. smoke e2e를 로케일 카피로 갱신
+- Gate: `pnpm verify:portfolio` 통과
+
 ### B-005 — bc-ui DataTable
 - 완료: 2026-10-23 (#70). 보드 반영: 2026-10-26 (#76)
 - 변경: DataTable 셸을 `@core/bc-ui/table`에 추가. portfolio `shared/table/ui` facade re-export

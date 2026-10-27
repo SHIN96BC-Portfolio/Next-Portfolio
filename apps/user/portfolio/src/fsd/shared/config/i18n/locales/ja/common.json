@@ -2,5 +2,11 @@
   "title": "共通",
   "test": {
     "title": "タイトル"
+  },
+  "login": {
+    "title": "ログイン",
+    "email": "メールアドレス",
+    "password": "パスワード",
+    "submit": "ログイン"
   }
 }
