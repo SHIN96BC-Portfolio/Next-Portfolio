@@ -24,9 +24,9 @@
  *   HARNESS_E2E_SKIP 은 이 진입점에서 지운다. 검사를 낮추는 용도로 쓰지 않는다.
  *
  * maturity full:
- *   harness-unit → typecheck → biome(+fsd) → unit test → guard → guard:tests → e2e → build → (선택 snap)
+ *   harness-unit → build:libs → typecheck → biome(+fsd) → unit test → guard → guard:tests → e2e → build → (선택 snap)
  * maturity lite:
- *   harness-unit → typecheck → biome → (test 있으면) → guard → build
+ *   harness-unit → build:libs → typecheck → biome → (test 있으면) → guard → build
  *   e2e 스크립트가 있으면 실행(선택). guard:tests 는 HARNESS_REQUIRE_TESTS=1 일 때만
  * maturity libs (core):
  *   scripts/verify-core.mjs — 앱 e2e·Next build 없음. 소비자 verify 를 묶지 않음
@@ -120,6 +120,10 @@ if (process.env.HARNESS_REQUIRE_TESTS === '0') delete process.env.HARNESS_REQUIR
 
 // 0) 보호 규칙 단위 테스트. 앱 빌드보다 먼저 돌려, 가드 자체 회귀를 빨리 본다.
 run('harness-unit', 'pnpm test:harness');
+
+// 0b) 앱 typecheck 는 @core/* dist 를 본다. 깨끗한 CI·클론에 dist 가 없다.
+//     verify:core 는 이쪽 분기를 타지 않고 verify-core.mjs 가 이미 build:libs 를 한다.
+run('build:libs', 'pnpm build:libs');
 
 // 1) 타입
 if (!hasScript('typecheck')) {
