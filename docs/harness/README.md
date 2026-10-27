@@ -26,8 +26,8 @@ pnpm verify:<short>   ← 앱별 또는 core (전 앱 일괄 금지)
 | fashion-admin | `@apps/admin-fashion-admin` | lite | `pnpm verify:fashion-admin` |
 | social-admin | `@apps/admin-social-admin` | lite | `pnpm verify:social-admin` |
 
-**full** = typecheck → biome(+fsd) → unit → `guard:harness` → `guard:tests` → e2e → build  
-**lite** = typecheck → biome → guard → build (+ test 스크립트 있으면). e2e 승격은 [`../loop/ROADMAP.md`](../loop/ROADMAP.md)  
+**full** = `build:libs` → typecheck → biome(+fsd) → unit → `guard:harness` → `guard:tests` → e2e → build  
+**lite** = `build:libs` → typecheck → biome → guard → build (+ test 스크립트 있으면). e2e 승격은 [`../loop/ROADMAP.md`](../loop/ROADMAP.md)  
 **libs** (`verify:core`) = harness-unit → `build:libs` → `@core/*` typecheck → biome → (패키지에 test 있으면) → guard. 앱 e2e·Next build 없음. 소비자 앱 게이트는 이 명령에 묶지 않는다.
 
 ```bash

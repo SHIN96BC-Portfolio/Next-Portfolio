@@ -45,6 +45,15 @@ test('ai-loop.sh unsets HARNESS_E2E_SKIP so env cannot skip guard:tests', () => 
   assert.match(verifyApp, /delete process\.env\.HARNESS_E2E_SKIP/);
 });
 
+test('app verify-app builds core libs before typecheck and core still delegates', () => {
+  const verifyApp = fs.readFileSync(new URL('./verify-app.mjs', import.meta.url), 'utf8');
+  const libsIdx = verifyApp.indexOf("run('build:libs', 'pnpm build:libs')");
+  const typeIdx = verifyApp.indexOf("run('typecheck'");
+  assert.ok(libsIdx > 0, 'app gate must run pnpm build:libs');
+  assert.ok(typeIdx > libsIdx, 'build:libs must run before app typecheck');
+  assert.match(verifyApp, /execSync\('node scripts\/verify-core\.mjs'/);
+});
+
 test('ai-loop.sh delegates rules to CLAUDE.md and the skills', () => {
   assert.match(loop, /CLAUDE\.md section Plan/);
   assert.match(loop, /loop-build\/SKILL\.md/);

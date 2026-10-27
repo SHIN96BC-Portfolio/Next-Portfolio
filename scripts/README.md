@@ -29,8 +29,8 @@
 ```text
 app-gates.mjs     ← 앱 표 (filter / maturity / snapRoutes) + core (libs)
        ↓
-verify-app.mjs    ← typecheck → biome → test? → guard → guard:tests? → e2e? → build → snap?
-verify-core.mjs   ← typecheck → biome → test? → guard → build:libs
+verify-app.mjs    ← build:libs → typecheck → biome → test? → guard → guard:tests? → e2e? → build → snap?
+verify-core.mjs   ← harness-unit → build:libs → typecheck → biome → test? → guard
        ↓
 pnpm verify:<short>
 ```
