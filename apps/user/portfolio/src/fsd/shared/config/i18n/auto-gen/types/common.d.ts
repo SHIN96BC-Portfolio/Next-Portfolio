@@ -5,4 +5,10 @@ export interface DictionaryCommon {
   test: {
     title: string;
   };
+  login: {
+    title: string;
+    email: string;
+    password: string;
+    submit: string;
+  };
 }

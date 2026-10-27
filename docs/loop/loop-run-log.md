@@ -16,6 +16,12 @@
 
 ## Log
 
+### 2026-10-27T04:48 — build — B-006
+- result: ok
+- summary: #87 로그인 페이지·인터셉션 모달 제목·이메일·비밀번호·제출을 common 로케일 사전으로 이전. smoke e2e를 ko/en/ja 카피로 갱신. B-006 → BACKLOG-DONE.
+- verify: pass
+- notes: `.ai/review.md` 없음. 락은 ai-loop.sh 보유. HARNESS_DENYLIST_HITS=0. Claude loop-verify 인계.
+
 ### 2026-10-23 — verify — issue-70
 - result: pass_to_human
 - summary: #70 AC 충족. DataTable 셸(caption·th·td·empty 슬롯), table subpath exports/tsup, facade re-export만. verify:portfolio 통과 (guard:harness HITS=0, guard:tests OK).
@@ -119,3 +125,15 @@
 - summary: issue #70 after loop (max 3)
 - verify: `pnpm verify:portfolio` (log in artifact)
 - notes: app=@apps/user-portfolio; issue=#70; backlog=B-005
+
+### 2026-10-27 — pre-pr — B-006
+- result: pass_to_human
+- summary: issue #87 login locale copy; AC met, gate green, HARNESS_DENYLIST_HITS=0
+- verify: `pnpm verify:portfolio`
+- notes: app=@apps/user-portfolio; backlog=B-006
+
+### 2026-10-27T04:49 — actions — B-006
+- result: PASS_TO_HUMAN
+- summary: issue #87 after loop (max 3)
+- verify: `pnpm verify:portfolio` (log in artifact)
+- notes: app=@apps/user-portfolio; issue=#87; backlog=B-006

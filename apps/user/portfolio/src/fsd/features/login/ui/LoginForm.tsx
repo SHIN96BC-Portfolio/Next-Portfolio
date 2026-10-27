@@ -1,5 +1,6 @@
 'use client';
 
+import useI18n from '@FsdShared/config/i18n/hooks/useI18n';
 import { CommonInput } from '@FsdShared/input';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
@@ -12,6 +13,7 @@ type Props = {
 };
 
 export default function LoginForm({ isInterceptionPage }: Props) {
+  const { dict } = useI18n('common');
   const router = useRouter();
 
   const {
@@ -57,12 +59,12 @@ export default function LoginForm({ isInterceptionPage }: Props) {
   return (
     <form noValidate onSubmit={handleSubmit(onSubmit)}>
       <div>
-        <div>EMAIL</div>
+        <div>{dict.login.email}</div>
         <CommonInput {...register('email')} type="email" />
         {errors.email && <p className="text-red-500 text-xs">{errors.email.message}</p>}
       </div>
       <div className="pt-3">
-        <div>PW</div>
+        <div>{dict.login.password}</div>
         <CommonInput {...register('password')} type="password" />
         {errors.password && <p className="text-red-500 text-xs">{errors.password.message}</p>}
       </div>
@@ -72,7 +74,7 @@ export default function LoginForm({ isInterceptionPage }: Props) {
           className="w-full py-2.5 px-5 text-sm text-white font-medium bg-primary hover:bg-primary-dark focus:outline-none focus:ring-4 focus:ring-gray-100 rounded-lg inline-flex items-center"
           onClick={() => {}}
         >
-          <p className="w-full flex justify-center">Login</p>
+          <p className="w-full flex justify-center">{dict.login.submit}</p>
         </button>
       </div>
       {errors.submit && <div className="pt-3 text-red-500 text-xm text-center">{errors.submit.message}</div>}

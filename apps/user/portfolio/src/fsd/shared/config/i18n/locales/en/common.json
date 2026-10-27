@@ -2,5 +2,11 @@
   "title": "Common",
   "test": {
     "title": "Title"
+  },
+  "login": {
+    "title": "Login",
+    "email": "Email",
+    "password": "Password",
+    "submit": "Login"
   }
 }
