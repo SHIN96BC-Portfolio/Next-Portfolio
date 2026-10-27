@@ -70,6 +70,13 @@ test('hook and validation edits need their own test in the diff', () => {
   );
 });
 
+test('feature schema edits need a colocated test in the same diff', () => {
+  const schema = 'apps/user/portfolio/src/fsd/features/login/model/login-schema.ts';
+  const schemaTest = 'apps/user/portfolio/src/fsd/features/login/model/login-schema.test.ts';
+  assert.deepEqual(missingUnitTestsInDiff([schema]), [{ file: schema, expected: schemaTest }]);
+  assert.deepEqual(missingUnitTestsInDiff([schema, schemaTest]), []);
+});
+
 test('e2e skip does not honor env or STATE.md', () => {
   const src = fs.readFileSync(new URL('./guard-tests.mjs', import.meta.url), 'utf8');
   assert.equal(src.includes('docs/loop/STATE.md'), false);

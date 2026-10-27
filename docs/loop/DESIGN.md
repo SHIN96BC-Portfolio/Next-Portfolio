@@ -44,11 +44,11 @@
 | 층 | 성숙도 | 상태 (한 줄) |
 |----|--------|----------------|
 | 프롬프트 | 관행+템플릿 | AC + [`AI-TASK-PROMPT.md`](./AI-TASK-PROMPT.md) · loop-plan/build |
-| 컨텍스트 | 강함 | AGENTS / README / FSD / skills / `docs/harness`+`docs/loop` |
-| 하네스 | H1~H6 (모노레포, 앱 게이트 1호 full) | SoT: [`docs/harness/README.md`](../harness/README.md) |
-| 루프 | L2~L5 | 정책 SoT: [`LOOP.md`](./LOOP.md) · Actions: [`GITHUB-ACTIONS.md`](./GITHUB-ACTIONS.md) |
+| 컨텍스트 | 8.3 | AGENTS Commands=`verify:<short>` (#83) · site/content 인덱스 · glob rule |
+| 하네스 | 8.3 | schema 가드 (#83). 8.5는 6.2 스모크. SoT: [`docs/harness/README.md`](../harness/README.md) |
+| 루프 | 8.0 | Open B-006 AC (#83). 8.3은 그 사이클 후. SoT: [`LOOP.md`](./LOOP.md) |
 
-마지막 갱신: 2026-10-22 (빈칸·강화 순서 → [`STRENGTHEN.md`](./STRENGTHEN.md). 운영 표는 harness/LOOP)
+마지막 갱신: 2026-10-27 (#83). 빈칸 → [`STRENGTHEN.md`](./STRENGTHEN.md). 운영 표는 harness/LOOP.
 
 ---
 
@@ -252,3 +252,4 @@ docs/security/NOTES.md       ← 보안 논점 (코드 반영은 B-002)
 | 2026-09 | 모노레포 톤 + Cursor Build / Claude Pre-PR / 사람 PR APPROVE |
 | 2026-09 | app-gates full/lite, dual runner (cloud/local), #31/#32 인수인계 md 폐기 → docs/loop |
 | 2026-09 | 문서 슬림화: 운영 표는 harness/LOOP/ISSUE-GUIDE로, DESIGN은 의도·의존·금지 유지 |
+| 2026-10-27 | #83 AGENTS Commands 슬림 · schema `guard:tests` · B-006 AC. 점수 표는 STRENGTHEN |

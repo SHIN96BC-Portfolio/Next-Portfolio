@@ -19,6 +19,7 @@
 | `**/validations/**` | `**/types/**`, `**/constants/**` |
 | `**/hooks/**`, `use*.ts(x)` | `page.tsx` / `layout.tsx` / 순수 presentational UI |
 | `entities/**/model/**` (위 제외 규칙 적용 후) | stories, mock fixtures |
+| `features/**/model/*-schema.ts` | 배럴 `index.ts` |
 
 로직 파일을 고치면 대응 테스트 파일도 같은 커밋·PR diff 에서 수정하거나 추가한다. 테스트만 고친 변경은 소스를 다시 요구하지 않는다.
 
