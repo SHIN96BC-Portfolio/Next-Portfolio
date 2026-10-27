@@ -6,57 +6,25 @@
 
 ## Commands
 
-패키지 매니저는 **pnpm** (루트 `packageManager` 참고).
+패키지 매니저는 **pnpm** (루트 `packageManager` 참고). 앱을 바꾸면 그 앱의 `pnpm verify:<short>` 로 합격한다. 목록: `pnpm verify:app --list`.
 
 ```bash
-# 모노레포 루트
-pnpm dev:portfolio                                    # portfolio Next dev (port 3010)
-pnpm start:portfolio                                  # portfolio production server
-pnpm build                                            # turbo build
-pnpm build:libs                                       # @core/* 빌드
-pnpm lint                                             # turbo lint
-pnpm typecheck                                        # turbo typecheck
-pnpm biome                                            # biome + FSD folder lints
-pnpm lint:fsd                                         # FSD folder-structure (RULES object)
-pnpm lint:fsd:dry                                     # same, report only
-pnpm lint:fix                                        # biome check --write .
-pnpm test                                             # turbo test
-pnpm guard:harness                                    # NEXT_PUBLIC secret 이면 fail. 보호 경로 판정은 harness-owner-gate
-pnpm guard:harness:strict                             # 위와 같은 명령
-pnpm guard:tests                                      # 새 로직→Jest / 셸→E2E (docs/harness/TESTING.md)
-pnpm verify:affected                                  # 바뀐 경로의 verify:<short>만 (PR CI)
-pnpm verify:core                                      # @core/*: typecheck+biome+guard+build:libs (앱 e2e 없음)
-pnpm verify:portfolio                                 # full: typecheck+biome+test+guard+guard:tests+e2e+build
-pnpm verify:portfolio:snap                            # full + screenshot (서버 필요할 수 있음)
-pnpm verify:commerce                                  # lite gate (다른 앱도 verify:<short>)
-pnpm verify:app --list                                # 등록된 앱 게이트 목록
-pnpm loop:status                                      # docs/loop STATE kill switch (paused=exit 2)
-pnpm loop:lock / loop:unlock / loop:budget            # 루프 동시성·시도 예산
-pnpm snap -- /ko                                      # L3 스크린샷 (verify 게이트 아님)
-pnpm run gen:i18n                                     # portfolio i18n 일괄 생성
-
-# portfolio 앱 필터
-pnpm --filter @apps/user-portfolio run typecheck
-pnpm --filter @apps/user-portfolio run lint
-pnpm --filter @apps/user-portfolio run test
-pnpm --filter @apps/user-portfolio run test:e2e
-pnpm --filter @apps/user-portfolio run gen:i18n-types
-pnpm --filter @apps/user-portfolio run watch:i18n-types
-pnpm --filter @apps/user-portfolio run gen:i18n-namespaces
+pnpm verify:portfolio    # 1호 full: typecheck+biome+test+guard+guard:tests+e2e+build
+pnpm verify:core         # @core/* libs (앱 e2e 없음)
+pnpm verify:affected     # 바뀐 경로의 verify:<short>만 (PR CI)
+pnpm loop:status         # docs/loop STATE kill switch (paused=exit 2)
 ```
 
-앱 로컬 스크립트(`dev` / `dev:https` / `start` 등)는 `apps/user/portfolio/package.json` 참고.
+나머지 스크립트(`dev`, `lint`, `biome`, `guard:*`, `loop:lock`, 앱 filter)는 루트 `package.json` · [`README.md`](README.md) Commands.
 
-**Harness:** 모노레포 공통 게이트·denylist는 [`docs/harness/`](docs/harness/README.md). 앱 변경 후 해당 **`pnpm verify:<app>`** 으로 합격 여부를 말한다 (현재 1호: `pnpm verify:portfolio`). Cursor 스킬: `.cursor/skills/verify` · `plan-change` · `safe-edit`.  
+**Harness:** [`docs/harness/`](docs/harness/README.md). 스킬: `.cursor/skills/verify` · `plan-change` · `safe-edit`.  
 보안 논점(코드 반영은 B-002): [`docs/security/NOTES.md`](docs/security/NOTES.md).
 
 Biome·FSD 린트·가드·훅·워크플로·`AGENTS.md`·`.cursor/skills` 는 human gate 다. 검사 실패를 그 파일을 느슨하게 고쳐 해결하지 않는다. 목록은 [`docs/harness/DENYLIST.md`](docs/harness/DENYLIST.md). FSD 파일과 그 보호 경로를 열면 [`.cursor/rules`](.cursor/rules) 가 같은 문서만 가리킨다.
 
-**Loop:** [`docs/loop/`](docs/loop/) (`DESIGN` / `BACKLOG` / `STATE` / `LOOP`). `loop: paused`면 중단.  
-이슈 TASK 프롬프트 작성: [`docs/loop/AI-TASK-PROMPT.md`](docs/loop/AI-TASK-PROMPT.md).  
+**Loop:** [`docs/loop/`](docs/loop/). `loop: paused`면 중단.  
 **Cursor = Build** · **Claude = Pre-PR** · **사람 = PR APPROVE/merge**.  
-Plan·Pre-PR 규칙 본문은 [`CLAUDE.md`](CLAUDE.md) 와 `.cursor/skills/loop-verify` · `loop-build` 에만 둔다.  
-자동: 이슈 `ai-task` (클라우드) 또는 `run:local`+`ai-task` (셀프 호스티드) → [`ai-loop.yml`](.github/workflows/ai-loop.yml). 셋업: [`ACTIONS-SETUP.md`](docs/loop/ACTIONS-SETUP.md) · [`RUNNERS.md`](docs/loop/RUNNERS.md).
+이슈 프롬프트: [`docs/loop/AI-TASK-PROMPT.md`](docs/loop/AI-TASK-PROMPT.md). 자동화: [`ai-loop.yml`](.github/workflows/ai-loop.yml).
 
 ## Architecture: Feature-Sliced Design (FSD)
 
@@ -88,7 +56,7 @@ apps/<app>/src/fsd/
 
 **`_parts` (widgets 전용):** `widgets/**/ui/<PublicComponent>/_parts/` (component-root)만. **`ui/_parts/` 공용 통 금지** (legacy `header` 예외). `_parts` 안 분할은 `drawers|sheets|nav` — `_parts/_parts` 금지. import `./_parts/**`만 (Biome). 시나리오 UI → features, kit → shared.
 
-**Folder structure lint:** `pnpm lint:fsd` (`scripts/lint-fsd-folder-structure.mjs`). 규칙은 파일 상단 `RULES` object — layer/slice에 파일 금지, `ui` 형제 tsx 상한, layer 기준 max depth, `_parts` 위치. `pnpm lint:fsd:dry` = 리포트만. `pnpm biome`에 포함.
+**Folder structure lint:** `pnpm lint:fsd`. 규칙은 스크립트 상단 `RULES` object. `pnpm biome`에 포함.
 
 **Biome cross-slice:** `widgets/**`·`features/**` alias 금지. `entities/**` `@FsdEntities/**` 전면 금지 **없음**.
 
@@ -103,19 +71,13 @@ cookie / theme / i18n / proxy / routing 등 **나머지 config는 entities 등 �
 
 ```
 core/
-├── libs/
-│   ├── service-container/  # Base, Binding, Container, CommonRes, createTypedServiceContainer
-│   ├── proxy-container/
-│   ├── crypto/
-│   ├── cookie/
-│   ├── storage/
-│   └── utils/
-└── bc-ui/                  # accordion, modal, sheet, print, …
+├── libs/   # service-container, proxy-container, crypto, cookie, storage, utils
+└── bc-ui/  # accordion, modal, sheet, print, …
 ```
 
 - import: `@core/<package>` **루트 엔트리만** (deep import 금지)
 - core → apps / `@Fsd*` / `@Src/**` **금지**
-- 도메인 서비스 키(`SERVICE_KEY` / `AppServiceMap`)는 **앱** `shared/config/service/`에 둔다 (core에 넣지 않음)
+- 도메인 서비스 키(`SERVICE_KEY` / `AppServiceMap`)는 **앱** `shared/config/service/`에 둔다
 
 ## Path Aliases
 
@@ -132,81 +94,11 @@ core/
 | `@core/*` | `./core/libs/*` 또는 `./core/bc-ui` |
 | `@Public/*` | `./public/*` |
 
-## Provider Hierarchy (Root Layout)
-
-```
-StoreProvider (Redux + redux-persist)
-  → ReactQueryProvider (@tanstack/react-query)
-    → NextAuthProvider (next-auth)
-      → AuthProvider (session → service container token)
-        → MockServerInit (MSW)
-          → I18nProvider (locale + preload dictionaries)
-```
-
 ## Key Patterns
 
-### REST Services
+REST · i18n · hydration · Biome 포맷 · 파일명: 루트 [`README.md`](README.md) Design Pattern · Folder & File Name Pattern · REST Services.
 
-- Infra: `@core/service-container` (`createTypedServiceContainer`, Base / Binding / Container)
-- Domain: `entities/<domain>/api/` — `<Domain>Service` + `Impl` + `queries` / `mutations`(없으면 생략) + `use*Service`
-- DTO/모델: `entities/<domain>/model/` — **개념 단위 분할**, mega `types.ts` 금지
-- Bind: `shared/config/service/service-map.ts` + `service.setup.ts`
-- **DIP:** Interface만 의존, Base는 ctor 주입, singleton bind
-- Method: `{HttpMethod}{LastPath}` · Req/Res: `{LastPath}{HttpMethod}Req|Res`
-- queries/mutations: `find*` / `register*` / `edit*` / `remove*`
-- **wire → client:** `model/server` 응답을 페이지·위젯에 그대로 쓰지 말고 `mapper`로 client 타입 변환 후 사용
-
-### Internationalization (i18n)
-
-- 라우트 `[lang]` (en, ko, ja)
-- JSON → `pnpm run gen:i18n` (또는 filter로 types/namespaces/locales)
-- Server: `getI18nTranslator()`
-- Client: `useI18n(namespace)` — 서버에서 dictionary preload 후 `I18nProvider`에 `dictionaries` prop 전달 (`getI18nDictionaries`)
-
-### Hydration
-
-- Pure Server Component → page에서 fetch → props
-- Client + SSR → React Query hydration
-- Client + CSR → hooks
-
-## Formatting & Linting (Biome)
-
-- Indent: 2 spaces · line width: 120
-- Line endings: **LF** (`biome.json` `lineEnding: "lf"`)
-- Quotes: single (JS/TS), double (JSX)
-- Trailing commas: ES5 · semicolons: always
-- `console.log` 금지 (`console.error` / `console.info`만)
-- Unused imports: error
-
-## Git Conventions
-
-**Branch:** `{type}/{name}/{app}/#{issueNo}` — 예: `feat/sbc/portfolio/#123`
-
-**Commit:** `[{type}/{name}/{app}/#{issueNo}] subject` — 예: `[feat/sbc/portfolio/#123] 로그인 기능 구현`
-
-**app:** `verify:<short>` (`portfolio`, `commerce`, `fashion`, `social`, `master-admin`, `commerce-admin`, `fashion-admin`, `social-admin`). 앱이 아니면 `core` / `harness`.
-
-**Types:** feat, hotfix, docs, style, refactor, chore, build, deploy, revert, test
-
-**Hooks:** pre-commit(브랜치명 + lint-staged) · pre-push(typecheck + biome + guard:harness + guard:tests, e2e/build 는 CI) · commit-msg(메시지 형식)
-
-## File Naming Conventions
-
-상세: **README → Folder & File Name Pattern** (폴더=역할, 파일=개념).
-
-| Type | Convention | Example |
-|------|------------|---------|
-| React Component | PascalCase | `LoginModal.tsx` |
-| Next.js app router | lowercase | `page.tsx`, `layout.tsx` |
-| Utility / mapper | kebab-case | `format-date.ts`, `map-server-home-section-to-client.ts` |
-| Custom hook | `use` + camelCase | `useAuth.ts`, `useFindGnbQuery.ts` |
-| Types / constants (다개념) | kebab-case under `model/types|constants/` | `section-config.ts`, `section-type.ts` |
-| Enum file | kebab-case + `.enum` | `status.enum.ts` |
-| Schema (zod) | kebab-case + `-schema` | `login-schema.ts` |
-| REST Service | PascalCase | `SiteService.ts`, `SiteServiceImpl.ts` |
-| Setup / bootstrap | `*.setup.ts` | `service.setup.ts` |
-
-라우팅·페이지 키처럼 여러 도메인이 공유하는 상수는 `shared/config/routing/page-key.ts`처럼 **shared config**에 둔다 (entities 전용 상수가 아니면 content `model/constants`에 넣지 않음).
+**Git:** `{type}/{name}/{app}/#{issueNo}` / `[{type}/{name}/{app}/#{issueNo}] subject` — 예: `feat/sbc/portfolio/#123`. app은 `verify:<short>` 또는 `core` / `harness`. 훅이 강제한다.
 
 ## AI Skills
 
@@ -222,8 +114,3 @@ StoreProvider (Redux + redux-persist)
 
 - 퍼블리싱 요청 시 `SKILL.md`와 함께 `reference.md`도 읽을 것
 - 설계 → 퍼블리싱 → 테스트 순서
-
-## Troubleshooting
-
-- parallel + interception route로 react-dom/router 오류 시 `.next/` 삭제 후 재빌드
-- Biome `␍` / LF·CRLF 이슈: README 배포·트러블슈팅 표 + `pnpm biome check .`로 LF 정규화

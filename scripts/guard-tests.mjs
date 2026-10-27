@@ -49,6 +49,7 @@ const UNIT_INCLUDE = [
   /\/hooks\/.+\.tsx?$/,
   /\/use[A-Z][\w]*\.tsx?$/,
   /\/entities\/[^/]+\/model\/.+\.tsx?$/,
+  /\/features\/[^/]+\/model\/.+-schema\.tsx?$/,
 ];
 
 const UNIT_EXCLUDE = [
